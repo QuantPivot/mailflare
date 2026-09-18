@@ -7,6 +7,7 @@ import type {
   GitHubRepositoryResponse,
   GitHubWorkflowDispatchResponse,
   PackageMetadata,
+  UpdateConfigurationItem,
   UpdateDispatchConfig,
   UpdateStatus,
 } from "./types";
@@ -56,6 +57,19 @@ function getDispatchConfig(env: CloudflareEnv): UpdateDispatchConfig {
   }
 
   return { token, repository, ref: ref || undefined };
+}
+
+function getUpdateConfiguration(env: CloudflareEnv): UpdateConfigurationItem[] {
+  return [
+    {
+      name: "GITHUB_UPDATE_TOKEN",
+      configured: !!env.GITHUB_UPDATE_TOKEN?.trim(),
+    },
+    {
+      name: "GITHUB_UPDATE_REPO",
+      configured: !!env.GITHUB_UPDATE_REPO?.trim(),
+    },
+  ];
 }
 
 async function githubRequest<T>(
@@ -167,12 +181,25 @@ async function getTargetVersion(): Promise<string> {
 export async function getUpdateStatus(
   env: CloudflareEnv,
 ): Promise<UpdateStatus> {
-  const config = getDispatchConfig(env);
   const currentVersion = packageMetadata.version;
+  const configuration = getUpdateConfiguration(env);
+  const configured = configuration.every((item) => item.configured);
+
+  if (!configured) {
+    return {
+      configuration,
+      configured,
+      currentVersion,
+    };
+  }
+
+  getDispatchConfig(env);
   const targetVersion = await getTargetVersion();
 
   return {
     available: isNewerVersion(targetVersion, currentVersion),
+    configuration,
+    configured,
     currentVersion,
     repository: UPDATE_SOURCE_REPOSITORY,
     targetVersion,

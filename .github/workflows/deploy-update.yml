@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   update:
@@ -13,12 +13,22 @@ jobs:
       UPDATE_SOURCE_REPOSITORY: ${{ vars.UPDATE_SOURCE_REPOSITORY || 'hieunc229/mailflare' }}
 
     steps:
+      - name: Check update token
+        env:
+          UPDATE_TOKEN: ${{ secrets.MAILFLARE_UPDATE_TOKEN }}
+        run: |
+          if [ -z "${UPDATE_TOKEN}" ]; then
+            echo "::error::Add MAILFLARE_UPDATE_TOKEN as a repository Actions secret."
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.MAILFLARE_UPDATE_TOKEN }}
 
-      - name: Merge upstream changes
+      - name: Replace repository with upstream source
         run: |
           set -euo pipefail
           git config user.name "mailflare-update"
@@ -37,15 +47,17 @@ jobs:
             echo "::error::Could not resolve the default branch of ${UPDATE_SOURCE_REPOSITORY}."
             exit 1
           fi
-          echo "Merging upstream/${upstream_branch} into ${GITHUB_REF_NAME}."
+          upstream_ref="upstream/${upstream_branch}"
+          echo "Replacing ${GITHUB_REF_NAME} with ${upstream_ref}."
 
-          # A merge keeps local modifications instead of overwriting them, and
-          # stops on conflict rather than silently discarding local work.
-          if ! git merge --no-edit "upstream/${upstream_branch}"; then
-            git merge --abort || true
-            echo "::error::Merge conflict with upstream/${upstream_branch}. Resolve it locally and push."
-            exit 1
+          # Keep the installation repository's commit history while replacing
+          # its complete tracked tree with the current upstream tree.
+          git read-tree --reset -u "${upstream_ref}"
+          if git diff --cached --quiet; then
+            echo "Repository is already up to date."
+            exit 0
           fi
+          git commit -m "Update Mailflare from ${UPDATE_SOURCE_REPOSITORY}@${upstream_branch}"
 
       - name: Push update
         run: |
