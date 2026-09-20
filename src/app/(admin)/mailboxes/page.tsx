@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
+import { List, ListRow } from "@/components/ui/list";
 import { SectionRowSkeleton } from "@/components/page-skeletons";
 import { clearMailboxesCache } from "@/components/mailbox-provider-utils";
 import { authFetch } from "@/lib/auth/client";
@@ -234,7 +235,7 @@ export default function MailboxesPage() {
 						No mailboxes yet
 					</p>
 				)}
-				<div className="divide-y divide-neutral-100 overflow-hidden rounded-3xl bg-white">
+				<List>
 					{(mailboxes.data?.mailboxes ?? []).map((mailbox) => {
 						const mailboxWithHostname = {
 							...mailbox,
@@ -242,42 +243,43 @@ export default function MailboxesPage() {
 						};
 
 						return (
-							<Link
-								key={mailbox.id}
-								href={`/mailboxes/${mailbox.id}`}
-								className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-blue-50/40"
-							>
-								<span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-sm font-semibold text-blue-700">
-									{getMailboxName(mailboxWithHostname).trim().charAt(0).toUpperCase() || "?"}
-									{mailbox.hasAvatar && (
-										<img
-											src={`/api/mailboxes/${mailbox.id}/avatar`}
-											alt={`${getMailboxName(mailboxWithHostname)} profile`}
-											className="absolute inset-0 h-full w-full object-cover"
-											onError={(event) => event.currentTarget.remove()}
-										/>
-									)}
-								</span>
-								<span className="min-w-0">
-									<span className="flex min-w-0 items-center gap-2">
-										<span className="block truncate text-sm font-semibold text-neutral-900">
-											{getMailboxName(mailboxWithHostname)}
-										</span>
-										{mailbox.type === "shared" && (
-											<span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
-												<UsersRound className="h-3 w-3" />
-												Shared
-											</span>
+							<ListRow key={mailbox.id} asChild>
+								<Link
+									href={`/mailboxes/${mailbox.id}`}
+									className="group px-5 py-4 transition-colors hover:bg-blue-50/40"
+								>
+									<span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-sm font-semibold text-blue-700">
+										{getMailboxName(mailboxWithHostname).trim().charAt(0).toUpperCase() || "?"}
+										{mailbox.hasAvatar && (
+											<img
+												src={`/api/mailboxes/${mailbox.id}/avatar`}
+												alt={`${getMailboxName(mailboxWithHostname)} profile`}
+												className="absolute inset-0 h-full w-full object-cover"
+												onError={(event) => event.currentTarget.remove()}
+											/>
 										)}
 									</span>
-									<span className="block truncate no-font-mono text-sm text-neutral-500">
-										{getMailboxAddress(mailboxWithHostname)}
+									<span className="min-w-0">
+										<span className="flex min-w-0 items-center gap-2">
+											<span className="block truncate text-sm font-semibold text-neutral-900">
+												{getMailboxName(mailboxWithHostname)}
+											</span>
+											{mailbox.type === "shared" && (
+												<span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
+													<UsersRound className="h-3 w-3" />
+													Shared
+												</span>
+											)}
+										</span>
+										<span className="block truncate no-font-mono text-sm text-neutral-500">
+											{getMailboxAddress(mailboxWithHostname)}
+										</span>
 									</span>
-								</span>
-							</Link>
+								</Link>
+							</ListRow>
 						);
 					})}
-				</div>
+				</List>
 			</section>
 		</div>
 	);

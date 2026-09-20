@@ -14,11 +14,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { List } from "@/components/ui/list";
 import { CheckCircle2, LoaderCircle, Plus } from "lucide-react";
 import { authFetch } from "@/lib/auth/client";
-import type { DnsStatusSummary, Domain, DomainDnsView, DomainPreflight } from "./types";
+import type { DnsAuthRecord, DnsStatusSummary, Domain, DomainDnsView, DomainPreflight } from "./types";
 import DomainItemCard from "./DomainItemCard";
-import DomainDnsDetails from "./DomainDnsDetails";
 import { SectionRowSkeleton } from "@/components/page-skeletons";
 import { checkDomain } from "./utils";
 
@@ -36,6 +36,8 @@ export default function DomainsPage() {
   const [enableSending, setEnableSending] = useState(false);
   const [domainCheckError, setDomainCheckError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [setupRecord, setSetupRecord] = useState<DnsAuthRecord | null>(null);
+  const [setupMessage, setSetupMessage] = useState<string | null>(null);
   const [dnsView, setDnsView] = useState<{
     domain: Domain;
     dns: DomainDnsView;
@@ -103,7 +105,45 @@ export default function DomainsPage() {
   const loadDns = async (id: string) => {
     const res = await authFetch(`/api/domains/${id}/dns`);
     const json = (await res.json()) as { domain: Domain; dns: DomainDnsView };
-    if (res.ok) setDnsView(json);
+    if (res.ok) {
+      setDnsView(json);
+      setSetupMessage(null);
+    }
+  };
+
+  const toggleDns = async (id: string) => {
+    if (dnsView?.domain.id === id) {
+      setDnsView(null);
+      setSetupMessage(null);
+      return;
+    }
+    await loadDns(id);
+  };
+
+  const setupDns = async (record: DnsAuthRecord) => {
+    if (!dnsView) return;
+    setSetupRecord(record);
+    setSetupMessage(null);
+    try {
+      const res = await authFetch(`/api/domains/${dnsView.domain.id}/dns/setup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ record }),
+      });
+      const json = (await res.json()) as {
+        domain?: Domain;
+        dns?: DomainDnsView;
+        error?: string;
+      };
+      if (!res.ok) throw new Error(json.error ?? "Failed to set up DNS record");
+      if (json.domain && json.dns) setDnsView({ domain: json.domain, dns: json.dns });
+      else await loadDns(dnsView.domain.id);
+      qc.invalidateQueries({ queryKey: ["domains"] });
+    } catch (error) {
+      setSetupMessage(error instanceof Error ? error.message : "Failed to set up DNS record");
+    } finally {
+      setSetupRecord(null);
+    }
   };
 
   const inspectDomain = async () => {
@@ -245,24 +285,26 @@ export default function DomainsPage() {
             No domains yet
           </p>
         )}
-        <div className="grid gap-3">
+        <List>
           {(data?.domains ?? []).map((d) => {
             const dns = data?.dns?.[d.id];
             return (
               <DomainItemCard
                 key={d.id}
                 dns={dns}
-                loadDns={loadDns}
+                dnsDetails={dnsView?.domain.id === d.id ? dnsView.dns : undefined}
+                expanded={dnsView?.domain.id === d.id}
+                onToggleDns={toggleDns}
+                onSetup={setupDns}
+                setupRecord={setupRecord}
+                setupMessage={setupMessage}
                 item={d}
                 remove={remove}
               />
             );
           })}
-        </div>
+        </List>
       </section>
-      {dnsView && (
-        <DomainDnsDetails domain={dnsView.domain} dns={dnsView.dns} />
-      )}
     </div>
   );
 }

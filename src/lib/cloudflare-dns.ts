@@ -13,6 +13,17 @@ export async function listMxRecords(
 	);
 }
 
+export async function listDnsRecords(
+	env: CloudflareEnv,
+	zoneId: string,
+	params: { type: string; name: string },
+): Promise<CfDnsRecord[]> {
+	return cfRequest<CfDnsRecord[]>(
+		env,
+		`/zones/${zoneId}/dns_records?type=${encodeURIComponent(params.type)}&name=${encodeURIComponent(params.name)}&per_page=5000`,
+	);
+}
+
 export async function deleteDnsRecord(
 	env: CloudflareEnv,
 	zoneId: string,

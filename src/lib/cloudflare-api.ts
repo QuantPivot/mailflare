@@ -42,6 +42,13 @@ export async function cfRequest<T>(
 	return json.result;
 }
 
+export async function getZone(
+	env: CloudflareEnv,
+	zoneId: string,
+): Promise<{ id: string; name: string }> {
+	return cfRequest<{ id: string; name: string }>(env, `/zones/${zoneId}`);
+}
+
 export async function findZoneByHostname(
 	env: CloudflareEnv,
 	hostname: string,

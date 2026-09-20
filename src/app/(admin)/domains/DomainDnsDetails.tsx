@@ -1,16 +1,83 @@
 import { AlertTriangle, Check } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { getDnsRecordLabel } from "./domain-dns-details-utils";
+import { dnsAuthRecords, getDnsAuthItemClass, getDnsAuthStatusLabel } from "./utils";
 import type { DomainDnsDetailsProps } from "./types";
 
-export default function DomainDnsDetails({ domain, dns }: DomainDnsDetailsProps) {
+export default function DomainDnsDetails({
+	domain,
+	dns,
+	onSetup,
+	setupRecord,
+	setupMessage,
+}: DomainDnsDetailsProps) {
+	const audit = dns.audit;
+	const manual = domain.zoneId === "manual";
 	return (
-		<Card className="rounded-3xl border-0 bg-white p-6">
-			<CardHeader className="py-0">
-				<CardTitle>DNS — {domain.hostname}</CardTitle>
-			</CardHeader>
-			<CardContent className="gap-6 pt-5">
-				<section className="space-y-3">
+		<div className="border-t border-neutral-100 pt-5">
+			{audit && (
+					<section className="space-y-3">
+						<h2 className="text-sm font-medium text-neutral-900">Authentication</h2>
+						<ul className="space-y-2">
+							{dnsAuthRecords.map((record) => {
+								const item = audit[record];
+								const ok = item.status === "ok";
+								const statusStr = getDnsAuthStatusLabel(item.status);
+
+								return (
+									<li
+										key={record}
+										className={`flex items-start gap-2 rounded-xl px-3 py-2 text-sm ${getDnsAuthItemClass(item.status)}`}
+									>
+										{ok ? (
+											<Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+										) : (
+											<AlertTriangle
+												className={`mt-0.5 h-4 w-4 shrink-0 ${item.status === "missing" ? "text-red-600" : "text-neutral-400"}`}
+											/>
+										)}
+										<span className="min-w-0 flex-1">
+											<span className="font-medium">{item.label}</span>{" "}
+											<span className="break-all">{item.name}</span>{" "}
+
+											{item.found.length > 0 ? (
+												<span className="block break-all text-xs opacity-80">
+													{item.found.join(", ")}
+												</span>
+											) : !ok && <span className="block break-all text-xs opacity-80 capitalize">{statusStr}</span>}
+										</span>
+
+										{ok ? <span className="capitalize">{statusStr}</span> : (
+											<Button
+												variant="outline"
+												size="sm"
+												className="shrink-0"
+												disabled={manual || setupRecord === record}
+												title={
+													manual
+														? "DNS for this domain is managed manually"
+														: `Create the ${item.label} record`
+												}
+												onClick={() => onSetup?.(record)}
+											>
+												{setupRecord === record ? "Setting up..." : "Setup"}
+											</Button>
+										)}
+									</li>
+								);
+							})}
+						</ul>
+						{manual && (
+							<p className="text-xs text-neutral-500">
+								DNS is managed manually for this domain, so records must be created
+								where the domain&apos;s nameservers are hosted.
+							</p>
+						)}
+						{setupMessage && <p className="text-xs text-red-600">{setupMessage}</p>}
+					</section>
+				)}
+
+				<section className={audit ? "space-y-3 mt-8" : "space-y-3"}>
 					<h2 className="text-sm font-medium text-neutral-900">Email Routing</h2>
 					<ul className="space-y-2">
 						{dns.routing.records.map((record, index) => (
@@ -67,8 +134,7 @@ export default function DomainDnsDetails({ domain, dns }: DomainDnsDetailsProps)
 							</li>
 						)}
 					</ul>
-				</section>
-			</CardContent>
-		</Card>
+			</section>
+		</div>
 	);
 }

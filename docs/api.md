@@ -16,6 +16,21 @@ Adding or removing a domain from Mailflare also updates Cloudflare Email Routing
 
 The hostname must be the apex of a zone available to the configured Cloudflare credentials, or a subdomain of that zone. Creating a mailbox also creates the Cloudflare Email Routing rule that delivers its address to the `mailflare` Worker.
 
+### Domain management over the API
+
+The same operations are available to scripts through API keys with the `domains` scope, using `Authorization: Bearer <key>`:
+
+| Mailflare route | Purpose |
+| --- | --- |
+| `GET /api/v1/domains` | List connected domains with their DNS status |
+| `POST /api/v1/domains` | Connect a domain and configure Cloudflare (`{ hostname, enableRouting?, enableSending?, replaceMxRecords? }`) |
+| `GET /api/v1/domains/[id]` | Get a connected domain |
+| `DELETE /api/v1/domains/[id]` | Remove a domain and clean up its Cloudflare resources |
+| `GET /api/v1/domains/[id]/dns` | View its routing, sending and authentication DNS status |
+| `POST /api/v1/domains/[id]/dns/setup` | Create a missing record (`{ record: "mx" \| "spf" \| "dkim" \| "dmarc" }`) |
+
+`GET /api/v1/domains` returns `{ domains, dns }`, where `dns[id].auth` reports `ok` / `missing` / `unknown` for MX, SPF, DKIM and DMARC. `GET /api/v1/domains/[id]/dns` returns the full audit, including the names queried and the values found. The `setup` route provisions MX/SPF through Email Routing, DKIM through the sending subdomain, and a `v=DMARC1; p=none` TXT for DMARC; on a self-hosted install where DNS is managed manually it returns an error, since Mailflare cannot write the zone.
+
 ## Sending email
 
 Send email through `POST /api/v1/send`. `to`, `cc` and `bcc` accept either a comma-separated header string or an array of addresses; each entry may carry a display name (`"Maya Chen" <maya@example.net>`). A message can reach up to 50 recipients across the three fields. Attachments are optional and use Base64-encoded content:
