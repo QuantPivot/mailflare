@@ -6,15 +6,20 @@ Mailflare is a self-hosted email inbox for custom domains, built on Cloudflare.
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/hieunc229/mailflare)
 
-![Mailflare inbox](/screenshot.png)
+## Screenshots
 
-Thanks to mailflare sponsors. Want to support the project? Drop [@hieuSSR](https://x.com/hieuSSR) a message
+| ![Inbox](/screenshots/1.png)<br>Inbox | ![Manage domains](/screenshots/2.png)<br>Manage domains | ![Manage inboxes](/screenshots/3.png)<br>Manage inboxes |
+| --- | --- | --- |
 
 ### Featured sponsors
 
 <a target="_blank" href="https://sequenzy.com/?ref=hieunc229/mailflare">
-  <img width="160" src="/sponsors/sequenzy.png" alt="Sequenzy">
+  <img height="80" src="/sponsors/sequenzy.png" alt="Sequenzy">
+</a>  <a target="_blank" href="https://drivemug.com/?ref=hieunc229/mailflare">
+  <img height="80" src="https://mailflare.co/sponsors/drivemug.png" alt="Drivemug">
 </a>
+
+Want to support the mailflare? <a target="_blank" href="https://store.paymug.co/buy/mailflare-sponsor">Start sponsoring</a>
 
 ## What you can do
 
