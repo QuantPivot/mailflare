@@ -17,7 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { List } from "@/components/ui/list";
 import { CheckCircle2, LoaderCircle, Plus } from "lucide-react";
 import { authFetch } from "@/lib/auth/client";
-import type { DnsAuthRecord, DnsStatusSummary, Domain, DomainDnsView, DomainPreflight } from "./types";
+import type { DnsAuthRecord, DnsStatusSummary, Domain, DomainDnsCache, DomainDnsView, DomainPreflight } from "./types";
 import DomainItemCard from "./DomainItemCard";
 import { SectionRowSkeleton } from "@/components/page-skeletons";
 import { checkDomain } from "./utils";
@@ -42,10 +42,7 @@ export default function DomainsPage() {
   const expandedIdRef = useRef<string | null>(null);
   const [dnsLoading, setDnsLoading] = useState(false);
   const [dnsError, setDnsError] = useState<string | null>(null);
-  const [dnsView, setDnsView] = useState<{
-    domain: Domain;
-    dns: DomainDnsView;
-  } | null>(null);
+  const [dnsViews, setDnsViews] = useState<DomainDnsCache>({});
 
   const { data, isLoading } = useQuery({
     queryKey: ["domains"],
@@ -116,17 +113,15 @@ export default function DomainsPage() {
     if (!res.ok || !json.domain || !json.dns) {
       throw new Error(json.error ?? "Failed to load DNS");
     }
-    // Ignore a response that arrives after the user expanded another domain.
-    if (expandedIdRef.current !== id) return;
-    setDnsView({ domain: json.domain, dns: json.dns });
-    setSetupMessage(null);
+    const loadedView = { domain: json.domain, dns: json.dns };
+    setDnsViews((current) => ({ ...current, [id]: loadedView }));
+    if (expandedIdRef.current === id) setSetupMessage(null);
   };
 
   const toggleDns = async (id: string) => {
     if (expandedDomainId === id) {
       expandedIdRef.current = null;
       setExpandedDomainId(null);
-      setDnsView(null);
       setSetupMessage(null);
       setDnsLoading(false);
       setDnsError(null);
@@ -136,9 +131,12 @@ export default function DomainsPage() {
     // than leaving the card unchanged until the request resolves.
     expandedIdRef.current = id;
     setExpandedDomainId(id);
-    setDnsView(null);
     setSetupMessage(null);
     setDnsError(null);
+    if (dnsViews[id]) {
+      setDnsLoading(false);
+      return;
+    }
     setDnsLoading(true);
     try {
       await loadDns(id);
@@ -152,6 +150,8 @@ export default function DomainsPage() {
   };
 
   const setupDns = async (record: DnsAuthRecord) => {
+    if (!expandedDomainId) return;
+    const dnsView = dnsViews[expandedDomainId];
     if (!dnsView) return;
     setSetupRecord(record);
     setSetupMessage(null);
@@ -167,8 +167,13 @@ export default function DomainsPage() {
         error?: string;
       };
       if (!res.ok) throw new Error(json.error ?? "Failed to set up DNS record");
-      if (json.domain && json.dns) setDnsView({ domain: json.domain, dns: json.dns });
-      else await loadDns(dnsView.domain.id);
+      if (json.domain && json.dns) {
+        const updatedView = { domain: json.domain, dns: json.dns };
+        setDnsViews((current) => ({
+          ...current,
+          [dnsView.domain.id]: updatedView,
+        }));
+      } else await loadDns(dnsView.domain.id);
       qc.invalidateQueries({ queryKey: ["domains"] });
     } catch (error) {
       setSetupMessage(error instanceof Error ? error.message : "Failed to set up DNS record");
@@ -323,7 +328,7 @@ export default function DomainsPage() {
               <DomainItemCard
                 key={d.id}
                 dns={dns}
-                dnsDetails={dnsView?.domain.id === d.id ? dnsView.dns : undefined}
+                dnsDetails={dnsViews[d.id]?.dns}
                 dnsLoading={expandedDomainId === d.id && dnsLoading}
                 dnsError={expandedDomainId === d.id ? dnsError : null}
                 expanded={expandedDomainId === d.id}

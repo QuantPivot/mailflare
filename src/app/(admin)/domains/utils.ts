@@ -3,6 +3,13 @@ import type { DnsAuthRecord, DnsAuthStatus, DomainPreflightResponse } from "./ty
 
 export const dnsAuthRecords: DnsAuthRecord[] = ["mx", "spf", "dkim", "dmarc"];
 
+export const dnsAuthDescriptions: Record<DnsAuthRecord, string> = {
+	mx: "Routes incoming email to Mailflare",
+	spf: "Authorizes Mailflare to send email",
+	dkim: "Signs outgoing email for deliverability",
+	dmarc: "Helps prevent email spoofing",
+};
+
 export function getDnsAuthStatusLabel(status: DnsAuthStatus): string {
 	switch (status) {
 		case "ok":

@@ -59,6 +59,8 @@ export type DomainDnsView = {
 	audit?: DomainDnsAudit;
 };
 
+export type DomainDnsCache = Record<string, { domain: Domain; dns: DomainDnsView }>;
+
 export type DomainDnsDetailsProps = {
 	domain: Domain;
 	dns: DomainDnsView;

@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ListRow } from "@/components/ui/list";
@@ -12,6 +13,7 @@ import {
   ChevronDown,
   ChevronRight,
   Globe2,
+  MoreVertical,
   Trash2,
 } from "lucide-react";
 import type { DomainItemCardProps } from "./types";
@@ -124,23 +126,42 @@ export default function DomainItemCard({
             setupMessage={setupMessage}
           />
         ) : dnsError ? (
-          <div className="border-t border-neutral-100 pt-5 text-sm text-red-600">
+          <div className="px-4 pb-4 pt-4 text-sm text-red-600 sm:px-5 sm:pb-5">
             {dnsError}
           </div>
         ) : dnsLoading ? (
           <DomainDnsSkeleton />
         ) : null)}
 
-      <Button
-        variant="destructive"
-        size="sm"
-        className="absolute right-4 top-4 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-        onClick={() => remove.mutate(item.id)}
-        disabled={remove.isPending}
-        aria-label={`Remove ${item.hostname}`}
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="absolute right-4 top-4 h-8 w-8 p-0"
+            disabled={remove.isPending}
+            aria-label={`Actions for ${item.hostname}`}
+          >
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            align="end"
+            sideOffset={6}
+            className="z-50 min-w-40 rounded-lg border border-neutral-200 bg-white p-1 text-sm shadow-lg"
+          >
+            <DropdownMenu.Item
+              disabled={remove.isPending}
+              onSelect={() => remove.mutate(item.id)}
+              className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-red-600 outline-none hover:bg-red-50 focus:bg-red-50 data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+            >
+              <Trash2 className="h-4 w-4" />
+              Remove domain
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
     </ListRow>
   );
 }
