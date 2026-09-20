@@ -23,6 +23,10 @@ export type DomainDnsView = {
 	routing: { records: CfDnsRecord[]; missing: CfDnsRecord[]; status?: string };
 	sending: CfDnsRecord[];
 	sendingEnabled: boolean;
+	/** DKIM selector Cloudflare signs with, when a sending subdomain exists. */
+	dkimSelector?: string;
+	/** The matching sending subdomain, when the zone has the domain added for sending. */
+	sendingSubdomain?: { name: string; tag: string };
 };
 
 export async function listUserDomains(env: CloudflareEnv, userId: string) {
@@ -123,16 +127,27 @@ export async function getDomainDns(
 	domain: typeof domains.$inferSelect,
 ): Promise<DomainDnsView> {
 	if (isManualZone(domain.zoneId)) return getManualDomainDns(env, domain.hostname);
-	const shouldInspectSending = domain.sendingRequested;
+	// Read the zone's actual sending state rather than trusting `sendingRequested`,
+	// which goes stale when sending is enabled outside Mailflare (or when the row
+	// was written before the subdomain existed). A missing Email Sending permission
+	// must not take down the routing/DNS view, so a failed list degrades to none.
 	const [routingDns, routingSettings, sendingSubdomains] = await Promise.all([
 		getEmailRoutingDns(env, domain.zoneId),
 		getEmailRoutingSettings(env, domain.zoneId),
-		shouldInspectSending ? listSendingSubdomains(env, domain.zoneId) : [],
+		listSendingSubdomains(env, domain.zoneId).catch((error) => {
+			console.warn("getDomainDns: failed to list sending subdomains", error);
+			return [];
+		}),
 	]);
 	const sendingSubdomain = findSendingSubdomain(domain.hostname, sendingSubdomains);
 	let sending: CfDnsRecord[] = [];
 	if (sendingSubdomain?.tag) {
-		sending = await getSendingSubdomainDns(env, domain.zoneId, sendingSubdomain.tag);
+		sending = await getSendingSubdomainDns(env, domain.zoneId, sendingSubdomain.tag).catch(
+			(error) => {
+				console.warn("getDomainDns: failed to read sending subdomain DNS", error);
+				return [];
+			},
+		);
 	}
 	return {
 		routing: {
@@ -142,6 +157,10 @@ export async function getDomainDns(
 		},
 		sending,
 		sendingEnabled: sendingSubdomain?.enabled ?? false,
+		dkimSelector: sendingSubdomain?.dkim_selector,
+		sendingSubdomain: sendingSubdomain
+			? { name: sendingSubdomain.name, tag: sendingSubdomain.tag }
+			: undefined,
 	};
 }
 

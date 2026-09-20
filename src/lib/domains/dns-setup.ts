@@ -5,6 +5,7 @@ import {
 	createSendingSubdomain,
 	enableEmailRouting,
 	getZone,
+	listSendingSubdomains,
 } from "@/lib/cloudflare-api";
 import { createDnsRecord, listDnsRecords } from "@/lib/cloudflare-dns";
 import { ensureEmailRoutingCatchAllToWorker } from "@/lib/domains/catch-all-routing";
@@ -13,6 +14,7 @@ import {
 	isManualZone,
 	shouldBindEmailCatchAllToWorker,
 } from "@/lib/domains/provision";
+import { findSendingSubdomain } from "@/lib/domains/sending-status";
 import type { DomainRow } from "@/lib/domains/types";
 import { isZoneApex } from "@/lib/domains/utils";
 
@@ -51,13 +53,18 @@ export async function setupDomainDnsRecord(
 			return;
 		}
 		case "dkim": {
-			if (domain.sendingSubdomainTag) return;
-			const created = await createSendingSubdomain(env, domain.zoneId, domain.hostname);
+			// The stored tag can be stale or empty even though the subdomain exists
+			// on Cloudflare, so reuse what is there instead of creating a duplicate
+			// (which Cloudflare rejects with "Subdomain already exists").
+			const subdomains = await listSendingSubdomains(env, domain.zoneId);
+			const subdomain =
+				findSendingSubdomain(domain.hostname, subdomains) ??
+				(await createSendingSubdomain(env, domain.zoneId, domain.hostname));
 			await getDb(env)
 				.update(domains)
 				.set({
-					sendingSubdomainTag: created.tag,
-					sendingEnabled: created.enabled,
+					sendingSubdomainTag: subdomain.tag,
+					sendingEnabled: subdomain.enabled,
 					sendingRequested: true,
 				})
 				.where(eq(domains.id, domain.id));

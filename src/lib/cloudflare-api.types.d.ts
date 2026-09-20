@@ -56,4 +56,9 @@ export type CfSendingSubdomain = {
 	tag: string;
 	name: string;
 	enabled: boolean;
+	/** The selector Cloudflare signs DKIM with, published at `<selector>._domainkey.<name>`. */
+	dkim_selector?: string;
+	return_path_domain?: string;
+	created?: string;
+	modified?: string;
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -38,6 +38,10 @@ export default function DomainsPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [setupRecord, setSetupRecord] = useState<DnsAuthRecord | null>(null);
   const [setupMessage, setSetupMessage] = useState<string | null>(null);
+  const [expandedDomainId, setExpandedDomainId] = useState<string | null>(null);
+  const expandedIdRef = useRef<string | null>(null);
+  const [dnsLoading, setDnsLoading] = useState(false);
+  const [dnsError, setDnsError] = useState<string | null>(null);
   const [dnsView, setDnsView] = useState<{
     domain: Domain;
     dns: DomainDnsView;
@@ -104,20 +108,47 @@ export default function DomainsPage() {
 
   const loadDns = async (id: string) => {
     const res = await authFetch(`/api/domains/${id}/dns`);
-    const json = (await res.json()) as { domain: Domain; dns: DomainDnsView };
-    if (res.ok) {
-      setDnsView(json);
-      setSetupMessage(null);
+    const json = (await res.json()) as {
+      domain?: Domain;
+      dns?: DomainDnsView;
+      error?: string;
+    };
+    if (!res.ok || !json.domain || !json.dns) {
+      throw new Error(json.error ?? "Failed to load DNS");
     }
+    // Ignore a response that arrives after the user expanded another domain.
+    if (expandedIdRef.current !== id) return;
+    setDnsView({ domain: json.domain, dns: json.dns });
+    setSetupMessage(null);
   };
 
   const toggleDns = async (id: string) => {
-    if (dnsView?.domain.id === id) {
+    if (expandedDomainId === id) {
+      expandedIdRef.current = null;
+      setExpandedDomainId(null);
       setDnsView(null);
       setSetupMessage(null);
+      setDnsLoading(false);
+      setDnsError(null);
       return;
     }
-    await loadDns(id);
+    // Expand immediately and show a skeleton while the audit is fetched, rather
+    // than leaving the card unchanged until the request resolves.
+    expandedIdRef.current = id;
+    setExpandedDomainId(id);
+    setDnsView(null);
+    setSetupMessage(null);
+    setDnsError(null);
+    setDnsLoading(true);
+    try {
+      await loadDns(id);
+    } catch (error) {
+      if (expandedIdRef.current === id) {
+        setDnsError(error instanceof Error ? error.message : "Failed to load DNS");
+      }
+    } finally {
+      if (expandedIdRef.current === id) setDnsLoading(false);
+    }
   };
 
   const setupDns = async (record: DnsAuthRecord) => {
@@ -293,7 +324,9 @@ export default function DomainsPage() {
                 key={d.id}
                 dns={dns}
                 dnsDetails={dnsView?.domain.id === d.id ? dnsView.dns : undefined}
-                expanded={dnsView?.domain.id === d.id}
+                dnsLoading={expandedDomainId === d.id && dnsLoading}
+                dnsError={expandedDomainId === d.id ? dnsError : null}
+                expanded={expandedDomainId === d.id}
                 onToggleDns={toggleDns}
                 onSetup={setupDns}
                 setupRecord={setupRecord}

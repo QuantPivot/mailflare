@@ -13,6 +13,15 @@ export default function DomainDnsDetails({
 }: DomainDnsDetailsProps) {
 	const audit = dns.audit;
 	const manual = domain.zoneId === "manual";
+	const subdomain = dns.sendingSubdomain;
+	const sendingOk = subdomain ? dns.sendingEnabled : manual && domain.sendingEnabled;
+	const sendingLabel = subdomain
+		? `Sending for ${subdomain.name} is ${dns.sendingEnabled ? "enabled" : "disabled"}`
+		: manual
+			? domain.sendingEnabled
+				? "Email sending is configured"
+				: "Email sending is not configured"
+			: "Sending has not configured for this domain";
 	return (
 		<div className="border-t border-neutral-100 pt-5">
 			{audit && (
@@ -114,27 +123,18 @@ export default function DomainDnsDetails({
 				<section className="space-y-3 mt-8">
 					<h2 className="text-sm font-medium text-neutral-900">Email Sending</h2>
 					<ul className="space-y-2">
-						{dns.sending.map((record, index) => (
-							<li
-								key={`sending-${record.type}-${record.name}-${index}`}
-								className="flex items-start gap-2 rounded-xl bg-green-50 px-3 py-2 text-sm text-green-800"
-							>
-								<Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
-								<span className="break-all">{getDnsRecordLabel(record)}</span>
-							</li>
-						))}
-						{dns.sending.length === 0 && (
-							<li className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm ${domain.sendingEnabled ? "bg-green-50 text-green-800" : "bg-red-50 text-red-800"}`}>
-								{domain.sendingEnabled ? (
-									<Check className="h-4 w-4 shrink-0 text-green-600" />
-								) : (
-									<AlertTriangle className="h-4 w-4 shrink-0 text-red-600" />
-								)}
-								{domain.sendingEnabled ? "Email sending is configured" : "No sending DNS records found"}
-							</li>
-						)}
+						<li
+							className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm ${sendingOk ? "bg-green-50 text-green-800" : "bg-red-50 text-red-800"}`}
+						>
+							{sendingOk ? (
+								<Check className="h-4 w-4 shrink-0 text-green-600" />
+							) : (
+								<AlertTriangle className="h-4 w-4 shrink-0 text-red-600" />
+							)}
+							{sendingLabel}
+						</li>
 					</ul>
-			</section>
+				</section>
 		</div>
 	);
 }

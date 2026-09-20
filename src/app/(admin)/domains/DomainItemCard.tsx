@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ListRow } from "@/components/ui/list";
 import { cn } from "@/lib/utils";
 import DomainDnsDetails from "./DomainDnsDetails";
+import DomainDnsSkeleton from "./DomainDnsSkeleton";
 import { dnsAuthRecords, getDnsAuthStatusLabel } from "./utils";
 import {
   Check,
@@ -24,6 +25,8 @@ export default function DomainItemCard({
   item,
   dns,
   dnsDetails,
+  dnsLoading = false,
+  dnsError,
   expanded = false,
   remove,
   onToggleDns,
@@ -111,15 +114,22 @@ export default function DomainItemCard({
         </div>
       </div>
 
-      {expanded && dnsDetails && (
-        <DomainDnsDetails
-          domain={item}
-          dns={dnsDetails}
-          onSetup={onSetup}
-          setupRecord={setupRecord}
-          setupMessage={setupMessage}
-        />
-      )}
+      {expanded &&
+        (dnsDetails ? (
+          <DomainDnsDetails
+            domain={item}
+            dns={dnsDetails}
+            onSetup={onSetup}
+            setupRecord={setupRecord}
+            setupMessage={setupMessage}
+          />
+        ) : dnsError ? (
+          <div className="border-t border-neutral-100 pt-5 text-sm text-red-600">
+            {dnsError}
+          </div>
+        ) : dnsLoading ? (
+          <DomainDnsSkeleton />
+        ) : null)}
 
       <Button
         variant="destructive"

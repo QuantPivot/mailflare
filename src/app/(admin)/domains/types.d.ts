@@ -54,6 +54,8 @@ export type DomainDnsView = {
 	};
 	sending: DnsRecord[];
 	sendingEnabled: boolean;
+	dkimSelector?: string;
+	sendingSubdomain?: { name: string; tag: string };
 	audit?: DomainDnsAudit;
 };
 
@@ -69,6 +71,8 @@ export type DomainItemCardProps = {
 	item: Domain;
 	dns?: DnsStatusSummary;
 	dnsDetails?: DomainDnsView;
+	dnsLoading?: boolean;
+	dnsError?: string | null;
 	expanded?: boolean;
 	remove: { mutate: (id: string) => void; isPending: boolean };
 	onToggleDns: (id: string) => void;

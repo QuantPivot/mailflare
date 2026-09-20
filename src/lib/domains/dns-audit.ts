@@ -22,6 +22,7 @@ export type DomainDnsAudit = {
 type AuditInput = {
 	routing: { records: CfDnsRecord[]; missing: CfDnsRecord[] };
 	sending: CfDnsRecord[];
+	dkimSelector?: string;
 };
 
 function isTxt(record: CfDnsRecord) {
@@ -56,9 +57,13 @@ export async function auditDomainDns(
 	view: AuditInput,
 ): Promise<DomainDnsAudit> {
 	const expected = [...view.routing.records, ...view.routing.missing, ...view.sending];
-	const dkimName = expected.find(
-		(record) => isTxt(record) && /_domainkey/i.test(record.name ?? ""),
-	)?.name;
+	// Cloudflare reports the selector it signs with, which is more reliable than
+	// guessing from the subdomain's DNS records (whose names may be relative).
+	const dkimName =
+		(view.dkimSelector
+			? `${view.dkimSelector}._domainkey.${hostname}`
+			: undefined) ??
+		expected.find((record) => isTxt(record) && /_domainkey/i.test(record.name ?? ""))?.name;
 
 	const [mx, spf, dmarc] = await Promise.all([
 		check("mx", "MX", hostname, "MX", (value) => !/^0\s*\.?$/.test(value.trim())),
