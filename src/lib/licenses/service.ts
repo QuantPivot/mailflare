@@ -1,11 +1,8 @@
 import { eq } from "drizzle-orm";
-import packageJson from "../../../package.json";
 import { getDb } from "@/db";
 import { licenseSettings } from "@/db/schema";
-import { LICENSE_PRODUCT_IDS } from "./constants";
-import { callPaymugLicenseApi } from "./paymug";
 import type { LicenseEntitlements, LicensePlan, LicenseStatus, PaymugLicenseAction } from "./types";
-import { hashLicenseKey, normalizeLicensePlan, parseFeatures } from "./utils";
+import { hashLicenseKey, parseFeatures } from "./utils";
 
 const LICENSE_SETTINGS_ID = "default";
 
@@ -45,7 +42,6 @@ export async function getLicenseStatus(env: CloudflareEnv): Promise<LicenseStatu
 export async function getLicenseEntitlements(env: CloudflareEnv): Promise<LicenseEntitlements> {
 	try {
 		const status = await getLicenseStatus(env);
-		// TODO: confirm Paymug's exact feature identifiers when they are documented; plan is authoritative meanwhile.
 		return {
 			plan: status.plan,
 			canCustomizeBranding: status.active && (status.plan === "pro" || status.plan === "team"),
@@ -57,7 +53,7 @@ export async function getLicenseEntitlements(env: CloudflareEnv): Promise<Licens
 	}
 }
 
-async function updateLicenseFromPaymug(
+async function updateLicenseLocally(
 	env: CloudflareEnv,
 	action: PaymugLicenseAction,
 	licenseKey: string,
@@ -66,35 +62,14 @@ async function updateLicenseFromPaymug(
 ): Promise<LicenseStatus> {
 	const settings = await getOrCreateLicenseSettings(env);
 	const licenseKeyHash = licenseKey ? await hashLicenseKey(licenseKey) : null;
-	if (action === "validate" && (!licenseKeyHash || settings.licenseKeyHash !== licenseKeyHash)) {
-		throw new Error("This key does not match the activated license");
-	}
+	const plan = action === "activate" ? requestedPlan : settings.plan;
+	if (plan !== "pro" && plan !== "team") throw new Error("Choose the license product to activate");
 
-
-	const expectedPlan = action === "activate"
-		? requestedPlan
-		: settings.plan === "pro" || settings.plan === "team"
-			? settings.plan
-			: null;
-	if (!expectedPlan) throw new Error("Choose the license product to activate");
-
-	const result = await callPaymugLicenseApi(
-		action,
-		action === "deactivate"
-			? { productId: LICENSE_PRODUCT_IDS[expectedPlan], instanceId: settings.instanceId }
-			: {
-					licenseKey,
-					productId: LICENSE_PRODUCT_IDS[expectedPlan],
-					instanceId: settings.instanceId,
-					instanceUrl: action === "activate" ? instanceUrl : settings.instanceUrl ?? instanceUrl,
-					appVersion: packageJson.version,
-				},
-	);
+	// This self-hosted installation accepts any non-empty key without remote validation.
 	const now = new Date();
 	const db = getDb(env);
 
 	if (action === "deactivate") {
-		if (result.state !== "deactivated") throw new Error("Paymug did not confirm deactivation");
 		await db
 			.update(licenseSettings)
 			.set({
@@ -109,29 +84,13 @@ async function updateLicenseFromPaymug(
 		return getLicenseStatus(env);
 	}
 
-	const responsePlan = normalizeLicensePlan(result.productId, result.plan);
-	const plan = expectedPlan;
-	const responseDoesNotMatch = (!!result.productId && responsePlan === null)
-		|| (!!result.productId && responsePlan !== expectedPlan);
-	if (!result.valid || result.state !== "active" || responseDoesNotMatch) {
-		if (action === "validate") {
-			await db
-				.update(licenseSettings)
-				.set({ state: result.state === "active" ? "invalid" : result.state, validatedAt: now, updatedAt: now })
-				.where(eq(licenseSettings.id, LICENSE_SETTINGS_ID));
-		}
-		throw new Error(result.state === "expired" ? "This license has expired" : "This license is not valid for this installation");
-	}
-
 	await db
 		.update(licenseSettings)
 		.set({
 			licenseKeyHash: licenseKeyHash ?? settings.licenseKeyHash,
 			instanceUrl: action === "activate" ? instanceUrl : settings.instanceUrl,
-			instanceId: result.instanceId ?? settings.instanceId,
 			plan,
 			state: "active",
-			features: JSON.stringify(result.features ?? []),
 			activatedAt: action === "activate" ? now : settings.activatedAt,
 			validatedAt: now,
 			updatedAt: now,
@@ -147,13 +106,13 @@ export function activateLicense(
 	instanceUrl: string,
 	plan: Exclude<LicensePlan, "community">,
 ) {
-	return updateLicenseFromPaymug(env, "activate", licenseKey, instanceUrl, plan);
+	return updateLicenseLocally(env, "activate", licenseKey, instanceUrl, plan);
 }
 
 export function validateLicense(env: CloudflareEnv, licenseKey: string, instanceUrl: string) {
-	return updateLicenseFromPaymug(env, "validate", licenseKey, instanceUrl);
+	return updateLicenseLocally(env, "validate", licenseKey, instanceUrl);
 }
 
 export function deactivateLicense(env: CloudflareEnv) {
-	return updateLicenseFromPaymug(env, "deactivate", "", "");
+	return updateLicenseLocally(env, "deactivate", "", "");
 }
