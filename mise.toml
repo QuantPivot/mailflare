@@ -22,6 +22,16 @@ run = "wrangler deploy --dry-run --outdir .wrangler/artifact"
 [tasks.typecheck]
 run = "npx --no-install tsc --noEmit"
 
+[tasks."password:check"]
+run = "node --import tsx scripts/password-change-check.ts"
+
+[tasks."password:lint"]
+run = "npx --no-install eslint src/lib/auth src/lib/api/auth.ts src/lib/api/key-auth.ts src/lib/realtime/utils.ts src/components/auth/auth-guard.tsx src/components/settings/change-password-form.tsx src/app/\"(auth)\"/change-password src/app/api/settings/password scripts/password-change-check.ts"
+
+[tasks."password:dev"]
+env = { MAILFLARE_RUNTIME = "node", DATA_DIR = "work/password-preview", HOST = "127.0.0.1", PORT = "3019", SMTP_INBOUND_PORT = "0" }
+run = "npm run dev:node"
+
 [tasks.migrate]
 run = "wrangler d1 migrations apply DB --remote"
 

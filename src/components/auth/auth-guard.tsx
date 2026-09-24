@@ -6,7 +6,7 @@ import { authFetch } from "@/lib/auth/client";
 import type { AuthGuardProps } from "./auth-guard-types";
 import { LoadingTransition } from "@/components/loading-transition";
 
-export function AuthGuard({ children, mode = "protected", requireMailbox, requireRole }: AuthGuardProps) {
+export function AuthGuard({ children, mode = "protected", requireMailbox, requireRole, allowPasswordChange = false }: AuthGuardProps) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const [authorized, setAuthorized] = useState(mode === "public");
@@ -34,8 +34,13 @@ export function AuthGuard({ children, mode = "protected", requireMailbox, requir
 					return;
 				}
 
-				const data = (await response.json()) as { hasMailboxes?: boolean; isSetup?: boolean; user?: { role?: string } };
-				if (mode === "public") {
+				const data = (await response.json()) as { hasMailboxes?: boolean; isSetup?: boolean; user?: { role?: string; passwordChangeRequired?: boolean } };
+				if (data.user?.passwordChangeRequired) {
+					if (allowPasswordChange) setAuthorized(true);
+					else router.replace("/change-password");
+					return;
+				}
+				if (allowPasswordChange || mode === "public") {
 					router.replace("/inbox");
 					return;
 				}
@@ -66,7 +71,7 @@ export function AuthGuard({ children, mode = "protected", requireMailbox, requir
 		return () => {
 			cancelled = true;
 		};
-	}, [mode, pathname, requireMailbox, requireRole, router]);
+	}, [allowPasswordChange, mode, pathname, requireMailbox, requireRole, router]);
 
 	if (mode === "public") return <>{children}</>;
 	return <LoadingTransition ready={authorized}>{children}</LoadingTransition>;

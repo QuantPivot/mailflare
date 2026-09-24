@@ -49,7 +49,13 @@ export async function POST(request: Request) {
 	const token = await createSession(env, user.id);
 	await recordAuthActivity(env, { action: "auth.login", userId: user.id, request });
 	await recordAuthActivity(env, { action: "auth.mfa_verified", userId: user.id, request });
-	const response = NextResponse.json({ ok: true, token, redirect: "/inbox", method });
+	const response = NextResponse.json({
+		ok: true,
+		token,
+		redirect: user.passwordChangeRequired ? "/change-password" : "/inbox",
+		passwordChangeRequired: user.passwordChangeRequired,
+		method,
+	});
 	response.headers.set("Cache-Control", "no-store");
 	response.cookies.set(SESSION_COOKIE, token, {
 		httpOnly: true,

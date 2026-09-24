@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
-import { domains, mailboxAccess, mailboxes } from "@/db/schema";
+import { domains, mailboxAccess, mailboxes, users } from "@/db/schema";
 import { isTeamMailboxSharingEnabled } from "@/lib/mailboxes/access-utils";
 import type { NewMessageNotification } from "./types";
 
@@ -53,8 +53,11 @@ export async function notifyUsersOfNewMessage(
 	userIds: string[],
 	payload: NewMessageNotification,
 ): Promise<void> {
+	if (!userIds.length) return;
+	const recipients = await getDb(env).select({ id: users.id }).from(users)
+		.where(and(inArray(users.id, userIds), eq(users.disabled, false), eq(users.passwordChangeRequired, false)));
 	await Promise.allSettled(
-		userIds.map((userId) => {
+		recipients.map(({ id: userId }) => {
 			const hub = env.REALTIME.getByName(userId);
 			return hub.fetch("https://mailflare-realtime/notify", {
 				method: "POST",

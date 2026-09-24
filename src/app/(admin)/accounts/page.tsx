@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,7 @@ export default function AccountsPage() {
 	const [domainId, setDomainId] = useState("");
 	const [role, setRole] = useState<"admin" | "user">("user");
 	const [password, setPassword] = useState("");
+	const [passwordChangeRequired, setPasswordChangeRequired] = useState(true);
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [createOpen, setCreateOpen] = useState(false);
@@ -55,11 +57,12 @@ export default function AccountsPage() {
 		setSaving(true);
 		setMessage(null);
 		try {
-			const response = await authFetch("/api/accounts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, domainId, password, role }) });
+			const response = await authFetch("/api/accounts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username, domainId, password, role, passwordChangeRequired }) });
 			const data = (await response.json()) as AccountResponse;
 			if (!response.ok) throw new Error(data.error ?? "Unable to create account");
 			setUsername("");
 			setPassword("");
+			setPasswordChangeRequired(true);
 			setCreateOpen(false);
 			await loadAccounts();
 		} catch (error) {
@@ -75,10 +78,11 @@ export default function AccountsPage() {
 			{loading && <p className="text-sm text-neutral-500">{t("Loading...")}</p>}
 			{accounts.map((account) => <ListRow key={account.id} asChild><Link href={`/accounts/${account.id}`}><span className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 font-semibold text-blue-700 duration-200">{account.name.charAt(0).toUpperCase()}{account.hasAvatar && <img src={`/api/accounts/${account.id}/avatar`} alt="" className="absolute inset-0 h-full w-full object-cover" />}</span><span className="min-w-0"><span className="flex items-center gap-2"><span className="truncate font-semibold text-neutral-900">{account.name}</span><span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium capitalize text-neutral-600">{t(account.role)}</span></span><span className="block truncate text-sm text-neutral-500">{account.email}</span></span></Link></ListRow>)}
 		</List></div>
-		<Dialog open={createOpen} onOpenChange={setCreateOpen}><DialogContent><DialogHeader><DialogTitle>{t("Add user account")}</DialogTitle><DialogDescription>{t("The user can sign in with this email and password.")}</DialogDescription></DialogHeader><form onSubmit={createAccount} className="space-y-4">
+		<Dialog open={createOpen} onOpenChange={setCreateOpen}><DialogContent className="max-h-[calc(100dvh-4rem)] overflow-y-auto"><DialogHeader><DialogTitle>{t("Add user account")}</DialogTitle><DialogDescription>{t("The user can sign in with this email and password.")}</DialogDescription></DialogHeader><form onSubmit={createAccount} className="space-y-4">
 			<div className="space-y-2"><Label htmlFor="account-username">{t("Email")}</Label><div className="flex h-10 overflow-hidden rounded-md border border-neutral-200 bg-white"><Input id="account-username" value={username} onChange={(event) => setUsername(event.target.value)} placeholder={t("username")} className="min-w-0 flex-1 rounded-none border-0 shadow-none" required /><span className="flex items-center text-sm text-neutral-400">@</span><Select aria-label={t("Domain")} value={domainId} onChange={(event) => setDomainId(event.target.value)} className="max-w-[55%] bg-transparent px-3 text-sm" required><option value="">{t("Select domain")}</option>{domains.map((domain) => <option key={domain.id} value={domain.id}>{domain.hostname}</option>)}</Select></div></div>
 			<div className="space-y-2"><Label htmlFor="account-password">{t("Password")}</Label><Input id="account-password" type="password" minLength={8} value={password} onChange={(event) => setPassword(event.target.value)} required /></div>
 			<div className="space-y-2"><Label htmlFor="account-role">{t("Role")}</Label><Select id="account-role" value={role} onChange={(event) => setRole(event.target.value as "admin" | "user")} className="h-10 w-full rounded-md border border-neutral-200 bg-white px-3 text-sm"><option value="user">{t("User")}</option><option value="admin">{t("Admin")}</option></Select></div>
+			<label className="flex items-start gap-3 text-sm"><Checkbox className="mt-0.5" checked={passwordChangeRequired} onChange={(event) => setPasswordChangeRequired(event.target.checked)} /><span>{t("Require password change at next sign-in")}<span className="mt-1 block text-xs leading-5 text-neutral-500">{t("The user must choose a new password before accessing their mailbox.")}</span></span></label>
 			{message && <p className="text-sm text-red-600">{t(message)}</p>}<Button type="submit" disabled={saving || !domainId}>{saving ? t("Creating...") : t("Create account")}</Button>
 		</form></DialogContent></Dialog>
 	</div>;

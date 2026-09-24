@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { getDb } from "@/db";
 import { domains, mailboxes, users } from "@/db/schema";
 import { assertAdmin } from "@/lib/auth/admin";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getLicenseEntitlements } from "@/lib/licenses/service";
 import { getEnv } from "@/lib/cloudflare";
 
@@ -18,6 +18,7 @@ export function listAccountsForAdmin(db: Db) {
 			resetEmail: users.resetEmail,
 			role: users.role,
 			disabled: users.disabled,
+			passwordChangeRequired: users.passwordChangeRequired,
 			avatarKey: users.avatarKey,
 			canManageMailboxes: users.canManageMailboxes,
 			createdAt: users.createdAt,
@@ -51,6 +52,7 @@ export function accountListItemFromUser(user: {
 	resetEmail: string | null;
 	role: "admin" | "user";
 	disabled: boolean;
+	passwordChangeRequired: boolean;
 	avatarKey?: string | null;
 	canManageMailboxes?: boolean;
 	createdAt: Date;
@@ -62,6 +64,7 @@ export function accountListItemFromUser(user: {
 		resetEmail: user.resetEmail,
 		role: user.role,
 		disabled: user.disabled,
+		passwordChangeRequired: user.passwordChangeRequired,
 		hasAvatar: !!user.avatarKey,
 		canManageMailboxes: !!user.canManageMailboxes,
 		createdAt: user.createdAt,
@@ -70,8 +73,10 @@ export function accountListItemFromUser(user: {
 
 export async function requireTeamAdmin(request: Request) {
 	const env = getEnv();
+	const session = await requireSessionUser(env, request);
+	if (session.error) return { env, user: null, error: session.error };
+	const user = session.user;
 	try {
-		const user = await requireUser(env, request);
 		assertAdmin(user);
 		if (!(await getLicenseEntitlements(env)).canManageAccounts) {
 			return {

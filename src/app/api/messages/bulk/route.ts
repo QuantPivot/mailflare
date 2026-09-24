@@ -2,7 +2,7 @@ import { eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { folders, messages } from "@/db/schema";
-import { getCurrentUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import { getMailboxAccessLevel } from "@/lib/mailboxes/access";
 import { createAuditLog } from "@/lib/mailboxes/audit";
@@ -17,10 +17,9 @@ import {
 
 export async function POST(request: Request) {
 	const env = getEnv();
-	const user = await getCurrentUser(env, request);
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	}
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 
 	const payload = (await request.json().catch(() => null)) as BulkMessagePayload | null;
 	if (!payload || !Array.isArray(payload.messageIds) ||

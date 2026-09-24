@@ -13,7 +13,7 @@ export default async function LoginPage() {
 	if (!(await hasAdminAccount(env))) redirect("/setup");
 	const cookieStore = await cookies();
 	const user = await getUserFromSession(env, cookieStore.get(SESSION_COOKIE)?.value);
-	if (user && !user.disabled) redirect("/inbox");
+	if (user && !user.disabled) redirect(user.passwordChangeRequired ? "/change-password" : "/inbox");
 
 	return (
 		<AuthGuard mode="public">

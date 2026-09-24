@@ -22,13 +22,14 @@ export async function emailBelongsToAnotherAccount(db: Db, accountId: string, em
 export async function updateAccountCredentials(
 	db: Db,
 	id: string,
-	input: { email?: string; name: string; password: string | null; disabled?: boolean },
+	input: { email?: string; name: string; password: string | null; disabled?: boolean; passwordChangeRequired?: boolean },
 ) {
 	await db
 		.update(users)
 		.set({
 			...(input.email ? { email: input.email.trim().toLowerCase() } : {}),
 			name: input.name,
+			...(input.passwordChangeRequired !== undefined ? { passwordChangeRequired: input.passwordChangeRequired } : {}),
 			...(typeof input.disabled === "boolean" ? { disabled: input.disabled } : {}),
 			...(input.password ? { passwordHash: hashPassword(input.password) } : {}),
 		})

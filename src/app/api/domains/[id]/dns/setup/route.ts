@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { getEnv } from "@/lib/cloudflare";
 import { getDb } from "@/db";
 import { domains } from "@/db/schema";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getDomainForUser } from "@/lib/domains/service";
 import { getDomainDnsView } from "@/lib/domains/dns-view";
 import type { DnsAuthRecord } from "@/lib/domains/dns-audit";
@@ -16,7 +16,9 @@ const DNS_RECORDS: DnsAuthRecord[] = ["mx", "spf", "dkim", "dmarc"];
 export async function POST(request: Request, { params }: Params) {
 	const { id } = await params;
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const domain = await getDomainForUser(env, user.id, id);
 	if (!domain) return NextResponse.json({ error: "Not found" }, { status: 404 });
 

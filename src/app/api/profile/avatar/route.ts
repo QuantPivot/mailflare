@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/db";
-import { getCurrentUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import { syncPersonalIdentity } from "@/lib/profile/sync";
 import {
@@ -12,7 +12,9 @@ import {
 
 export async function GET(request: Request) {
 	const env = getEnv();
-	const user = await getCurrentUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	if (!user) return new Response("Unauthorized", { status: 401 });
 	if (!user.avatarKey) return new Response("Not found", { status: 404 });
 
@@ -32,8 +34,9 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
 	const env = getEnv();
-	const user = await getCurrentUser(env, request);
-	if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 
 	let form: FormData;
 	try {
@@ -67,8 +70,9 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
 	const env = getEnv();
-	const user = await getCurrentUser(env, request);
-	if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 
 	if (user.avatarKey) {
 		await env.BUCKET.delete(user.avatarKey);

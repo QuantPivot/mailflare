@@ -117,6 +117,7 @@ export async function saveManagedAccount(account: ManagedAccount): Promise<void>
 			name: account.name,
 			role: account.role,
 			disabled: account.disabled,
+			passwordChangeRequired: account.passwordChangeRequired,
 			canManageMailboxes: account.canManageMailboxes,
 			forwardingEmail: account.forwardingEmail,
 			password: account.newPassword || undefined,

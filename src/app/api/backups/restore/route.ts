@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 import { assertAdmin } from "@/lib/auth/admin";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { restoreDatabaseRecords } from "@/lib/backups/export";
 import { getEnv } from "@/lib/cloudflare";
 
 export async function POST(request: Request) {
 	const env = getEnv();
 	try {
-		const user = await requireUser(env, request);
+		const session = await requireSessionUser(env, request);
+		if (session.error) return session.error;
+		const user = session.user;
 		assertAdmin(user);
 		const form = await request.formData();
 		const file = form.get("backup");

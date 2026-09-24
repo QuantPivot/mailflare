@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
+import { invalidatePasswordChallenges } from "@/lib/auth/password-challenges";
 import { getDb } from "@/db";
 import { users } from "@/db/schema";
 import { updateManagedAccountSchema } from "@/lib/validators";
@@ -24,6 +25,7 @@ export async function GET(request: Request, { params }: AccountRouteParams) {
 			name: account.name,
 			role: account.role,
 			disabled: account.disabled,
+			passwordChangeRequired: account.passwordChangeRequired,
 			canManageMailboxes: account.canManageMailboxes,
 			forwardingEmail: account.forwardingEmail,
 			canForwardEmail: (await getLicenseEntitlements(access.env)).canForwardEmail,
@@ -47,9 +49,16 @@ export async function PATCH(request: Request, { params }: AccountRouteParams) {
 	if (!canForwardEmail && parsed.data.forwardingEmail && parsed.data.forwardingEmail !== account.forwardingEmail) {
 		return NextResponse.json({ error: "A Pro or Team license is required for email forwarding" }, { status: 403 });
 	}
-	await updateAccountCredentials(db, id, { name: parsed.data.name, password: parsed.data.password ?? null });
+	await updateAccountCredentials(db, id, {
+		name: parsed.data.name,
+		password: parsed.data.password ?? null,
+		passwordChangeRequired: parsed.data.passwordChangeRequired,
+	});
 	// A password set by an admin is a reset: whoever held the old one is signed out.
-	if (parsed.data.password) await deleteUserSessions(access.env, id);
+	if (parsed.data.password) {
+		await invalidatePasswordChallenges(access.env, id);
+		await deleteUserSessions(access.env, id);
+	}
 	await db.update(users).set({
 		role: parsed.data.role,
 		disabled: parsed.data.disabled,

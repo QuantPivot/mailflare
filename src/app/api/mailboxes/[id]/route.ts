@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { mailboxes, users } from "@/db/schema";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import { getMailboxAccessLevel } from "@/lib/mailboxes/access";
 import { ensureMailboxDomainRouting, removeMailboxDomainRouting } from "@/lib/mailboxes/domain-addresses";
@@ -15,7 +15,9 @@ import { getMailboxUpdateValues, selectMailboxForUser } from "./utils";
 export async function GET(request: Request, { params }: MailboxRouteParams) {
 	const { id } = await params;
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const db = getDb(env);
 	const access = await getMailboxAccessLevel(db, user, id);
 	if (!access?.canRead) {
@@ -43,7 +45,9 @@ export async function GET(request: Request, { params }: MailboxRouteParams) {
 export async function PATCH(request: Request, { params }: MailboxRouteParams) {
 	const { id } = await params;
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const parsed = updateMailboxSchema.safeParse(await request.json());
 
 	if (!parsed.success) {
@@ -114,7 +118,9 @@ export async function PATCH(request: Request, { params }: MailboxRouteParams) {
 export async function DELETE(request: Request, { params }: MailboxRouteParams) {
 	const { id } = await params;
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const db = getDb(env);
 	const [mailbox] = await db.select().from(mailboxes).where(eq(mailboxes.id, id)).limit(1);
 	if (!mailbox) return NextResponse.json({ error: "Mailbox not found" }, { status: 404 });

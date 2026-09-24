@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { eq, desc, and, or, count, countDistinct, isNull, isNotNull, inArray, lte, gt, max, notInArray, sql, sum } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
 import { getEnv } from "@/lib/cloudflare";
-import { getCurrentUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getDb } from "@/db";
 import { messages } from "@/db/schema";
 import { getContactDisplayNameMap } from "@/lib/contacts/service";
@@ -14,10 +14,9 @@ import { buildSearchConditions } from "@/lib/search/conditions";
 
 export async function GET(request: Request) {
 	const env = getEnv();
-	const user = await getCurrentUser(env, request);
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	}
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 
 	const url = new URL(request.url);
 	const direction = url.searchParams.get("direction");

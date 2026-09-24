@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import { getMessageThreadForUser } from "@/lib/email/thread-view";
 
@@ -10,10 +10,9 @@ type MessageRouteParams = {
 /** Every message in the same conversation as `messageId`, oldest first, with bodies. */
 export async function GET(request: Request, { params }: MessageRouteParams) {
 	const env = getEnv();
-	const user = await getCurrentUser(env, request);
-	if (!user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-	}
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 
 	const { messageId } = await params;
 	const data = await getMessageThreadForUser(env, user, messageId);

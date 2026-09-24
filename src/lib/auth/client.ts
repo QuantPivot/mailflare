@@ -1,5 +1,6 @@
 "use client";
 
+import { PASSWORD_CHANGE_HEADER, PASSWORD_CHANGE_PATH } from "./password-policy";
 import type {
 	AuthFetchOptions,
 	AuthSessionChangedDetail,
@@ -53,6 +54,11 @@ export async function authFetch(input: RequestInfo | URL, init: AuthFetchOptions
 	if (response.status === 401 && redirectOnUnauthorized && typeof window !== "undefined") {
 		clearClientSessionToken();
 		window.location.assign("/login");
+	}
+
+	if (response.status === 403 && response.headers.get(PASSWORD_CHANGE_HEADER) === "true"
+		&& typeof window !== "undefined" && window.location.pathname !== PASSWORD_CHANGE_PATH) {
+		window.location.assign(PASSWORD_CHANGE_PATH);
 	}
 
 	return response;

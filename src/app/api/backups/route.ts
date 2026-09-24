@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { assertAdmin } from "@/lib/auth/admin";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getBackupConfigurationStatus } from "@/lib/backups/export";
 import { runDatabaseBackup } from "@/lib/backups/runner";
 import {
@@ -14,14 +14,18 @@ import { parseBackupSettingsInput } from "./utils";
 
 async function requireAdmin(request: Request) {
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	assertAdmin(user);
 	return { env, user };
 }
 
 export async function GET(request: Request) {
 	try {
-		const { env } = await requireAdmin(request);
+		const access = await requireAdmin(request);
+		if (access instanceof Response) return access;
+		const { env } = access;
 		const [settings, backupList] = await Promise.all([
 			getBackupSettings(env),
 			listBackups(env),
@@ -38,7 +42,9 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
 	try {
-		const { env } = await requireAdmin(request);
+		const access = await requireAdmin(request);
+		if (access instanceof Response) return access;
+		const { env } = access;
 		const input = parseBackupSettingsInput(await request.json());
 		if (!input) return NextResponse.json({ error: "Invalid backup settings" }, { status: 400 });
 		await updateBackupSettings(env, input);
@@ -50,7 +56,9 @@ export async function PUT(request: Request) {
 
 export async function POST(request: Request) {
 	try {
-		const { env, user } = await requireAdmin(request);
+		const access = await requireAdmin(request);
+		if (access instanceof Response) return access;
+		const { env, user } = access;
 		const backupId = await createBackupRecord(env, "manual", user.id);
 		await runDatabaseBackup(env, backupId);
 		return NextResponse.json({ backupId });

@@ -15,7 +15,7 @@ export default async function SetupPage() {
 	if (!(await hasAdminAccount(env))) {
 		const cookieStore = await cookies();
 		const user = await getUserFromSession(env, cookieStore.get(SESSION_COOKIE)?.value);
-		if (user && !user.disabled) redirect("/inbox");
+		if (user && !user.disabled) redirect(user.passwordChangeRequired ? "/change-password" : "/inbox");
 		return (
 			<AuthGuard mode="public">
 				<RegisterClient />
@@ -26,6 +26,7 @@ export default async function SetupPage() {
 	const cookieStore = await cookies();
 	const user = await getUserFromSession(env, cookieStore.get(SESSION_COOKIE)?.value);
 	if (!user || user.disabled) redirect("/login");
+	if (user.passwordChangeRequired) redirect("/change-password");
 	if (user.role !== "admin") redirect("/inbox");
 	if (await getPrimaryDomain(env)) redirect("/inbox");
 

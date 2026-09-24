@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { calendarEvents } from "@/db/schema";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import { createCalendarInvitation } from "@/lib/calendar/utils";
 import { sendEmail } from "@/lib/email/send";
@@ -11,7 +11,9 @@ import type { CalendarEventRouteParams } from "./types";
 
 export async function PATCH(request: Request, { params }: CalendarEventRouteParams) {
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const { eventId } = await params;
 	const input = await request.json() as CalendarEventInput;
 	const startsAt = new Date(input.startsAt);
@@ -29,7 +31,9 @@ export async function PATCH(request: Request, { params }: CalendarEventRoutePara
 
 export async function DELETE(_request: Request, { params }: CalendarEventRouteParams) {
 	const env = getEnv();
-	const user = await requireUser(env, _request);
+	const session = await requireSessionUser(env, _request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const { eventId } = await params;
 	await getDb(env).delete(calendarEvents).where(and(eq(calendarEvents.id, eventId), eq(calendarEvents.userId, user.id)));
 	return NextResponse.json({ ok: true });

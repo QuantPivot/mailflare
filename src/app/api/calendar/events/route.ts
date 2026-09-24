@@ -2,7 +2,7 @@ import { and, eq, gte, lt } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { calendarEvents } from "@/db/schema";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import { newId } from "@/lib/ids";
 import { sendEmail } from "@/lib/email/send";
@@ -11,7 +11,9 @@ import type { CalendarEventInput } from "./types";
 
 export async function GET(request: Request) {
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const url = new URL(request.url);
 	const start = new Date(url.searchParams.get("start") ?? Date.now());
 	const end = new Date(url.searchParams.get("end") ?? start.getTime() + 31 * 86_400_000);
@@ -21,7 +23,9 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const input = await request.json() as CalendarEventInput;
 	const startsAt = new Date(input.startsAt);
 	const endsAt = new Date(input.endsAt);

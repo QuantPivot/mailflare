@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { assertAdmin } from "@/lib/auth/admin";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import type { LicenseKeyRequest } from "./types";
 
 const licenseKeySchema = z.object({
@@ -9,9 +9,11 @@ const licenseKeySchema = z.object({
 	plan: z.enum(["pro", "team"]).optional(),
 });
 
-export async function requireLicenseAdmin(env: CloudflareEnv, request: Request): Promise<NextResponse | null> {
+export async function requireLicenseAdmin(env: CloudflareEnv, request: Request): Promise<Response | null> {
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
 	try {
-		assertAdmin(await requireUser(env, request));
+		assertAdmin(session.user);
 		return null;
 	} catch {
 		return NextResponse.json({ error: "Forbidden" }, { status: 403 });

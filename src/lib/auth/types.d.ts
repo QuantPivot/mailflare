@@ -6,6 +6,7 @@ export type SessionUser = {
 	resetEmail: string | null;
 	forwardingEmail: string | null;
 	passwordHash: string;
+	passwordChangeRequired: boolean;
 	name: string;
 	role: UserRole;
 	disabled: boolean;

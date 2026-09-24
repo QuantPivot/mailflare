@@ -54,6 +54,7 @@ export async function POST(request: Request) {
 				id: userId,
 				email,
 				passwordHash: hashPassword(input.password),
+				passwordChangeRequired: input.passwordChangeRequired,
 				name: username,
 				role: input.role,
 				createdByUserId: access.user!.id,
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
 				resetEmail: users.resetEmail,
 				role: users.role,
 				disabled: users.disabled,
+				passwordChangeRequired: users.passwordChangeRequired,
 				createdAt: users.createdAt,
 			});
 		const mailboxId = newId("mbx");

@@ -63,6 +63,11 @@ async function main() {
 				socket.destroy();
 				return;
 			}
+			if (user.passwordChangeRequired) {
+				socket.write("HTTP/1.1 403 Forbidden\r\n\r\n");
+				socket.destroy();
+				return;
+			}
 			wss.handleUpgrade(request, socket, head, (ws) => runtime.realtime.attach(user.id, ws));
 		});
 	});

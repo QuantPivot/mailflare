@@ -20,6 +20,7 @@ export type CreateAccountResult = {
 };
 
 export type CreateUserAccountInput = {
+	passwordChangeRequired: boolean;
 	username: string;
 	domainId: string;
 	password: string;

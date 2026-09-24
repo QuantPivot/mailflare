@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import { getAttachmentForUser } from "@/lib/email/attachments";
 import type { AttachmentRouteParams } from "./types";
@@ -9,7 +9,9 @@ import {
 
 export async function GET(request: Request, { params }: AttachmentRouteParams) {
 	const env = getEnv();
-	const user = await getCurrentUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	if (!user) return new Response("Unauthorized", { status: 401 });
 
 	const { attachmentId, messageId } = await params;

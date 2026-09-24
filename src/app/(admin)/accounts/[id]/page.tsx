@@ -113,6 +113,10 @@ export default function AccountDetailsPage() {
 					<p className="text-xs leading-5 text-neutral-500">
 						{t("Setting a password signs this account out everywhere. Share it with the user through another channel.")}</p>
 				</div>
+				<label className="flex items-start gap-3 text-sm">
+					<Checkbox className="mt-0.5" checked={account.passwordChangeRequired} onChange={(event) => setAccount({ ...account, passwordChangeRequired: event.target.checked })} />
+					<span>{t("Require password change at next sign-in")}<span className="mt-1 block text-xs leading-5 text-neutral-500">{t("The user must choose a new password before accessing their mailbox.")}</span></span>
+				</label>
 				<label className="flex items-center gap-3 text-sm">
 					<Checkbox checked={!account.disabled} onChange={(event) => setAccount({ ...account, disabled: !event.target.checked })} />
 					{t("Account enabled")}</label>

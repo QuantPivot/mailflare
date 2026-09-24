@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { messages } from "@/db/schema";
-import { getCurrentUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import { getMailboxAccessLevel } from "@/lib/mailboxes/access";
 import type { SnoozeMessagePayload } from "./types";
@@ -14,8 +14,9 @@ export async function POST(
 ) {
 	const { messageId } = await params;
 	const env = getEnv();
-	const user = await getCurrentUser(env, request);
-	if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 
 	const payload = (await request.json()) as SnoozeMessagePayload;
 	const snoozedUntil = getSnoozedUntil(payload.snoozedUntil);
@@ -50,8 +51,9 @@ export async function DELETE(
 ) {
 	const { messageId } = await params;
 	const env = getEnv();
-	const user = await getCurrentUser(env, request);
-	if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 
 	const db = getDb(env);
 	const [message] = await db

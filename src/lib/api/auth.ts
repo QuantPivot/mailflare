@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/cookies";
 import { authenticateApiKeyValue, hasScope } from "@/lib/api/key-auth";
 import type { ApiAuthResult } from "@/lib/api/key-auth-types";
+import { passwordChangeRequiredResponse } from "@/lib/auth/password-policy";
 
 export type { ApiAuthResult };
 
@@ -20,10 +21,17 @@ export const requireScope = hasScope;
  * a 500; this returns a proper 401 response instead so unauthenticated callers get the right
  * status.
  */
-export async function requireSessionUser(env: CloudflareEnv, request: Request) {
+export async function requireSessionUser(
+	env: CloudflareEnv,
+	request: Request,
+	options: { allowPasswordChange?: boolean } = {},
+) {
 	const user = await getCurrentUser(env, request);
 	if (!user) {
 		return { user: null, error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) } as const;
+	}
+	if (user.passwordChangeRequired && !options.allowPasswordChange) {
+		return { user: null, error: passwordChangeRequiredResponse() } as const;
 	}
 	return { user, error: null } as const;
 }

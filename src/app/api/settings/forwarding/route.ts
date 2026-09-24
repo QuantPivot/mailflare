@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { getDb } from "@/db";
 import { users } from "@/db/schema";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import { getLicenseEntitlements } from "@/lib/licenses/service";
 import type { UpdateForwardingEmailInput } from "./types";
@@ -11,7 +11,9 @@ import { parseUpdateForwardingEmailRequest } from "./utils";
 
 export async function PATCH(request: Request) {
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	let input: UpdateForwardingEmailInput;
 	try {
 		input = await parseUpdateForwardingEmailRequest(request);

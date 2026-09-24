@@ -4,7 +4,7 @@ import { z } from "zod";
 import { getEnv } from "@/lib/cloudflare";
 import { getDb } from "@/db";
 import { apiKeys } from "@/db/schema";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { generateApiKey, scopesToJson } from "@/lib/api-keys";
 import { API_KEY_SCOPES } from "@/lib/api/scopes";
 import { newId } from "@/lib/ids";
@@ -16,7 +16,9 @@ const createKeySchema = z.object({
 
 export async function GET(request: Request) {
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const db = getDb(env);
 	const rows = await db
 		.select({
@@ -34,7 +36,9 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const parsed = createKeySchema.safeParse(await request.json());
 	if (!parsed.success) {
 		return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });

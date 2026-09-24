@@ -12,6 +12,12 @@ export async function GET(request: Request) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
 
+	if (user.passwordChangeRequired) {
+		return NextResponse.json({
+			user: { id: user.id, email: user.email, name: user.name, role: user.role, passwordChangeRequired: true },
+		}, { headers: { "Cache-Control": "no-store" } });
+	}
+
 	let hasMailboxes = false;
 	let isSetup = true;
 	const entitlements = await getLicenseEntitlements(env);
@@ -26,6 +32,7 @@ export async function GET(request: Request) {
 	return NextResponse.json({
 		user: {
 			id: user.id,
+			passwordChangeRequired: false,
 			email: user.email,
 			name: user.name,
 			resetEmail: user.resetEmail,

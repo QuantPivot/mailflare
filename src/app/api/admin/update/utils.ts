@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { assertAdmin } from "@/lib/auth/admin";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getEnv } from "@/lib/cloudflare";
 import type {
   GitHubContentResponse,
@@ -20,15 +20,9 @@ const UPDATE_SOURCE_REPOSITORY = "hieunc229/mailflare";
 
 export async function authorizeAdminRequest(request: Request) {
   const env = getEnv();
-  let user: Awaited<ReturnType<typeof requireUser>>;
-
-  try {
-    user = await requireUser(env, request);
-  } catch {
-    return {
-      error: NextResponse.json({ error: "Unauthorized" }, { status: 401 }),
-    };
-  }
+  const session = await requireSessionUser(env, request);
+  if (session.error) return { error: session.error };
+  const user = session.user;
 
   try {
     assertAdmin(user);

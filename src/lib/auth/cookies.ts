@@ -24,5 +24,6 @@ export async function getCurrentUser(env: CloudflareEnv, request?: Request) {
 export async function requireUser(env: CloudflareEnv, request?: Request) {
 	const user = await getCurrentUser(env, request);
 	if (!user) throw new Error("Unauthorized");
+	if (user.passwordChangeRequired) throw new Error("Change your password before continuing");
 	return user;
 }

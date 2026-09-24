@@ -1315,5 +1315,11 @@
   "md8100383": "Delete permanently",
   "me7952ac2": "Permanently delete {count, plural, one {# selected email} other {# selected emails}} and their attachments? This cannot be undone.",
   "mec2cc44f": "Only messages in Trash can be permanently deleted. Refresh the list and try again.",
-  "ma3792109": "Some messages could not be permanently deleted. Please try again."
+  "ma3792109": "Some messages could not be permanently deleted. Please try again.",
+  "m9806537e": "Require password change at next sign-in",
+  "m4c99938": "The user must choose a new password before accessing their mailbox.",
+  "m3eb6be4c": "Choose your own password",
+  "m37b21ad4": "Your administrator requires you to change your password before continuing. Enter your current password and choose a new one with 8–128 characters.",
+  "m1134b512": "Change your password before continuing",
+  "me7a16a8b": "Your password changed. Sign in again."
 }

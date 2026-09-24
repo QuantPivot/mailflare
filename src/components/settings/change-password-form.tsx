@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updatePassword } from "./utils";
 import { useT } from "@/i18n/use-t";
+import type { ChangePasswordFormProps } from "./change-password-form-types";
 
-export function ChangePasswordForm() {
+export function ChangePasswordForm({ onSuccess }: ChangePasswordFormProps) {
 	const t = useT();
 
 	const [currentPassword, setCurrentPassword] = useState("");
@@ -32,6 +33,7 @@ export function ChangePasswordForm() {
 			setNewPassword("");
 			setConfirmPassword("");
 			setStatus("Password changed");
+			onSuccess?.();
 		} catch (err) {
 			setStatus(err instanceof Error ? err.message : "Failed to change password");
 		} finally {
@@ -61,6 +63,7 @@ export function ChangePasswordForm() {
 					value={newPassword}
 					onChange={(event) => setNewPassword(event.target.value)}
 					minLength={8}
+					maxLength={128}
 					required
 				/>
 			</div>
@@ -73,6 +76,7 @@ export function ChangePasswordForm() {
 					value={confirmPassword}
 					onChange={(event) => setConfirmPassword(event.target.value)}
 					minLength={8}
+					maxLength={128}
 					required
 				/>
 			</div>
@@ -80,7 +84,7 @@ export function ChangePasswordForm() {
 				<Button type="submit" disabled={loading}>
 					{loading ? t("Changing...") : t("Change password")}
 				</Button>
-				{status && <p className="text-sm text-neutral-500">{t(status)}</p>}
+				{status && <p role="status" className="text-sm text-neutral-500">{t(status)}</p>}
 			</div>
 		</form>
 	);

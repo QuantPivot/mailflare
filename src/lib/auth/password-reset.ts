@@ -1,8 +1,9 @@
 import { and, eq, gt, isNull } from "drizzle-orm";
+import { invalidatePasswordChallenges } from "@/lib/auth/password-challenges";
 import { getDb } from "@/db";
 import { passwordResetTokens, users } from "@/db/schema";
 import { newId } from "@/lib/ids";
-import { hashPassword } from "@/lib/auth/password";
+import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { deleteUserSessions, hashSessionToken } from "@/lib/auth/session";
 import { getBranding } from "@/lib/branding/service";
 import { sendSystemEmail } from "@/lib/email/system-mail";
@@ -68,8 +69,17 @@ export async function completePasswordReset(
 		.limit(1);
 	if (!row) return { ok: false, error: "This reset link is invalid or has expired. Request a new one." };
 
-	await db.update(users).set({ passwordHash: hashPassword(newPassword) }).where(eq(users.id, row.userId));
-	await db.update(passwordResetTokens).set({ usedAt: new Date() }).where(eq(passwordResetTokens.id, row.id));
+	const [user] = await db.select().from(users).where(eq(users.id, row.userId)).limit(1);
+	if (!user || user.disabled) return { ok: false, error: "This reset link is invalid or has expired. Request a new one." };
+	if (user.passwordChangeRequired && verifyPassword(newPassword, user.passwordHash)) {
+		return { ok: false, error: "New password must be different from the current password" };
+	}
+	const [updated] = await db.update(users)
+		.set({ passwordHash: hashPassword(newPassword), passwordChangeRequired: false })
+		.where(and(eq(users.id, row.userId), eq(users.passwordHash, user.passwordHash)))
+		.returning({ id: users.id });
+	if (!updated) return { ok: false, error: "Your password changed. Sign in again." };
+	await invalidatePasswordChallenges(env, row.userId);
 	await deleteUserSessions(env, row.userId);
 	await createAuditLog(env, {
 		actorUserId: row.userId,

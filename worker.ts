@@ -9,6 +9,7 @@ import { processOutboundQueue, type OutboundQueueMessage } from "./src/lib/email
 import { isInboundQueueMessage, isWebhookRetryMessage } from "./worker-utils";
 import { processWebhookRetry, type WebhookRetryMessage } from "./src/lib/email/webhooks";
 import { resolveIncomingMail, forwardMessage } from "./src/lib/email/incoming";
+import { passwordChangeRequiredResponse } from "./src/lib/auth/password-policy";
 import { getUserFromSession } from "./src/lib/auth/session";
 import { getSessionTokenFromRequest } from "./src/lib/realtime/utils";
 import {
@@ -31,6 +32,7 @@ export default {
 				return new Response("Unauthorized", { status: 401 });
 			}
 
+			if (user.passwordChangeRequired) return passwordChangeRequiredResponse();
 			const hub = env.REALTIME.getByName(user.id);
 			return hub.fetch(new Request("https://mailflare-realtime/connect", request));
 		}

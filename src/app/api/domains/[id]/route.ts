@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getEnv } from "@/lib/cloudflare";
-import { requireUser } from "@/lib/auth/cookies";
+import { requireSessionUser } from "@/lib/api/auth";
 import { getDomainForUser, removeDomainForUser } from "@/lib/domains/service";
 
 type Params = { params: Promise<{ id: string }> };
@@ -8,7 +8,9 @@ type Params = { params: Promise<{ id: string }> };
 export async function GET(request: Request, { params }: Params) {
 	const { id } = await params;
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	const domain = await getDomainForUser(env, user.id, id);
 	if (!domain) return NextResponse.json({ error: "Not found" }, { status: 404 });
 	return NextResponse.json({ domain });
@@ -17,7 +19,9 @@ export async function GET(request: Request, { params }: Params) {
 export async function DELETE(request: Request, { params }: Params) {
 	const { id } = await params;
 	const env = getEnv();
-	const user = await requireUser(env, request);
+	const session = await requireSessionUser(env, request);
+	if (session.error) return session.error;
+	const user = session.user;
 	try {
 		await removeDomainForUser(env, user.id, id);
 		return NextResponse.json({ ok: true });

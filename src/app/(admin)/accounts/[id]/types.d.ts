@@ -4,6 +4,7 @@ export type ManagedAccount = {
 	name: string;
 	role: "admin" | "user";
 	disabled: boolean;
+	passwordChangeRequired: boolean;
 	canManageMailboxes: boolean;
 	forwardingEmail: string | null;
 	canForwardEmail: boolean;
