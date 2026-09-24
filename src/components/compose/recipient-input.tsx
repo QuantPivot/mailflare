@@ -53,10 +53,10 @@ export function RecipientInput({
 
 	return (
 		<div
-			className="flex min-h-9 items-center gap-2 border-b border-neutral-100 px-4 py-1"
+			className="flex min-h-9 items-center gap-2 border-b border-neutral-100 dark:border-neutral-800 px-4 py-1"
 			onClick={() => inputRef.current?.focus()}
 		>
-			<Label htmlFor={id} className="w-8 shrink-0 text-sm text-neutral-500">
+			<Label htmlFor={id} className="w-8 shrink-0 text-sm text-neutral-500 dark:text-neutral-400">
 				{t(label)}
 			</Label>
 			<div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
@@ -69,8 +69,8 @@ export function RecipientInput({
 							className={cn(
 								"inline-flex max-w-full items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs",
 								valid
-									? "border-neutral-200 bg-neutral-50 text-neutral-800"
-									: "border-red-200 bg-red-50 text-red-700",
+									? "border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-200"
+									: "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300",
 							)}
 						>
 							<span className="truncate">{getRecipientLabel(entry)}</span>
@@ -78,7 +78,7 @@ export function RecipientInput({
 								<button
 									type="button"
 									aria-label={t("Remove {value0}", { value0: String(getEmailAddress(entry)) })}
-									className="rounded-full p-0.5 text-neutral-400 hover:bg-neutral-200 hover:text-neutral-700"
+									className="rounded-full p-0.5 text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-300"
 									onClick={(event) => {
 										event.stopPropagation();
 										onChange(value.filter((item) => item !== entry));
@@ -118,7 +118,7 @@ export function RecipientInput({
 			{trailing && (
 				// Toggles live inside the clickable row; keep their clicks from refocusing this field.
 				<div
-					className="flex shrink-0 items-center gap-1 text-xs text-neutral-500"
+					className="flex shrink-0 items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400"
 					onClick={(event) => event.stopPropagation()}
 				>
 					{trailing}

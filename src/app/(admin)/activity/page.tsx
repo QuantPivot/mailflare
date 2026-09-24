@@ -25,14 +25,14 @@ export default function ActivityPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-medium text-neutral-900">{t("Activity")}</h1>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h1 className="text-3xl font-medium text-neutral-900 dark:text-neutral-100">{t("Activity")}</h1>
+        <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
           {t("Login and logout activity across user accounts.")}</p>
       </div>
 
-      <section className="overflow-x-auto rounded-3xl bg-white">
+      <section className="overflow-x-auto rounded-3xl bg-card">
         <table className="w-full min-w-[760px] table-fixed text-left">
-          <thead className="border-b border-neutral-100 bg-neutral-50 text-xs font-semibold uppercase tracking-wide text-neutral-500">
+          <thead className="border-b border-neutral-100 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
             <tr>
               <th className="w-32 px-5 py-3">{t("Activity")}</th>
               <th className="px-5 py-3">{t("User")}</th>
@@ -40,7 +40,7 @@ export default function ActivityPage() {
               <th className="w-48 px-5 py-3">{t("Time")}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-100">
+          <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
             {activity.isLoading &&
               Array.from({ length: 7 }, (_, index) => (
                 <tr key={index}>
@@ -60,7 +60,7 @@ export default function ActivityPage() {
               ))}
             {!activity.isLoading && (activity.data ?? []).length === 0 && (
               <tr>
-                <td colSpan={4} className="px-5 py-4 text-sm text-neutral-500">
+                <td colSpan={4} className="px-5 py-4 text-sm text-neutral-500 dark:text-neutral-400">
                   {t("No login or logout activity yet")}</td>
               </tr>
             )}
@@ -68,7 +68,7 @@ export default function ActivityPage() {
               const metadata = getActivityMetadata(log);
               const Icon = log.action === "auth.logout" ? LogOut : LogIn;
               return (
-                <tr key={log.id} className="align-top hover:bg-neutral-50/70">
+                <tr key={log.id} className="align-top hover:bg-neutral-50/70 dark:hover:bg-neutral-950/70">
                   <td className="px-5 py-4">
                     <Badge variant="outline" className="gap-1">
                       <Icon className="h-3 w-3" />
@@ -79,7 +79,7 @@ export default function ActivityPage() {
                     <p className="flex flex-col truncate no-font-mono">
                       <span>{log.actorEmail ?? t("(unknown email)")}</span>
                     </p>
-                    <small className="text-neutral-500">
+                    <small className="text-neutral-500 dark:text-neutral-400">
                       {metadata.city || t("(unknown city)")} •{" "}
                       {metadata.country || t("(unknown country)")}
                     </small>
@@ -89,12 +89,12 @@ export default function ActivityPage() {
                       {metadata.device ?? t("(unknown device)")}
                     </p>
 
-                    <small className="text-neutral-500">
+                    <small className="text-neutral-500 dark:text-neutral-400">
                       {metadata.platform || t("(unknown platform)")} •{" "}
                       {metadata.ipAddress ?? t("(unknown IP)")}
                     </small>
                   </td>
-                  <td className="px-5 py-4 text-sm text-neutral-500">
+                  <td className="px-5 py-4 text-sm text-neutral-500 dark:text-neutral-400">
                     {formatActivityDate(log.createdAt, locale)}
                   </td>
                 </tr>

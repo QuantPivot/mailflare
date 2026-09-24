@@ -33,21 +33,21 @@ export function MfaSettings() {
 		setStatus(await loadMfaStatus());
 	}
 
-	if (!status) return <p className="text-sm text-neutral-500">{error ?? t("Loading two-factor settings...")}</p>;
+	if (!status) return <p className="text-sm text-neutral-500 dark:text-neutral-400">{error ?? t("Loading two-factor settings...")}</p>;
 
 	return (
 		<div className="space-y-4">
-			<div className="flex items-start gap-3 rounded-2xl bg-neutral-50 p-4">
+			<div className="flex items-start gap-3 rounded-2xl bg-neutral-50 dark:bg-neutral-950 p-4">
 				{status.enabled ? (
-					<ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
+					<ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-green-600 dark:text-green-400" />
 				) : (
 					<ShieldOff className="mt-0.5 h-5 w-5 shrink-0 text-neutral-400" />
 				)}
 				<div className="min-w-0 flex-1">
-					<p className="text-sm font-medium text-neutral-900">
+					<p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
 						{status.enabled ? t("Two-factor authentication is on") : t("Two-factor authentication is off")}
 					</p>
-					<p className="mt-1 text-sm text-neutral-500">
+					<p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
 						{status.enabled
 							? t("Signing in asks for a code from your authenticator app. {count, plural, one {# recovery code left.} other {# recovery codes left.}}", { count: status.recoveryCodesLeft })
 							: t("Add a second step at sign-in using an authenticator app such as 1Password, Google Authenticator or Authy.")}
@@ -80,7 +80,7 @@ function RecoveryCodesList({ codes }: { codes: string[] }) {
 	const [copied, setCopied] = useState(false);
 	return (
 		<div className="space-y-3">
-			<ul className="grid grid-cols-2 gap-2 rounded-xl bg-neutral-50 p-4 font-mono text-sm text-neutral-800">
+			<ul className="grid grid-cols-2 gap-2 rounded-xl bg-neutral-50 dark:bg-neutral-950 p-4 font-mono text-sm text-neutral-800 dark:text-neutral-200">
 				{codes.map((code) => (
 					<li key={code}>{code}</li>
 				))}
@@ -96,7 +96,7 @@ function RecoveryCodesList({ codes }: { codes: string[] }) {
 				<Copy className="h-4 w-4" />
 				{copied ? t("Copied") : t("Copy codes")}
 			</Button>
-			<p className="text-xs text-neutral-500">
+			<p className="text-xs text-neutral-500 dark:text-neutral-400">
 				{t("Each code works once. Keep them somewhere safe; they are the only way in if you lose your authenticator.")}</p>
 		</div>
 	);
@@ -174,7 +174,7 @@ function EnrollDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenCha
 							<Label htmlFor="mfa-password">{t("Password")}</Label>
 							<Input id="mfa-password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required autoFocus />
 						</div>
-						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						{error && <p className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
 						<Button type="submit" disabled={busy}>{busy ? t("Please wait...") : t("Continue")}</Button>
 					</form>
 				)}
@@ -184,16 +184,16 @@ function EnrollDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenCha
 							<DialogTitle>{t("Scan the code")}</DialogTitle>
 							<DialogDescription>{t("Open your authenticator app, add an account by scanning this code, then enter the 6-digit code it shows.")}</DialogDescription>
 						</DialogHeader>
-						<div className="mx-auto w-48 rounded-xl border border-neutral-200 bg-white p-2" dangerouslySetInnerHTML={{ __html: qrSvg }} />
-						<details className="text-xs text-neutral-500">
+						<div className="mx-auto w-48 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-card p-2" dangerouslySetInnerHTML={{ __html: qrSvg }} />
+						<details className="text-xs text-neutral-500 dark:text-neutral-400">
 							<summary className="cursor-pointer">{t("Can't scan? Enter the key manually")}</summary>
-							<code className="mt-2 block break-all rounded-md bg-neutral-50 p-2 font-mono text-neutral-800">{secret}</code>
+							<code className="mt-2 block break-all rounded-md bg-neutral-50 dark:bg-neutral-950 p-2 font-mono text-neutral-800 dark:text-neutral-200">{secret}</code>
 						</details>
 						<div className="space-y-2">
 							<Label htmlFor="mfa-code">{t("6-digit code")}</Label>
 							<Input id="mfa-code" inputMode="numeric" autoComplete="one-time-code" value={code} onChange={(e) => setCode(e.target.value)} placeholder="123 456" required autoFocus />
 						</div>
-						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						{error && <p className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
 						<Button type="submit" disabled={busy}>{busy ? t("Checking...") : t("Verify and turn on")}</Button>
 					</form>
 				)}
@@ -253,7 +253,7 @@ function DisableDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenCh
 						<Label htmlFor="mfa-off-code">{t("Code")}</Label>
 						<Input id="mfa-off-code" inputMode="numeric" autoComplete="one-time-code" value={code} onChange={(e) => setCode(e.target.value)} required />
 					</div>
-					{error && <p className="text-sm text-red-600">{t(error)}</p>}
+					{error && <p className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
 					<Button type="submit" variant="destructive" disabled={busy}>{busy ? t("Please wait...") : t("Turn off")}</Button>
 				</form>
 			</DialogContent>
@@ -312,7 +312,7 @@ function RecoveryCodesDialog({ open, onOpenChange, onDone }: { open: boolean; on
 							<Label htmlFor="rc-password">{t("Password")}</Label>
 							<Input id="rc-password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required autoFocus />
 						</div>
-						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						{error && <p className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
 						<Button type="submit" disabled={busy}>{busy ? t("Please wait...") : t("Generate")}</Button>
 					</form>
 				)}

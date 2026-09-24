@@ -1321,5 +1321,8 @@
   "m3eb6be4c": "Choose your own password",
   "m37b21ad4": "Your administrator requires you to change your password before continuing. Enter your current password and choose a new one with 8–128 characters.",
   "m1134b512": "Change your password before continuing",
-  "me7a16a8b": "Your password changed. Sign in again."
+  "me7a16a8b": "Your password changed. Sign in again.",
+  "m518c0625": "Theme: automatic. Switch to light mode",
+  "m5fe041cc": "Theme: light. Switch to dark mode",
+  "m45ca98ae": "Theme: dark. Follow system appearance"
 }

@@ -54,7 +54,7 @@ export function ConversationThread({
 			aria-label={position === "before" ? t("Earlier messages in this conversation") : t("Later messages in this conversation")}
 			className={cn(position === (latestMessagesFirst ? "before" : "after") ? "pb-6" : "")}
 		>
-			<ol className={cn(!collapsed && "divide-y divide-neutral-200/50", latestMessagesFirst ? "border-y" : "border-b", "border-neutral-200")}>
+			<ol className={cn(!collapsed && "divide-y divide-neutral-200/50 dark:divide-neutral-700/50", latestMessagesFirst ? "border-y" : "border-b", "border-neutral-200 dark:border-neutral-700")}>
 				<li className={"border-t-0" }>
 					<ConversationMessageCard
 						message={firstMessage}
@@ -65,15 +65,15 @@ export function ConversationThread({
 					/>
 				</li>
 				{collapsed ? (
-					<li className="flex items-center justify-center gap-1 py-2 text-center border-y border-neutral-100 h-px my-4">
-						<span className="bg-white px-6 flex flex-row items-center gap-2">
-							<span className="text-sm font-medium text-neutral-600">{collapsedLabel}</span>
+					<li className="flex items-center justify-center gap-1 py-2 text-center border-y border-neutral-100 dark:border-neutral-800 h-px my-4">
+						<span className="bg-card px-6 flex flex-row items-center gap-2">
+							<span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">{collapsedLabel}</span>
 							<button
 								type="button"
 								onClick={() => onExpandedAllChange(true)}
 								aria-label={t("Expand {value0}", { value0: String(collapsedLabel) })}
 								title={t("Expand {value0}", { value0: String(collapsedLabel) })}
-								className="inline-flex h-6 w-6 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
+								className="inline-flex h-6 w-6 items-center justify-center rounded-full text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100"
 							>
 								<ChevronsUpDown className="h-4 w-4" />
 							</button>
@@ -141,7 +141,7 @@ export function ConversationMessageCard({
 	}
 
 	return (
-		<article className={cn("bg-white transition-colors px-6", !expanded && "hover:bg-neutral-50")}>
+		<article className={cn("bg-card transition-colors px-6", !expanded && "hover:bg-neutral-50 dark:hover:bg-neutral-950")}>
 			<div className="flex w-full items-start gap-3 py-3">
 				<button
 					type="button"
@@ -164,14 +164,14 @@ export function ConversationMessageCard({
 					/>
 					<span className="min-w-0 flex-1">
 						<div className="flex flex-col">
-							<span className={cn("truncate text-sm font-semibold mt-1", locallyRead || outbound ? "text-neutral-900" : "font-semibold text-neutral-900")}>
+							<span className={cn("truncate text-sm font-semibold mt-1", locallyRead || outbound ? "text-neutral-900 dark:text-neutral-100" : "font-semibold text-neutral-900 dark:text-neutral-100")}>
 								{sender}
 								{expanded && <span className="text-xs ml-1 opacity-50 font-normal">&lt;{senderEmail}&gt;</span>}
 							</span>
-							{expanded && recipients && <span className="text-xs font-normal text-neutral-500">{t("to")}{" "}{recipients}</span>}
+							{expanded && recipients && <span className="text-xs font-normal text-neutral-500 dark:text-neutral-400">{t("to")}{" "}{recipients}</span>}
 						</div>
 						{!expanded && (
-							<span className={clsx( !locallyRead ? "font-semibold" : "text-neutral-500", "block truncate text-[13px]")}>{message.snippet || t("No preview")}</span>
+							<span className={clsx( !locallyRead ? "font-semibold" : "text-neutral-500 dark:text-neutral-400", "block truncate text-[13px]")}>{message.snippet || t("No preview")}</span>
 						)}
 					</span>
 				</button>
@@ -189,9 +189,9 @@ export function ConversationMessageCard({
 			{expanded && body && (
 				<div className="pb-4 pt-2">
 					{body.html ? (
-						<div className="email-body max-w-none text-sm text-neutral-900" dangerouslySetInnerHTML={{ __html: body.html }} />
+						<div className="email-body max-w-none text-sm text-neutral-900 dark:text-neutral-100" dangerouslySetInnerHTML={{ __html: body.html }} />
 					) : (
-						<pre className="whitespace-pre-wrap font-sans text-sm text-neutral-900">{body.text}</pre>
+						<pre className="whitespace-pre-wrap font-sans text-sm text-neutral-900 dark:text-neutral-100">{body.text}</pre>
 					)}
 					{attachments.length > 0 && (
 						<ul className="mt-4 flex flex-wrap gap-2">
@@ -199,7 +199,7 @@ export function ConversationMessageCard({
 								<li key={attachment.id}>
 									<a
 										href={`/api/messages/${message.id}/attachments/${attachment.id}`}
-										className="inline-flex items-center gap-1.5 rounded-md border border-neutral-200 bg-white px-2.5 py-1 text-xs text-neutral-700 hover:bg-neutral-50"
+										className="inline-flex items-center gap-1.5 rounded-md border border-neutral-200 dark:border-neutral-700 bg-card px-2.5 py-1 text-xs text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-950"
 									>
 										<Paperclip className="h-3 w-3" />
 										<span className="max-w-48 truncate">{attachment.filename}</span>

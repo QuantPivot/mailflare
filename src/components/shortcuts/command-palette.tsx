@@ -72,7 +72,7 @@ function CommandPaletteDialog({
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-neutral-900/40 backdrop-blur-xs animate-in fade-in duration-100">
       <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
       <div
-        className="relative w-full max-w-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col z-10"
+        className="relative w-full max-w-xl bg-card dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col z-10"
         onKeyDown={handleKeyDown}
       >
         {/* Search header */}

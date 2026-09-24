@@ -120,12 +120,12 @@ export function DomainRouting({ domain }: DomainRoutingProps = {}) {
 					<div className="flex items-center gap-2">
 						<h2 className="text-2xl font-semibold">{t("Domain routing")}</h2>
 						<Tooltip label={t("Block, forward, or deliver mail arriving at this domain.")}>
-							<button type="button" aria-label={t("About domain routing")} className="text-neutral-400 hover:text-neutral-700">
+							<button type="button" aria-label={t("About domain routing")} className="text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300">
 								<Info className="h-4 w-4" />
 							</button>
 						</Tooltip>
 					</div>
-					<p className="mt-1 text-sm text-neutral-500">{hostname ? t("Rules for {domain}", { domain: hostname }) : t("Select an inbox")}</p>
+					<p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{hostname ? t("Rules for {domain}", { domain: hostname }) : t("Select an inbox")}</p>
 				</div>
 				<div className="flex items-end gap-2">
 					<Button onClick={openCreate} disabled={!domainId || (!domain && !mailboxId) || !canManage}>
@@ -137,12 +137,12 @@ export function DomainRouting({ domain }: DomainRoutingProps = {}) {
 				<CardGridSkeleton />
 			) : !domain && !mailboxId ? (
 				<Card>
-					<CardContent className="pt-6 text-sm text-neutral-500">
+					<CardContent className="pt-6 text-sm text-neutral-500 dark:text-neutral-400">
 						{t("Select an inbox before creating routing rules.")}</CardContent>
 				</Card>
 			) : !canManage ? (
 				<Card>
-					<CardContent className="pt-6 text-sm text-neutral-500">
+					<CardContent className="pt-6 text-sm text-neutral-500 dark:text-neutral-400">
 						{t("Full access to the selected inbox is required to manage domain routing.")}</CardContent>
 				</Card>
 			) : (
@@ -324,7 +324,7 @@ export function DomainRouting({ domain }: DomainRoutingProps = {}) {
 						)}
 
 						{form.action === "forward" && (
-							<div className="flex items-center justify-between rounded-lg border border-neutral-200 px-3 py-2">
+							<div className="flex items-center justify-between rounded-lg border border-neutral-200 dark:border-neutral-700 px-3 py-2">
 								<div>
 									<div className="flex items-center gap-2">
 										<p className="text-sm font-medium">{t("Keep a copy")}</p>
@@ -352,9 +352,9 @@ export function DomainRouting({ domain }: DomainRoutingProps = {}) {
 							</div>
 						)}
 
-						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						{error && <p className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
 
-						<div className="flex justify-end gap-2 border-t border-neutral-200 pt-4">
+						<div className="flex justify-end gap-2 border-t border-neutral-200 dark:border-neutral-700 pt-4">
 							<Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
 								{t("Cancel")}</Button>
 							<Button type="submit" disabled={save.isPending}>
@@ -393,7 +393,7 @@ function RuleSection({
 	const locale = useLocale();
 
 	return (
-		<Card className={`${className} border-0 bg-white px-6`}>
+		<Card className={`${className} border-0 bg-card px-6`}>
 			<CardHeader>
 				<div className="flex items-center gap-2">
 					<CardTitle className="text-xs uppercase">{title}</CardTitle>
@@ -404,16 +404,16 @@ function RuleSection({
 			</CardHeader>
 			<CardContent className="space-y-2 pb-5">
 				{rules.length === 0 ? (
-					<p className="text-sm text-neutral-500">{t("No rules yet.")}</p>
+					<p className="text-sm text-neutral-500 dark:text-neutral-400">{t("No rules yet.")}</p>
 				) : (
 					rules.map((rule) => {
 						const Icon = ACTION_ICONS[rule.action];
 						return (
 							<div
 								key={rule.id}
-								className="flex flex-wrap items-center gap-3 rounded-xl border border-neutral-200 px-3 py-2"
+								className="flex flex-wrap items-center gap-3 rounded-xl border border-neutral-200 dark:border-neutral-700 px-3 py-2"
 							>
-								<Icon className="h-4 w-4 shrink-0 text-neutral-500" />
+								<Icon className="h-4 w-4 shrink-0 text-neutral-500 dark:text-neutral-400" />
 								<div className="min-w-0 flex-1">
 									<div className="flex items-center gap-2">
 										<p className="truncate text-sm font-medium">
@@ -422,7 +422,7 @@ function RuleSection({
 										{!rule.enabled && <Badge variant="secondary">{t("Disabled")}</Badge>}
 									</div>
 									{rule.name && (
-										<p className="truncate text-xs text-neutral-500">
+										<p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
 											{describeRule(rule, mailboxes, hostname, t)}
 										</p>
 									)}
@@ -435,7 +435,7 @@ function RuleSection({
 									<Pencil className="h-4 w-4" />
 								</Button>
 								<Button variant="ghost" size="sm" onClick={() => onDelete(rule.id)}>
-									<Trash2 className="h-4 w-4 text-red-600" />
+									<Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
 								</Button>
 							</div>
 						);

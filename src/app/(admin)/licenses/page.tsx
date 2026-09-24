@@ -18,8 +18,8 @@ export default function LicensesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-medium text-neutral-900">{t("Licenses")}</h1>
-        <p className="mt-2 text-sm text-neutral-500">
+        <h1 className="text-3xl font-medium text-neutral-900 dark:text-neutral-100">{t("Licenses")}</h1>
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
           {t("Choose a one-time license. Each purchase includes updates released during the first year.")}</p>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
@@ -28,17 +28,17 @@ export default function LicensesPage() {
           return (
             <Card
               key={plan.name}
-              className="rounded-3xl border-0 bg-white p-6 flex flex-col"
+              className="rounded-3xl border-0 bg-card p-6 flex flex-col"
             >
               <CardHeader className="space-y-4 py-0">
                 <div className="flex items-center justify-between">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
                     <Icon className="h-5 w-5" />
                   </span>
                 </div>
                 <div className="relative">
                   <CardTitle>{plan.name}</CardTitle>
-                  <p className="mt-2 text-6xl text-neutral-950 flex">
+                  <p className="mt-2 text-6xl text-neutral-950 dark:text-neutral-50 flex">
                     <span className="text-[12px] mt-2">$</span>
                     <b>{plan.price}</b>
                     {plan.originalPrice && (
@@ -54,9 +54,9 @@ export default function LicensesPage() {
                 {plan.features.map((feature) => (
                   <p
                     key={feature}
-                    className="flex gap-2 text-sm text-neutral-600"
+                    className="flex gap-2 text-sm text-neutral-600 dark:text-neutral-300"
                   >
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600 dark:text-green-400" />
                     {t(feature)}
                   </p>
                 ))}

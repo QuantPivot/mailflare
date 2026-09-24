@@ -232,8 +232,8 @@ export function MessageActions({
 	const moveActions = getMoveMessageActions(status, direction);
 
 	return (
-		<div className="flex items-center gap-3 text-neutral-600">
-			{error && <span role="alert" className="text-xs text-red-600">{t(error)}</span>}
+		<div className="flex items-center gap-3 text-neutral-600 dark:text-neutral-300">
+			{error && <span role="alert" className="text-xs text-red-600 dark:text-red-400">{t(error)}</span>}
 			<div className="flex items-center gap-2">
 				<Tooltip label={shortcutsEnabled ? t("Reply (r)") : t("Reply")}>
 					<Button
@@ -302,7 +302,7 @@ export function MessageActions({
 						variant="ghost"
 						size="sm"
 						aria-label={deleteLabel}
-						className={permanentDelete ? "text-red-600 hover:bg-red-50 hover:text-red-700" : undefined}
+						className={permanentDelete ? "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 hover:text-red-700 dark:hover:text-red-300" : undefined}
 						disabled={disabled}
 						onClick={() => runAction(permanentDelete ? "delete" : "trash")}
 					>
@@ -335,12 +335,12 @@ export function MessageActions({
 						</Button>
 					</Tooltip>
 					{moreOpen && (
-						<div className="absolute right-0 z-20 mt-2 w-54 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg">
+						<div className="absolute right-0 z-20 mt-2 w-54 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-card p-2 shadow-lg">
 							{direction === "inbound" && (
 								<>
 									<button
 										type="button"
-									className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-100 disabled:cursor-not-allowed disabled:text-neutral-400"
+									className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:cursor-not-allowed disabled:text-neutral-400"
 									disabled={!unsubscribeUrl && status === "trash"}
 									onClick={() => void onUnsubscribe()}
 								>
@@ -348,21 +348,21 @@ export function MessageActions({
 									{t("Unsubscribe")}</button>
 									<button
 										type="button"
-									className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-100"
+									className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
 										onClick={() => void onBlockContact()}
 									>
 										<Ban className="h-4 w-4" />
 										{t("Block contact")}</button>
-							<hr className="my-1 border-neutral-100" />
+							<hr className="my-1 border-neutral-100 dark:border-neutral-800" />
 								</>
 							)}
-							<p className="mt-1 px-3 pb-1 pt-2 text-sm font-medium text-neutral-500">
+							<p className="mt-1 px-3 pb-1 pt-2 text-sm font-medium text-neutral-500 dark:text-neutral-400">
 								{t("Move to")}</p>
 							{moveActions.map((item) => (
 								<button
 									key={item.action}
 									type="button"
-									className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-100"
+									className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
 									onClick={() => void runAction(item.action)}
 								>
 									{createElement(item.icon, { size: 16 })}

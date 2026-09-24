@@ -51,14 +51,14 @@ export function MessageListRowActions({ message, onAction }: MessageListRowActio
 
 	return (
 		<>
-			<div className="pointer-events-none absolute right-6 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1 pl-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 bg-[#f2f6fc]">
+			<div className="pointer-events-none absolute right-6 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1 pl-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 bg-row-hover">
 				<Tooltip label={t("Archive")}>
 					<Button type="button" variant="ghost" size="sm" disabled={pendingAction} onClick={() => void runAction("archive")} aria-label={t("Archive")}>
 						<Archive className="h-4 w-4" />
 					</Button>
 				</Tooltip>
 				<Tooltip label={deleteLabel}>
-					<Button type="button" variant="ghost" size="sm" disabled={pendingAction} onClick={() => void runAction(permanentDelete ? "delete" : "trash")} aria-label={deleteLabel} className={permanentDelete ? "text-red-600 hover:bg-red-50 hover:text-red-700" : undefined}>
+					<Button type="button" variant="ghost" size="sm" disabled={pendingAction} onClick={() => void runAction(permanentDelete ? "delete" : "trash")} aria-label={deleteLabel} className={permanentDelete ? "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 hover:text-red-700 dark:hover:text-red-300" : undefined}>
 						<Trash2 className="h-4 w-4" />
 					</Button>
 				</Tooltip>
@@ -95,10 +95,10 @@ export function MessageListRowActions({ message, onAction }: MessageListRowActio
 							))}
 						</div>
 						<div className="space-y-2">
-							<label htmlFor={`snooze-until-${message.id}`} className="text-sm font-medium text-neutral-700">{t("Select date and time")}</label>
+							<label htmlFor={`snooze-until-${message.id}`} className="text-sm font-medium text-neutral-700 dark:text-neutral-300">{t("Select date and time")}</label>
 							<Input id={`snooze-until-${message.id}`} type="datetime-local" value={snoozedUntil} onChange={(event) => setSnoozedUntil(event.target.value)} />
 						</div>
-						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						{error && <p className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
 						<Button type="button" onClick={() => void handleSnooze()} disabled={snoozing}>
 							{snoozing ? t("Snoozing...") : t("Snooze")}
 						</Button>

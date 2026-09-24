@@ -72,19 +72,19 @@ export function LicenseActivation() {
 
 	if (license?.active) {
 		return (
-			<Card className="rounded-3xl border-0 bg-white px-6">
+			<Card className="rounded-3xl border-0 bg-card px-6">
 				<CardContent className="flex items-start gap-4 py-8">
-					<span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-700">
+					<span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300">
 						<CheckCircle2 className="h-6 w-6" />
 					</span>
 					<div className="min-w-0 flex-1">
 						<CardTitle>{t("License activated")}</CardTitle>
-						<p className="mt-2 text-sm leading-6 text-neutral-600">
+						<p className="mt-2 text-sm leading-6 text-neutral-600 dark:text-neutral-300">
 							{t("Your {plan} license is active. Licensed features are ready to use.", { plan: formatLicensePlan(license.plan) })}</p>
 						<Button type="button" variant="outline" className="mt-5" onClick={() => void submit("deactivate")} disabled={action !== null}>
 							{action === "deactivate" ? t("Deactivating...") : t("Deactivate license")}
 						</Button>
-						{status && <p className="mt-3 text-sm text-neutral-500">{t(status)}</p>}
+						{status && <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400">{t(status)}</p>}
 					</div>
 				</CardContent>
 			</Card>
@@ -92,10 +92,10 @@ export function LicenseActivation() {
 	}
 
 	return (
-		<Card className="rounded-3xl border-0 bg-white px-6">
+		<Card className="rounded-3xl border-0 bg-card px-6">
 			<CardContent className="space-y-5 pb-6">
 				{hasActivation && license && (
-					<p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
+					<p className="rounded-2xl bg-amber-50 dark:bg-amber-950/50 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
 						{t("This license is currently {state}. Enter its key to validate or deactivate it.", { state: t(license.state) })}</p>
 				)}
 				{!hasActivation && (
@@ -110,12 +110,12 @@ export function LicenseActivation() {
 								disabled={action !== null}
 								className={`rounded-2xl border px-4 py-4 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer ${
 									selectedPlan === "pro"
-										? "border-blue-600 bg-neutral-50 ring-1 ring-blue-700"
-										: "border-neutral-200 bg-white hover:border-neutral-400"
+										? "border-blue-600 bg-neutral-50 dark:bg-neutral-950 ring-1 ring-blue-700"
+										: "border-neutral-200 dark:border-neutral-700 bg-card hover:border-neutral-400 dark:hover:border-neutral-500"
 								}`}
 							>
 								<span className="block text-xl font-semibold">Pro</span>
-								<span className="mt-1 block text-xs text-neutral-500">{t("For individual power users")}</span>
+								<span className="mt-1 block text-xs text-neutral-500 dark:text-neutral-400">{t("For individual power users")}</span>
 							</button>
 							<button
 								type="button"
@@ -125,12 +125,12 @@ export function LicenseActivation() {
 								disabled={action !== null}
 								className={`rounded-2xl border px-4 py-4 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer ${
 									selectedPlan === "team"
-										? "border-blue-600 bg-neutral-50 ring-1 ring-blue-700"
-										: "border-neutral-200 bg-white hover:border-neutral-400"
+										? "border-blue-600 bg-neutral-50 dark:bg-neutral-950 ring-1 ring-blue-700"
+										: "border-neutral-200 dark:border-neutral-700 bg-card hover:border-neutral-400 dark:hover:border-neutral-500"
 								}`}
 							>
-								<span className="block text-xl font-semibold text-neutral-900">Team</span>
-								<span className="mt-1 block text-xs text-neutral-500">{t("For teams and shared inboxes")}</span>
+								<span className="block text-xl font-semibold text-neutral-900 dark:text-neutral-100">Team</span>
+								<span className="mt-1 block text-xs text-neutral-500 dark:text-neutral-400">{t("For teams and shared inboxes")}</span>
 							</button>
 						</div>
 					</div>
@@ -162,7 +162,7 @@ export function LicenseActivation() {
 							{action === "activate" ? t("Activating...") : t("Activate")}
 						</Button>
 					)}
-					{status && <p className="text-sm text-neutral-500">{t(status)}</p>}
+					{status && <p className="text-sm text-neutral-500 dark:text-neutral-400">{t(status)}</p>}
 				</div>
 			</CardContent>
 		</Card>

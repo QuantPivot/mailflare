@@ -99,7 +99,7 @@ export function ProfileAvatarForm({
 				type="button"
 				onClick={() => inputRef.current?.click()}
 				disabled={busy}
-				className="group relative h-24 w-24 overflow-hidden rounded-full border border-neutral-200 bg-blue-600 text-white shadow-sm outline-none ring-blue-500 transition focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-wait"
+				className="group relative h-24 w-24 overflow-hidden rounded-full border border-neutral-200 dark:border-neutral-700 bg-blue-600 text-white shadow-sm outline-none ring-blue-500 transition focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-wait"
 				aria-label={hasAvatar ? t("Change {value0} profile picture", { value0: String(name) }) : t("Upload {value0} profile picture", { value0: String(name) })}
 			>
 				{hasAvatar ? (
@@ -126,7 +126,7 @@ export function ProfileAvatarForm({
 					)}
 				</span>
 			</button>
-			{status && <p className="max-w-xs text-xs text-red-600">{t(status)}</p>}
+			{status && <p className="max-w-xs text-xs text-red-600 dark:text-red-400">{t(status)}</p>}
 		</div>
 	);
 }

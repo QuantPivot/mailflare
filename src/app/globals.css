@@ -1,20 +1,50 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+/* Automatic appearance is resolved by CSS before the first paint and tracks
+   system changes without waiting for hydration or a JavaScript listener. */
+@custom-variant dark {
+	&:where([data-theme="dark"], [data-theme="dark"] *) {
+		@slot;
+	}
+	@media (prefers-color-scheme: dark) {
+		&:where([data-theme="auto"], [data-theme="auto"] *) {
+			@slot;
+		}
+	}
+}
 
 :root {
-	--background: #f6f8fc;
-	--foreground: #202124;
-	--card: #ffffff;
-	--muted: #eef3fb;
-	--border: #dadce0;
-	--primary: #0b57d0;
+	color-scheme: light;
+	--background: light-dark(#f6f8fc, #101318);
+	--foreground: light-dark(#202124, #ededed);
+	--card: light-dark(#ffffff, #171717);
+	--muted: light-dark(#eef3fb, #202733);
+	--border: light-dark(#dadce0, #404040);
+	--primary: light-dark(#0b57d0, #8ab4f8);
 	--primary-foreground: #ffffff;
+	--search: light-dark(#eaf1fb, #242b37);
+	--row-hover: light-dark(#f2f6fc, #252b35);
+	--auth-background: light-dark(#f1f4fa, #101318);
+}
+
+:root[data-theme="dark"] {
+	color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root[data-theme="auto"] {
+		color-scheme: dark;
+	}
 }
 
 @theme inline {
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-muted: var(--muted);
+	--color-search: var(--search);
+	--color-row-hover: var(--row-hover);
+	--color-auth-background: var(--auth-background);
 	--font-sans: var(--font-geist-sans);
 	--no-font-mono: var(--font-geist-mono);
 }
@@ -120,15 +150,28 @@ pre {
 	margin: 0.25rem 0;
 }
 .email-body blockquote {
-	border-left: 2px solid #d4d4d4;
+	border-left: 2px solid light-dark(#d4d4d4, #525252);
 	margin: 0.25rem 0;
 	padding-left: 0.75rem;
-	color: #525252;
+	color: light-dark(#525252, #d4d4d4);
 }
 .email-body a {
-	color: #2563eb;
+	color: light-dark(#2563eb, #93c5fd);
 	text-decoration: underline;
 }
 .email-body p {
 	margin: 0 0 0.5rem;
+}
+
+/* Authored HTML may contain fixed foreground/background colors. Keep that
+   content on its original light canvas instead of making dark text invisible.
+   Plain messages and the editor continue to follow the application theme. */
+.email-body:not([contenteditable]):has([style*="color" i]) {
+	color-scheme: light;
+	background-color: #ffffff;
+	color: #202124;
+	@variant dark {
+		border-radius: 0.5rem;
+		padding: 1rem;
+	}
 }

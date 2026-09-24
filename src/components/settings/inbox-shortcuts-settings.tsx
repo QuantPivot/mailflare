@@ -19,10 +19,10 @@ export function InboxShortcutsSettings() {
 
 	return (
 		<div>
-			<label className="flex items-start gap-3 rounded-xl bg-neutral-50 p-4">
+			<label className="flex items-start gap-3 rounded-xl bg-neutral-50 dark:bg-neutral-950 p-4">
 				<span className="flex-1">
-					<span className="block text-sm font-medium text-neutral-900">{t("Keyboard shortcuts")}</span>
-					<span className="mt-1 block text-sm text-neutral-500">
+					<span className="block text-sm font-medium text-neutral-900 dark:text-neutral-100">{t("Keyboard shortcuts")}</span>
+					<span className="mt-1 block text-sm text-neutral-500 dark:text-neutral-400">
 						{t("Use quick keys to navigate, compose, and manage messages on this account.")}</span>
 				</span>
 				<Switch
@@ -39,7 +39,7 @@ export function InboxShortcutsSettings() {
 				/>
 			</label>
 			{(saveError || shortcutsPreferenceError) && (
-				<p className="mt-2 px-4 text-sm text-red-600">{t(saveError || shortcutsPreferenceError || "")}</p>
+				<p className="mt-2 px-4 text-sm text-red-600 dark:text-red-400">{t(saveError || shortcutsPreferenceError || "")}</p>
 			)}
 		</div>
 	);

@@ -23,23 +23,23 @@ export default function RoutingPage() {
 	return (
 		<div className="space-y-8">
 			<div>
-				<h1 className="text-3xl font-medium text-neutral-900">{t("Routing")}</h1>
-				<p className="mt-1 text-sm text-neutral-500">
+				<h1 className="text-3xl font-medium text-neutral-900 dark:text-neutral-100">{t("Routing")}</h1>
+				<p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
 					{t("Configure domain-wide delivery, forwarding, and blocking rules.")}</p>
 			</div>
 
 			<section className="space-y-4">
 				<div>
-					<h2 className="text-xl font-semibold text-neutral-900">{t("Domain")}</h2>
-					<p className="mt-1 text-sm text-neutral-500">{t("Choose which domain these global rules apply to.")}</p>
+					<h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">{t("Domain")}</h2>
+					<p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{t("Choose which domain these global rules apply to.")}</p>
 				</div>
-				<div className="rounded-3xl bg-white p-6">
+				<div className="rounded-3xl bg-card p-6">
 					{domains.isLoading ? (
 						<Skeleton className="h-10 w-full" />
 					) : domains.isError ? (
-						<p className="text-sm text-red-600">{t(domains.error.message)}</p>
+						<p className="text-sm text-red-600 dark:text-red-400">{t(domains.error.message)}</p>
 					) : availableDomains.length === 0 ? (
-						<p className="text-sm text-neutral-500">{t("Add a domain before configuring routing rules.")}</p>
+						<p className="text-sm text-neutral-500 dark:text-neutral-400">{t("Add a domain before configuring routing rules.")}</p>
 					) : (
 						<div className="grid gap-2">
 							<Label htmlFor="routing-domain">{t("Managed domain")}</Label>

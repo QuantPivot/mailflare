@@ -188,7 +188,7 @@ export function DashboardNav({ className }: { className?: string }) {
               <DialogTrigger asChild>
                 <button
                   type="button"
-                  className="flex h-7 w-7 items-center justify-center rounded-lg text-neutral-500 hover:bg-blue-50 hover:text-blue-700"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 hover:text-blue-700 dark:hover:text-blue-300"
                   aria-label={t("Create folder")}
                 >
                   <Plus className="h-4 w-4" />
@@ -229,7 +229,7 @@ export function DashboardNav({ className }: { className?: string }) {
                           onClick={() => setNewFolderColor(option.value)}
                           className={`h-8 w-8 rounded-full border-2 transition-transform hover:scale-110 ${
                             newFolderColor === option.value
-                              ? "border-neutral-900 ring-2 ring-neutral-300 ring-offset-2"
+                              ? "border-neutral-900 dark:border-neutral-200 ring-2 ring-neutral-300 dark:ring-neutral-600 ring-offset-2"
                               : "border-transparent"
                           }`}
                           style={{ backgroundColor: option.value }}
@@ -250,7 +250,7 @@ export function DashboardNav({ className }: { className?: string }) {
         </div>
       )}
       {!minimal && folders.length === 0 && (
-        <div className="mx-3 rounded-lg border border-dashed border-neutral-200 px-3 py-3 text-xs text-neutral-400">
+        <div className="mx-3 rounded-lg border border-dashed border-neutral-200 dark:border-neutral-700 px-3 py-3 text-xs text-neutral-400">
           {t("No folders yet")}</div>
       )}
       {folders.map((folder) => (

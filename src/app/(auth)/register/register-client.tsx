@@ -209,7 +209,7 @@ export function RegisterClient() {
         }
       >
         <div className="space-y-5">
-          <p className="text-sm leading-6 text-neutral-600">
+          <p className="text-sm leading-6 text-neutral-600 dark:text-neutral-300">
             {t("This installation already has an account for {domain}.", { domain: primaryDomain ?? t("this workspace") })}
           </p>
           <Button
@@ -242,36 +242,36 @@ export function RegisterClient() {
     >
       {step === 1 ? (
         <div className="space-y-5">
-          <p className="text-sm leading-6 text-neutral-600">
+          <p className="text-sm leading-6 text-neutral-600 dark:text-neutral-300">
             {t("Mailflare checks its required Cloudflare configuration and initializes a clean D1 database before setup continues.")}</p>
           <div className="space-y-2">
             {loading && checks.length === 0 && (
-              <div className="flex items-center gap-3 rounded-2xl bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
+              <div className="flex items-center gap-3 rounded-2xl bg-neutral-50 dark:bg-neutral-950 px-4 py-3 text-sm text-neutral-600 dark:text-neutral-300">
                 <LoaderCircle className="h-4 w-4 animate-spin" />
                 {t("Checking installation")}</div>
             )}
             {checks.map((check) => (
-              <div key={check.key} className="flex items-start gap-3 rounded-2xl bg-neutral-50 px-4 py-3">
+              <div key={check.key} className="flex items-start gap-3 rounded-2xl bg-neutral-50 dark:bg-neutral-950 px-4 py-3">
                 {check.configured ? (
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600 dark:text-green-400" />
                 ) : (
-                  <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
+                  <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
                 )}
                 <div>
-                  <p className="text-sm font-medium text-neutral-800">{check.key}</p>
-                  {!check.configured && <p className="mt-1 text-xs leading-5 text-neutral-500">{t(check.message)}</p>}
+                  <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">{check.key}</p>
+                  {!check.configured && <p className="mt-1 text-xs leading-5 text-neutral-500 dark:text-neutral-400">{t(check.message)}</p>}
                 </div>
               </div>
             ))}
             {preparationComplete && (
-              <div className="flex items-center gap-3 rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700">
+              <div className="flex items-center gap-3 rounded-2xl bg-green-50 dark:bg-green-950/50 px-4 py-3 text-sm text-green-700 dark:text-green-300">
                 <CheckCircle2 className="h-4 w-4" />
                 {databaseMigrated ? t("Clean database migrated successfully") : t("Database schema is ready")}
               </div>
             )}
           </div>
           {error && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <p className="rounded-2xl border border-red-100 dark:border-red-900 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-300">
               {t(error)}
             </p>
           )}
@@ -312,13 +312,13 @@ export function RegisterClient() {
                 }
               }}
             />
-            <p className="text-xs leading-5 text-neutral-500">
+            <p className="text-xs leading-5 text-neutral-500 dark:text-neutral-400">
               {t("The domain must already be a Cloudflare zone on this account.")}</p>
           </div>
-          <div className="flex items-center justify-between gap-4 rounded-2xl bg-neutral-50 px-4 py-3">
+          <div className="flex items-center justify-between gap-4 rounded-2xl bg-neutral-50 dark:bg-neutral-950 px-4 py-3">
             <div>
               <Label htmlFor="setup-enable-sending">{t("Enable sending")}</Label>
-              <p className="mt-1 text-xs leading-5 text-neutral-500">
+              <p className="mt-1 text-xs leading-5 text-neutral-500 dark:text-neutral-400">
                 {domainChecking
                   ? t("Checking Cloudflare access...")
                   : domainCheck
@@ -336,13 +336,13 @@ export function RegisterClient() {
             />
           </div>
           {domainCheck && (
-            <div className="flex items-center gap-3 rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700">
+            <div className="flex items-center gap-3 rounded-2xl bg-green-50 dark:bg-green-950/50 px-4 py-3 text-sm text-green-700 dark:text-green-300">
               <CheckCircle2 className="h-4 w-4" />
               {t("Domain found in Cloudflare as {domain}", { domain: domainCheck.zone.name })}
             </div>
           )}
           {error && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <p className="rounded-2xl border border-red-100 dark:border-red-900 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-300">
               {t(error)}
             </p>
           )}
@@ -357,17 +357,17 @@ export function RegisterClient() {
       ) : (
         <form method="post" onSubmit={onSubmit} className="space-y-5">
 					{mxChecking && (
-						<div className="flex items-center gap-3 rounded-2xl bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
+						<div className="flex items-center gap-3 rounded-2xl bg-neutral-50 dark:bg-neutral-950 px-4 py-3 text-sm text-neutral-600 dark:text-neutral-300">
 							<LoaderCircle className="h-4 w-4 animate-spin" />
 							{t("Checking existing MX records")}</div>
 					)}
 					{mxRecordsExist === false && (
-						<div className="flex items-center gap-3 rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700">
+						<div className="flex items-center gap-3 rounded-2xl bg-green-50 dark:bg-green-950/50 px-4 py-3 text-sm text-green-700 dark:text-green-300">
 							<CheckCircle2 className="h-4 w-4" />
 							{t("No existing MX records found")}</div>
 					)}
 					{mxRecordsExist === true && (
-						<label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-amber-900">
+						<label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 px-4 py-4 text-amber-900 dark:text-amber-200">
 							<Checkbox
 								checked={replaceMxRecords}
 								onChange={(event) => setReplaceMxRecords(event.target.checked)}
@@ -393,7 +393,7 @@ export function RegisterClient() {
                 required
 								className="pr-34"
               />
-              <span className="max-w-36 truncate text-sm font-medium text-neutral-500 absolute top-2.5 right-5">
+              <span className="max-w-36 truncate text-sm font-medium text-neutral-500 dark:text-neutral-400 absolute top-2.5 right-5">
                 @{accountDomain ?? t("domain")}
               </span>
             </div>
@@ -419,11 +419,11 @@ export function RegisterClient() {
               placeholder="you@gmail.com"
               required
             />
-            {/* <p className="text-xs leading-5 text-neutral-500">Used later for password reset.</p> */}
+            {/* <p className="text-xs leading-5 text-neutral-500 dark:text-neutral-400">Used later for password reset.</p> */}
           </div>
 
           {error && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <p className="rounded-2xl border border-red-100 dark:border-red-900 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-300">
               {t(error)}
             </p>
           )}

@@ -21,9 +21,9 @@ export function BulkMessageToolbar({
 	const deleteLabel = permanentDelete ? t("Delete permanently") : t("Delete");
 
 	return (
-		<div className="flex min-w-0 items-center gap-2 text-neutral-600 w-full">
+		<div className="flex min-w-0 items-center gap-2 text-neutral-600 dark:text-neutral-300 w-full">
 			{!hideSelectedCount && (
-				<span className="mr-2 text-sm font-medium text-neutral-800">
+				<span className="mr-2 text-sm font-medium text-neutral-800 dark:text-neutral-200">
 					{t("{count} selected", { count: selectedCount })}</span>
 			)}
 			<Tooltip label={t("Archive")}>
@@ -37,7 +37,7 @@ export function BulkMessageToolbar({
 				</Button>
 			</Tooltip>
 			<Tooltip label={deleteLabel}>
-				<Button variant="ghost" size="sm" onClick={() => onAction(permanentDelete ? "delete" : "trash")} disabled={pending} aria-label={deleteLabel} className={permanentDelete ? "text-red-600 hover:bg-red-50 hover:text-red-700" : undefined}>
+				<Button variant="ghost" size="sm" onClick={() => onAction(permanentDelete ? "delete" : "trash")} disabled={pending} aria-label={deleteLabel} className={permanentDelete ? "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 hover:text-red-700 dark:hover:text-red-300" : undefined}>
 					<Trash2 className="h-4 w-4" />
 				</Button>
 			</Tooltip>
@@ -55,7 +55,7 @@ export function BulkMessageToolbar({
 			<span className="flex-1" />
 			<Tooltip label={t("Move selected messages")}>
 					<Select
-						className="bg-white text-xs font-medium py-2 text-neutral-700 outline-none"
+						className="bg-card text-xs font-medium py-2 text-neutral-700 dark:text-neutral-300 outline-none"
 						disabled={pending}
 						defaultValue=""
 						aria-label={t("Move selected messages")}

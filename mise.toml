@@ -32,6 +32,16 @@ run = "npx --no-install eslint src/lib/auth src/lib/api/auth.ts src/lib/api/key-
 env = { MAILFLARE_RUNTIME = "node", DATA_DIR = "work/password-preview", HOST = "127.0.0.1", PORT = "3019", SMTP_INBOUND_PORT = "0" }
 run = "npm run dev:node"
 
+[tasks."theme:dev"]
+env = { MAILFLARE_RUNTIME = "node", DATA_DIR = "work/theme-preview", HOST = "127.0.0.1", PORT = "3024", SMTP_INBOUND_PORT = "0" }
+run = "npm run dev:node"
+
+[tasks."theme:build"]
+run = "npm run build:node"
+
+[tasks."theme:lint"]
+run = "npx --no-install eslint src/components/theme-*.ts src/components/theme-*.tsx src/components/appearance-controls.tsx src/components/language-switcher.tsx src/components/sidebar-footer.tsx src/app/layout.tsx"
+
 [tasks.migrate]
 run = "wrangler d1 migrations apply DB --remote"
 

@@ -369,8 +369,8 @@ export function ComposeForm({
 
 	const frameClass =
 		mode === "popup"
-			? "fixed bottom-4 right-4 z-40 flex h-[min(520px,calc(100vh-88px))] w-[min(560px,calc(100vw-32px))] flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-2xl"
-			: "flex h-full min-h-[720px] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm";
+			? "fixed bottom-4 right-4 z-40 flex h-[min(520px,calc(100vh-88px))] w-[min(560px,calc(100vw-32px))] flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700 bg-card shadow-2xl"
+			: "flex h-full min-h-[720px] w-full max-w-4xl flex-col overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700 bg-card shadow-sm";
 
 	return (
 		<>
@@ -387,8 +387,8 @@ export function ComposeForm({
 			<form onSubmit={onSubmit} className={frameClass}>
 				<div className="flex h-9 items-center justify-between bg-neutral-800 px-4 text-sm font-medium text-white">
 					<span className="flex items-center gap-2">
-						{threading?.inReplyTo && <Reply className="h-3.5 w-3.5 text-neutral-300" />}
-						{!threading?.inReplyTo && /^fwd?:/i.test(subject) && <Forward className="h-3.5 w-3.5 text-neutral-300" />}
+						{threading?.inReplyTo && <Reply className="h-3.5 w-3.5 text-neutral-300 dark:text-neutral-500" />}
+						{!threading?.inReplyTo && /^fwd?:/i.test(subject) && <Forward className="h-3.5 w-3.5 text-neutral-300 dark:text-neutral-500" />}
 						{loadingDraft
 							? t("Loading draft")
 							: threading?.inReplyTo
@@ -400,7 +400,7 @@ export function ComposeForm({
 										: t("New Message")}
 					</span>
 					{mode === "popup" && (
-						<div className="flex items-center gap-3 text-neutral-300">
+						<div className="flex items-center gap-3 text-neutral-300 dark:text-neutral-500">
 							<Minimize2 className="h-4 w-4" />
 							<button type="button" onClick={onClose}>
 								<X className="h-4 w-4" />
@@ -408,8 +408,8 @@ export function ComposeForm({
 						</div>
 					)}
 				</div>
-				<div className="border-b border-neutral-100 px-4 py-1 flex flex-row items-center">
-					<Label htmlFor={`${mode}-from`} className="text-sm text-neutral-500">{t("From")}</Label>
+				<div className="border-b border-neutral-100 dark:border-neutral-800 px-4 py-1 flex flex-row items-center">
+					<Label htmlFor={`${mode}-from`} className="text-sm text-neutral-500 dark:text-neutral-400">{t("From")}</Label>
 					<Select
 						id={`${mode}-from`}
 						value={selectedMailbox && selectedFrom ? `${selectedMailbox.id}|${selectedFrom}` : ""}
@@ -437,11 +437,11 @@ export function ComposeForm({
 					trailing={
 						<>
 							{!showCc && (
-								<button type="button" className="rounded px-1 hover:text-neutral-800" onClick={() => setShowCc(true)}>
+								<button type="button" className="rounded px-1 hover:text-neutral-800 dark:hover:text-neutral-200" onClick={() => setShowCc(true)}>
 									{t("Cc")}</button>
 							)}
 							{!showBcc && (
-								<button type="button" className="rounded px-1 hover:text-neutral-800" onClick={() => setShowBcc(true)}>
+								<button type="button" className="rounded px-1 hover:text-neutral-800 dark:hover:text-neutral-200" onClick={() => setShowBcc(true)}>
 									{t("Bcc")}</button>
 							)}
 						</>
@@ -469,7 +469,7 @@ export function ComposeForm({
 						autoFocus={!loadingDraft && bcc.length === 0}
 					/>
 				)}
-				<div className="border-b border-neutral-100 px-4 py-1">
+				<div className="border-b border-neutral-100 dark:border-neutral-800 px-4 py-1">
 					<Label htmlFor={`${mode}-subject`} className="sr-only">{t("Subject")}</Label>
 					<Input
 						id={`${mode}-subject`}
@@ -510,7 +510,7 @@ export function ComposeForm({
 					}
 					toolbarEnd={
 						<>
-							{/* <span className="mx-1 h-5 w-px bg-neutral-200" /> */}
+							{/* <span className="mx-1 h-5 w-px bg-neutral-200 dark:bg-neutral-700" /> */}
 							<Input
 								ref={attachmentInput}
 								type="file"
@@ -524,7 +524,7 @@ export function ComposeForm({
 									aria-label={t("Attach files")}
 									onClick={() => attachmentInput.current?.click()}
 									disabled={loading || loadingDraft}
-									className="rounded-md p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-50"
+									className="rounded-md p-1.5 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100 disabled:pointer-events-none disabled:opacity-50"
 								>
 									<Paperclip className="h-4 w-4" />
 								</button>
@@ -536,7 +536,7 @@ export function ComposeForm({
 									aria-label={t("Delete draft")}
 									onClick={() => void deleteDraftAndClose()}
 									disabled={loading || loadingDraft || deletingDraft}
-									className="rounded-md p-1.5 text-neutral-500 hover:bg-red-50 hover:text-red-600 disabled:pointer-events-none disabled:opacity-50"
+									className="rounded-md p-1.5 text-neutral-500 dark:text-neutral-400 hover:bg-red-50 dark:hover:bg-red-950/50 hover:text-red-600 dark:hover:text-red-400 disabled:pointer-events-none disabled:opacity-50"
 								>
 									<Trash2 className="h-4 w-4" />
 								</button>
@@ -545,20 +545,20 @@ export function ComposeForm({
 					}
 				/>
 				{(attachments.length > 0 || storedAttachments.length > 0) && (
-					<div className="flex flex-wrap gap-2 border-t border-neutral-100 px-4 py-3">
+					<div className="flex flex-wrap gap-2 border-t border-neutral-100 dark:border-neutral-800 px-4 py-3">
 						{storedAttachments.map((attachment) => (
 							<div
 								key={attachment.id}
-								className="flex max-w-full items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm"
+								className="flex max-w-full items-center gap-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-950 px-3 py-2 text-sm"
 								title={t("Carried over from the forwarded message")}
 							>
-								<FileText className="h-4 w-4 shrink-0 text-neutral-500" />
+								<FileText className="h-4 w-4 shrink-0 text-neutral-500 dark:text-neutral-400" />
 								<span className="max-w-48 truncate">{attachment.filename}</span>
 								<span className="text-xs text-neutral-400">{formatAttachmentSize(attachment.size)}</span>
 								<button
 									type="button"
 									onClick={() => void removeStoredAttachment(attachment.id)}
-									className="rounded-full p-1 text-neutral-400 hover:bg-neutral-200 hover:text-neutral-700"
+									className="rounded-full p-1 text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-300"
 								>
 									<X className="h-3.5 w-3.5" />
 									<span className="sr-only">{t("Remove attachment")}</span>
@@ -568,9 +568,9 @@ export function ComposeForm({
 						{attachments.map((attachment) => (
 							<div
 								key={attachment.id}
-								className="flex max-w-full items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm"
+								className="flex max-w-full items-center gap-2 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-950 px-3 py-2 text-sm"
 							>
-								<FileText className="h-4 w-4 shrink-0 text-neutral-500" />
+								<FileText className="h-4 w-4 shrink-0 text-neutral-500 dark:text-neutral-400" />
 								<span className="max-w-48 truncate">{attachment.file.name}</span>
 								<span className="text-xs text-neutral-400">
 									{formatAttachmentSize(attachment.file.size)}
@@ -582,7 +582,7 @@ export function ComposeForm({
 											current.filter((item) => item.id !== attachment.id),
 										)
 									}
-									className="rounded-full p-1 text-neutral-400 hover:bg-neutral-200 hover:text-neutral-700"
+									className="rounded-full p-1 text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 hover:text-neutral-700 dark:hover:text-neutral-300"
 								>
 									<X className="h-3.5 w-3.5" />
 									<span className="sr-only">{t("Remove attachment")}</span>

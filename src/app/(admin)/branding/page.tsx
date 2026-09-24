@@ -29,10 +29,10 @@ export default function BrandingPage() {
 		return (
 			<div className="space-y-6">
 				<div>
-					<h1 className="text-3xl font-medium text-neutral-900">{t("Branding")}</h1>
-					<p className="mt-2 text-sm text-neutral-500">{t("Custom branding is available with a Pro or Team license.")}</p>
+					<h1 className="text-3xl font-medium text-neutral-900 dark:text-neutral-100">{t("Branding")}</h1>
+					<p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">{t("Custom branding is available with a Pro or Team license.")}</p>
 				</div>
-				<Card className="rounded-3xl border-0 bg-white p-6">
+				<Card className="rounded-3xl border-0 bg-card p-6">
 					<CardHeader className="py-0">
 						<CardTitle className="flex items-center gap-2"><LockKeyhole className="h-5 w-5" />{t("License required")}</CardTitle>
 						<CardDescription>{t("This installation continues to use the original Mailflare name, app icon, and favicon.")}</CardDescription>
@@ -71,10 +71,10 @@ export default function BrandingPage() {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-3xl font-medium text-neutral-900">{t("Branding")}</h1>
-				<p className="mt-2 text-sm text-neutral-500">{t("Customize the app identity shown to everyone using this installation.")}</p>
+				<h1 className="text-3xl font-medium text-neutral-900 dark:text-neutral-100">{t("Branding")}</h1>
+				<p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">{t("Customize the app identity shown to everyone using this installation.")}</p>
 			</div>
-			<Card className="rounded-3xl border-0 bg-white p-6">
+			<Card className="rounded-3xl border-0 bg-card p-6">
 				<CardHeader className="py-0">
 					<CardTitle className="flex items-center gap-2"><Palette className="h-5 w-5" />{t("App identity")}</CardTitle>
 					<CardDescription>{t("The icon is also used as the browser favicon.")}</CardDescription>
@@ -88,12 +88,12 @@ export default function BrandingPage() {
 						<div className="space-y-2">
 							<Label>{t("App icon")}</Label>
 							<Input ref={inputRef} type="file" accept={BRANDING_ICON_ACCEPT} className="hidden" onChange={(event) => pickIcon(event.target.files?.[0] ?? null)} />
-							<button type="button" onClick={() => inputRef.current?.click()} className="flex items-center gap-4 rounded-2xl border border-dashed border-neutral-300 p-4 text-left hover:bg-neutral-50">
+							<button type="button" onClick={() => inputRef.current?.click()} className="flex items-center gap-4 rounded-2xl border border-dashed border-neutral-300 dark:border-neutral-600 p-4 text-left hover:bg-neutral-50 dark:hover:bg-neutral-950">
 								<img src={preview ?? branding.iconUrl} alt={t("App icon preview")} className="h-16 w-16 rounded-2xl object-cover" />
-								<span className="text-sm text-neutral-600"><ImagePlus className="mb-1 h-5 w-5" />{t("Choose PNG, JPEG, WebP, or GIF")}<br /><span className="text-xs text-neutral-400">{t("Maximum 2 MB")}</span></span>
+								<span className="text-sm text-neutral-600 dark:text-neutral-300"><ImagePlus className="mb-1 h-5 w-5" />{t("Choose PNG, JPEG, WebP, or GIF")}<br /><span className="text-xs text-neutral-400">{t("Maximum 2 MB")}</span></span>
 							</button>
 						</div>
-						{status && <p className="text-sm text-neutral-600">{t(status)}</p>}
+						{status && <p className="text-sm text-neutral-600 dark:text-neutral-300">{t(status)}</p>}
 						<Button type="submit" disabled={saving || !appName.trim()}>{saving ? t("Saving...") : t("Save branding")}</Button>
 					</form>
 				</CardContent>

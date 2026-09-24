@@ -47,14 +47,14 @@ export function SpamFilterSettings() {
 
 	return (
 		<div>
-			<label className="flex items-start gap-3 rounded-xl bg-neutral-50 p-4">
+			<label className="flex items-start gap-3 rounded-xl bg-neutral-50 dark:bg-neutral-950 p-4">
 				<span className="flex-1">
-					<span className="block text-sm font-medium text-neutral-900">{t("Spam Filter")}</span>
-					<span className="mt-1 block text-sm text-neutral-500">{t("Analyze incoming messages locally and detect high-confidence spam")}</span>
+					<span className="block text-sm font-medium text-neutral-900 dark:text-neutral-100">{t("Spam Filter")}</span>
+					<span className="mt-1 block text-sm text-neutral-500 dark:text-neutral-400">{t("Analyze incoming messages locally and detect high-confidence spam")}</span>
 				</span>
 				<Switch checked={enabled} disabled={loading} onCheckedChange={(value) => void updateEnabled(value)} aria-label={t("Enable spam filter")} />
 			</label>
-			{error && <p className="mt-2 px-4 text-sm text-red-600">{t(error)}</p>}
+			{error && <p className="mt-2 px-4 text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
 		</div>
 	);
 }

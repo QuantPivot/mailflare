@@ -84,7 +84,7 @@ export default function WebhooksPage() {
 			<div className="flex flex-wrap items-end justify-between gap-4">
 				<div>
 					<h1 className="text-2xl font-semibold">{t("Webhooks")}</h1>
-					<p className="mt-1 text-sm text-neutral-500">
+					<p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
 						{t("Deliver message events to your own endpoints, with automatic retries.")}</p>
 				</div>
 				<Button
@@ -100,9 +100,9 @@ export default function WebhooksPage() {
 				<Card>
 					<CardContent className="pt-6 text-sm">
 						<p className="font-medium">{t("Signing secret — shown once")}</p>
-						<p className="mt-1 text-neutral-500">
+						<p className="mt-1 text-neutral-500 dark:text-neutral-400">
 							{t("Verify the")}{" "}<code>X-Email-Platform-Signature</code> {" "}{t("header (HMAC-SHA256 of the raw body) with this secret.")}</p>
-						<code className="mt-2 block break-all rounded-lg bg-neutral-100 p-2 text-xs">
+						<code className="mt-2 block break-all rounded-lg bg-neutral-100 dark:bg-neutral-800 p-2 text-xs">
 							{secret}
 						</code>
 						<Button variant="outline" size="sm" className="mt-3" onClick={() => setSecret(null)}>
@@ -115,18 +115,18 @@ export default function WebhooksPage() {
 				<SectionRowSkeleton />
 			) : !webhooks.data?.length ? (
 				<Card>
-					<CardContent className="pt-6 text-sm text-neutral-500">
+					<CardContent className="pt-6 text-sm text-neutral-500 dark:text-neutral-400">
 						{t("No endpoints yet. Add one to start receiving events.")}</CardContent>
 				</Card>
 			) : (
-				<section className="divide-y divide-neutral-100 overflow-hidden rounded-3xl bg-white">
+				<section className="divide-y divide-neutral-100 dark:divide-neutral-800 overflow-hidden rounded-3xl bg-card">
 					{webhooks.data.map((hook) => (
 						<div key={hook.id} className="px-5 py-6 sm:px-6">
 							<div className="flex flex-wrap items-start justify-between gap-4">
 								<div className="min-w-0 flex-1">
-									<h2 className="truncate text-base font-semibold text-neutral-900">{hook.url}</h2>
+									<h2 className="truncate text-base font-semibold text-neutral-900 dark:text-neutral-100">{hook.url}</h2>
 									{hook.description && (
-										<p className="mt-1 text-sm text-neutral-500">{hook.description}</p>
+										<p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{hook.description}</p>
 									)}
 									<div className="mt-3 flex flex-wrap gap-1.5">
 										{hook.events.map((event) => (
@@ -137,7 +137,7 @@ export default function WebhooksPage() {
 									</div>
 								</div>
 								<div className="flex items-center gap-2 rounded-full">
-									<span className="text-xs font-medium text-neutral-600">{hook.enabled ? t("Enabled") : t("Disabled")}</span>
+									<span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">{hook.enabled ? t("Enabled") : t("Disabled")}</span>
 									<Switch
 										checked={hook.enabled}
 										onCheckedChange={() => toggle.mutate(hook)}
@@ -145,32 +145,32 @@ export default function WebhooksPage() {
 									/>
 								</div>
 							</div>
-							<div className="mt-5 grid grid-cols-2 overflow-hidden rounded-2xl bg-neutral-50 sm:grid-cols-5">
+							<div className="mt-5 grid grid-cols-2 overflow-hidden rounded-2xl bg-neutral-50 dark:bg-neutral-950 sm:grid-cols-5">
 								<div className="px-4 py-3">
-									<span className="block text-lg font-semibold text-neutral-900">{hook.stats.total}</span>
-									<span className="block text-xs text-neutral-500">{t("Deliveries")}</span>
+									<span className="block text-lg font-semibold text-neutral-900 dark:text-neutral-100">{hook.stats.total}</span>
+									<span className="block text-xs text-neutral-500 dark:text-neutral-400">{t("Deliveries")}</span>
 								</div>
 								<div className="px-4 py-3">
-									<span className={`block text-lg font-semibold ${hook.stats.delivered ? "text-green-600" : "text-neutral-400"}`}>
+									<span className={`block text-lg font-semibold ${hook.stats.delivered ? "text-green-600 dark:text-green-400" : "text-neutral-400"}`}>
 										{hook.stats.delivered}
 									</span>
-									<span className="block text-xs text-neutral-500">{t("Delivered")}</span>
+									<span className="block text-xs text-neutral-500 dark:text-neutral-400">{t("Delivered")}</span>
 								</div>
 								<div className="px-4 py-3">
-									<span className={`block text-lg font-semibold ${hook.stats.pending ? "text-amber-600" : "text-neutral-400"}`}>
+									<span className={`block text-lg font-semibold ${hook.stats.pending ? "text-amber-600 dark:text-amber-400" : "text-neutral-400"}`}>
 										{hook.stats.pending}
 									</span>
-									<span className="block text-xs text-neutral-500">{t("In flight")}</span>
+									<span className="block text-xs text-neutral-500 dark:text-neutral-400">{t("In flight")}</span>
 								</div>
 								<div className="px-4 py-3">
-									<span className={`block text-lg font-semibold ${hook.stats.failing ? "text-red-600" : "text-neutral-400"}`}>
+									<span className={`block text-lg font-semibold ${hook.stats.failing ? "text-red-600 dark:text-red-400" : "text-neutral-400"}`}>
 										{hook.stats.failing}
 									</span>
-									<span className="block text-xs text-neutral-500">{t("Failed")}</span>
+									<span className="block text-xs text-neutral-500 dark:text-neutral-400">{t("Failed")}</span>
 								</div>
 								<div className="px-4 py-3">
-									<span className="block text-lg font-semibold text-neutral-500">{hook.maxAttempts}</span>
-									<span className="block text-xs text-neutral-500">{t("Max attempts")}</span>
+									<span className="block text-lg font-semibold text-neutral-500 dark:text-neutral-400">{hook.maxAttempts}</span>
+									<span className="block text-xs text-neutral-500 dark:text-neutral-400">{t("Max attempts")}</span>
 								</div>
 							</div>
 
@@ -185,7 +185,7 @@ export default function WebhooksPage() {
 								</Button>
 								<div className="ml-auto flex flex-wrap items-center gap-2">
 									{testResult[hook.id] && (
-										<p className="mr-1 text-sm text-neutral-600">
+										<p className="mr-1 text-sm text-neutral-600 dark:text-neutral-300">
 											{t("Test delivery:")}{" "}<span className="font-medium">{t(testResult[hook.id])}</span>
 										</p>
 									)}
@@ -254,11 +254,11 @@ export default function WebhooksPage() {
 							{WEBHOOK_EVENTS.map((event) => (
 								<label
 									key={event.value}
-									className="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 px-3 py-2"
+									className="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 dark:border-neutral-700 px-3 py-2"
 								>
 									<span>
 										<span className="block text-sm font-medium">{t(event.label)}</span>
-										<span className="block text-xs text-neutral-500">{t(event.hint)}</span>
+										<span className="block text-xs text-neutral-500 dark:text-neutral-400">{t(event.hint)}</span>
 									</span>
 									<input
 										type="checkbox"
@@ -281,7 +281,7 @@ export default function WebhooksPage() {
 							/>
 						</div>
 
-						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						{error && <p className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
 
 						<div className="flex justify-end gap-2">
 							<Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>

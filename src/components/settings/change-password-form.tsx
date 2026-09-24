@@ -84,7 +84,7 @@ export function ChangePasswordForm({ onSuccess }: ChangePasswordFormProps) {
 				<Button type="submit" disabled={loading}>
 					{loading ? t("Changing...") : t("Change password")}
 				</Button>
-				{status && <p role="status" className="text-sm text-neutral-500">{t(status)}</p>}
+				{status && <p role="status" className="text-sm text-neutral-500 dark:text-neutral-400">{t(status)}</p>}
 			</div>
 		</form>
 	);

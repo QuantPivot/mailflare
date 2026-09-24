@@ -35,7 +35,7 @@ export function LicenseIndicator() {
 	return (
 		<Link
 				href="/licenses"
-				className="rounded-full bg-blue-100 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-blue-900 hover:bg-blue-200"
+				className="rounded-full bg-blue-100 dark:bg-blue-900/50 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-blue-900 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800/50"
 			>
 				{t("Upgrade")}</Link>
 	);

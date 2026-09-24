@@ -90,7 +90,7 @@ export function ContactDetailsTrigger({
 			<button
 				type="button"
 				onClick={() => setOpen(true)}
-				className={`${className ?? ""} rounded-sm text-left hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200`}
+				className={`${className ?? ""} rounded-sm text-left hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-200 dark:focus-visible:ring-blue-800`}
 			>
 				{shownName}
 			</button>
@@ -127,22 +127,22 @@ export function ContactDetailsTrigger({
 								disabled
 							/>
 						</div>
-						<div className="grid gap-3 rounded-lg bg-neutral-50 p-3 text-sm sm:grid-cols-2">
+						<div className="grid gap-3 rounded-lg bg-neutral-50 dark:bg-neutral-950 p-3 text-sm sm:grid-cols-2">
 							<div>
 								<p className="text-xs font-medium uppercase text-neutral-400">{t("Source")}</p>
-								<p className="mt-1 capitalize text-neutral-700">{contact?.source === "manual" ? t("Manual") : contact?.source === "inbound" ? t("Inbound message") : contact?.source === "outbound" ? t("Outbound message") : t("Email")}</p>
+								<p className="mt-1 capitalize text-neutral-700 dark:text-neutral-300">{contact?.source === "manual" ? t("Manual") : contact?.source === "inbound" ? t("Inbound message") : contact?.source === "outbound" ? t("Outbound message") : t("Email")}</p>
 							</div>
 							<div>
 								<p className="text-xs font-medium uppercase text-neutral-400">{t("Last seen")}</p>
-								<p className="mt-1 text-neutral-700">
+								<p className="mt-1 text-neutral-700 dark:text-neutral-300">
 									{contact?.lastSeenAt ? new Date(contact.lastSeenAt).toLocaleDateString(locale, { dateStyle: "medium" }) : t("Unknown")}
 								</p>
 							</div>
 							{contact?.blocked && (
-								<p className="text-sm font-medium text-red-600">{t("Blocked contact")}</p>
+								<p className="text-sm font-medium text-red-600 dark:text-red-400">{t("Blocked contact")}</p>
 							)}
 						</div>
-						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						{error && <p className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
 						<Button
 							type="button"
 							onClick={saveContact}

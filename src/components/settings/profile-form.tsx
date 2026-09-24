@@ -95,14 +95,14 @@ export function ProfileForm({
     <>
       <form
         onSubmit={onProfileSubmit}
-        className="space-y-6 rounded-b-lg rounded-t-3xl bg-white p-6"
+        className="space-y-6 rounded-b-lg rounded-t-3xl bg-card p-6"
       >
         <div className="flex items-center gap-4">
           <ProfileAvatarForm name={name} />
           <div>
-            <p className="text-sm font-medium text-neutral-900">
+            <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
               {t("Profile picture")}</p>
-            <p className="mt-1 text-sm text-neutral-500">
+            <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
               {t("Choose a picture to show across your account.")}</p>
           </div>
         </div>
@@ -124,7 +124,7 @@ export function ProfileForm({
             type="email"
             readOnly
             aria-readonly="true"
-            className="bg-neutral-50"
+            className="bg-neutral-50 dark:bg-neutral-950"
           />
         </div>
 
@@ -136,19 +136,19 @@ export function ProfileForm({
             {savingProfile ? t("Saving...") : t("Save profile")}
           </Button>
           {profileStatus && (
-            <p className="text-sm text-neutral-500">{t(profileStatus)}</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t(profileStatus)}</p>
           )}
         </div>
       </form>
 
       <form
         onSubmit={onRecoverySubmit}
-        className="space-y-4 rounded-lg bg-white p-6"
+        className="space-y-4 rounded-lg bg-card p-6"
       >
         <div>
-          <h3 className="text-lg font-semibold text-neutral-900">
+          <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
             {t("Recovery email")}</h3>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
             {t("Used to recover access if you cannot sign in.")}</p>
         </div>
         <div className="space-y-2">
@@ -169,7 +169,7 @@ export function ProfileForm({
             {savingRecovery ? t("Saving...") : t("Save recovery email")}
           </Button>
           {recoveryStatus && (
-            <p className="text-sm text-neutral-500">{t(recoveryStatus)}</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t(recoveryStatus)}</p>
           )}
         </div>
       </form>

@@ -23,7 +23,7 @@ export function getAttachmentVisual(
 	if (previewKind === "image") {
 		return {
 			icon: Image,
-			iconClassName: "bg-blue-50 text-blue-700",
+			iconClassName: "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300",
 			label: "Image",
 			thumbnail: "image",
 		};
@@ -47,7 +47,7 @@ export function getAttachmentVisual(
 	if (previewKind === "pdf") {
 		return {
 			icon: FileText,
-			iconClassName: "bg-red-50 text-red-700",
+			iconClassName: "bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300",
 			label: "PDF",
 			thumbnail: null,
 		};
@@ -72,7 +72,7 @@ export function getAttachmentVisual(
 	) {
 		return {
 			icon: Presentation,
-			iconClassName: "bg-amber-50 text-amber-700",
+			iconClassName: "bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300",
 			label: "Presentation",
 			thumbnail: null,
 		};
@@ -115,7 +115,7 @@ export function getAttachmentVisual(
 
 	return {
 		icon: FileText,
-		iconClassName: "bg-neutral-100 text-neutral-600",
+		iconClassName: "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300",
 		label: "File",
 		thumbnail: null,
 	};

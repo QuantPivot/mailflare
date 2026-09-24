@@ -119,10 +119,10 @@ export default function CalendarPage() {
     <div className="mx-auto max-w-5xl p-8">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="flex items-center gap-3 text-2xl font-semibold text-neutral-900">
-            <CalendarDays className="h-7 w-7 text-blue-600" />
+          <h1 className="flex items-center gap-3 text-2xl font-semibold text-neutral-900 dark:text-neutral-100">
+            <CalendarDays className="h-7 w-7 text-blue-600 dark:text-blue-400" />
             {t("Calendar")}</h1>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
             {t("Your upcoming events and meeting invitations.")}</p>
         </div>
         <Button disabled={pendingAction !== null} onClick={() => { setEditing(null); setAdding(true); }}>
@@ -131,7 +131,7 @@ export default function CalendarPage() {
       </div>
       {adding && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/35 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
+          <div className="w-full max-w-lg rounded-2xl bg-card p-6 shadow-2xl">
             <h2 className="text-lg font-semibold">{editing ? t("Edit event") : t("Create event")}</h2>
             <div className="mt-5 grid gap-3">
               <Input
@@ -172,26 +172,26 @@ export default function CalendarPage() {
           </div>
         </div>
       )}
-      <div className="overflow-hidden rounded-xl border border-neutral-200">
+      <div className="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
         {events.length === 0 ? (
-          <p className="p-8 text-center text-sm text-neutral-500">
+          <p className="p-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
             {t("No events this month.")}</p>
         ) : (
           events.map((event) => (
             <div
               key={event.id}
-              className="flex items-center gap-5 border-b border-neutral-100 px-5 py-4 last:border-b-0"
+              className="flex items-center gap-5 border-b border-neutral-100 dark:border-neutral-800 px-5 py-4 last:border-b-0"
             >
               <div className="w-36">
                 <span>{new Date(event.startsAt).toLocaleDateString(locale)}</span>
-                <time className="text-xs text-neutral-500 flex flex-col">
+                <time className="text-xs text-neutral-500 dark:text-neutral-400 flex flex-col">
                   <span>{new Date(event.startsAt).toLocaleTimeString(locale)}</span>
                 </time>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-neutral-900">{event.title}</p>
+                <p className="font-medium text-neutral-900 dark:text-neutral-100">{event.title}</p>
                 {event.location && (
-                  <p className="text-sm text-neutral-500">{event.location}</p>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">{event.location}</p>
                 )}
               </div>
               <Button

@@ -47,11 +47,11 @@ export function ShortcutsHelpDialog({
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="relative w-full max-w-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col z-10 max-h-[85vh]">
+      <div className="relative w-full max-w-2xl bg-card dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col z-10 max-h-[85vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100 dark:border-neutral-800">
           <div className="flex items-center gap-2.5">
-            <div className="p-1.5 bg-blue-50 dark:bg-blue-950/50 text-blue-600 rounded-lg">
+            <div className="p-1.5 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-lg">
               <Keyboard className="w-5 h-5" />
             </div>
             <div>

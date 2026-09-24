@@ -71,7 +71,7 @@ export function MessageAttachmentViewer({
 					<DialogDescription>{attachment.type}</DialogDescription>
 				</DialogHeader>
 
-				<div className="flex min-h-0 flex-1 items-center justify-center overflow-auto rounded-lg bg-neutral-100">
+				<div className="flex min-h-0 flex-1 items-center justify-center overflow-auto rounded-lg bg-neutral-100 dark:bg-neutral-800">
 					{previewKind === "image" && (
 						<img
 							src={previewUrl}
@@ -83,7 +83,7 @@ export function MessageAttachmentViewer({
 						<iframe
 							src={previewUrl}
 							title={attachment.filename}
-							className="h-full w-full border-0 bg-white"
+							className="h-full w-full border-0 bg-card"
 						/>
 					)}
 					{previewKind === "audio" && (
@@ -94,11 +94,11 @@ export function MessageAttachmentViewer({
 					)}
 					{previewKind === "text" && (
 						textError || textContent ? (
-							<pre className="h-full w-full overflow-auto whitespace-pre-wrap p-5 text-sm text-neutral-800">
+							<pre className="h-full w-full overflow-auto whitespace-pre-wrap p-5 text-sm text-neutral-800 dark:text-neutral-200">
 								{textError ? t(textError) : textContent}
 							</pre>
 						) : (
-							<div className="h-full w-full space-y-3 bg-white p-5">
+							<div className="h-full w-full space-y-3 bg-card p-5">
 								<Skeleton className="h-4 w-full" />
 								<Skeleton className="h-4 w-11/12" />
 								<Skeleton className="h-4 w-4/5" />
@@ -108,7 +108,7 @@ export function MessageAttachmentViewer({
 					{previewKind === "unsupported" && (
 						<div className="flex flex-col items-center gap-3 px-6 text-center">
 							<FileWarning className="h-10 w-10 text-neutral-400" />
-							<p className="text-sm text-neutral-600">
+							<p className="text-sm text-neutral-600 dark:text-neutral-300">
 								{t("This file type cannot be previewed safely in the browser.")}</p>
 						</div>
 					)}

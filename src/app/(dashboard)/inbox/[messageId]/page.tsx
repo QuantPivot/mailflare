@@ -93,7 +93,7 @@ export default function MessageDetailPage() {
 
   if (!data?.message) {
     return (
-      <p className="px-6 py-4 text-sm text-neutral-500">
+      <p className="px-6 py-4 text-sm text-neutral-500 dark:text-neutral-400">
         {data?.error ?? t("Message not found")}
       </p>
     );
@@ -141,12 +141,12 @@ export default function MessageDetailPage() {
   return (
     <div className="h-full overflow-y-auto overscroll-contain scrollbar-gutter-stable">
       {!message.read && <MarkAsRead messageId={message.id} />}
-      <div className="flex pt-3 pb-2.75 items-center justify-between px-2 border-b border-neutral-200 sticky top-0 bg-white">
+      <div className="flex pt-3 pb-2.75 items-center justify-between px-2 border-b border-neutral-200 dark:border-neutral-700 sticky top-0 bg-card">
         <div className="flex-1" />
         {/* <div className="flex items-center flex-row gap-6">
 					<Link
 						href={getMessageBackHref(message.direction, message.status)}
-						className="rounded-full p-2 text-neutral-600 hover:bg-neutral-100"
+						className="rounded-full p-2 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
 					>
 						<ArrowLeft className="h-5 w-5" />
 					</Link>
@@ -169,7 +169,7 @@ export default function MessageDetailPage() {
         />
       </div>
       <div className="px-6 pb-2 pt-4">
-        <h1 className="text-2xl text-neutral-900">
+        <h1 className="text-2xl text-neutral-900 dark:text-neutral-100">
           {message.subject ?? t("(no subject)")}
         </h1>
       </div>
@@ -204,7 +204,7 @@ export default function MessageDetailPage() {
                 : undefined}
             />
             <div>
-              <p className="text-sm text-neutral-900 mt-1.25">
+              <p className="text-sm text-neutral-900 dark:text-neutral-100 mt-1.25">
                 <b>
                   {message.direction === "inbound" ? (
                     <ContactDetailsTrigger
@@ -216,9 +216,9 @@ export default function MessageDetailPage() {
                     fromName
                   )}
                 </b>{" "}
-                <span className="text-neutral-500">&lt;{fromAddress}&gt;</span>
+                <span className="text-neutral-500 dark:text-neutral-400">&lt;{fromAddress}&gt;</span>
               </p>
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
                 {t("to")}{" "}
                 {message.direction === "inbound" && toEntries.length <= 1 ? (
                   toName
@@ -231,12 +231,12 @@ export default function MessageDetailPage() {
                 )}
               </p>
               {ccEntries.length > 0 && (
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
                   {t("cc")}{" "}<RecipientList entries={ccEntries} mailboxId={message.mailboxId} />
                 </p>
               )}
               {bccEntries.length > 0 && (
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">
                   {t("bcc")}{" "}<RecipientList entries={bccEntries} mailboxId={message.mailboxId} />
                 </p>
               )}
@@ -254,7 +254,7 @@ export default function MessageDetailPage() {
             />
           </div>
         </div>
-        <div className="prose max-w-none text-neutral-900">
+        <div className="prose max-w-none text-neutral-900 dark:text-neutral-100">
           {htmlBody ? (
             <div className="email-body mx-auto" dangerouslySetInnerHTML={{ __html: htmlBody }} />
           ) : (
@@ -263,13 +263,13 @@ export default function MessageDetailPage() {
             </pre>
           )}
           {quotedHtml && (
-            <details className="group mt-4 border-l-2 border-neutral-200 pl-4">
-              <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md py-2 text-xs font-medium text-neutral-500 hover:text-neutral-800">
+            <details className="group mt-4 border-l-2 border-neutral-200 dark:border-neutral-700 pl-4">
+              <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md py-2 text-xs font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200">
                 <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform group-open:rotate-90" />
                 <span>{t("Quoted text")}</span>
               </summary>
               <div
-                className="email-body max-w-none pb-2 text-sm text-neutral-600"
+                className="email-body max-w-none pb-2 text-sm text-neutral-600 dark:text-neutral-300"
                 dangerouslySetInnerHTML={{ __html: quotedHtml }}
               />
             </details>
@@ -282,8 +282,8 @@ export default function MessageDetailPage() {
           ))}
         </div>
         {cloudAttachmentResult.attachments.length > 0 && (
-          <section className="mt-8 border-t border-neutral-100 py-6">
-            <h2 className="mb-3 text-sm font-semibold text-neutral-900">
+          <section className="mt-8 border-t border-neutral-100 dark:border-neutral-800 py-6">
+            <h2 className="mb-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
               {t("Cloud files ({count})", { count: cloudAttachmentResult.attachments.length })}
             </h2>
             <div className="grid gap-2 sm:grid-cols-2">
@@ -293,14 +293,14 @@ export default function MessageDetailPage() {
                   href={attachment.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-3 rounded-lg border border-neutral-200 p-3 text-left hover:border-blue-200 hover:bg-blue-50/40"
+                  className="flex items-center gap-3 rounded-lg border border-neutral-200 dark:border-neutral-700 p-3 text-left hover:border-blue-200 dark:hover:border-blue-800 hover:bg-blue-50/40 dark:hover:bg-blue-950/40"
                 >
-                  <Cloud className="h-5 w-5 shrink-0 text-blue-600" />
+                  <Cloud className="h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" />
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-neutral-900">
+                    <span className="block truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
                       {attachment.filename}
                     </span>
-                    <span className="block text-xs text-neutral-500">
+                    <span className="block text-xs text-neutral-500 dark:text-neutral-400">
                       {t("Open from {provider}", { provider: attachment.provider })}
                     </span>
                   </span>
@@ -311,8 +311,8 @@ export default function MessageDetailPage() {
           </section>
         )}
         {attachments.length > 0 && (
-          <section className="mt-8 border-t border-neutral-100 py-6">
-            <h2 className="mb-3 text-sm font-semibold text-neutral-900">
+          <section className="mt-8 border-t border-neutral-100 dark:border-neutral-800 py-6">
+            <h2 className="mb-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
               {t("Attachments ({count})", { count: attachments.length })}
             </h2>
             <div className="grid gap-2 sm:grid-cols-2">

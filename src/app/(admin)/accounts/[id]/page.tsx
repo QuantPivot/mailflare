@@ -56,24 +56,24 @@ export default function AccountDetailsPage() {
 		}
 	}
 
-	if (!account) return <p className="text-sm text-neutral-500">{message ?? t("Loading account...")}</p>;
+	if (!account) return <p className="text-sm text-neutral-500 dark:text-neutral-400">{message ?? t("Loading account...")}</p>;
 
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-3xl font-medium text-neutral-900">{t("Details")}</h1>
-				<p className="mt-2 text-sm text-neutral-500">{t("Update this account's profile and status.")}</p>
+				<h1 className="text-3xl font-medium text-neutral-900 dark:text-neutral-100">{t("Details")}</h1>
+				<p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">{t("Update this account's profile and status.")}</p>
 			</div>
-			<section className="space-y-5 rounded-3xl bg-white p-6">
+			<section className="space-y-5 rounded-3xl bg-card p-6">
 				<div className="flex items-center gap-4">
-					<span className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-xl font-semibold text-blue-700">
+					<span className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-blue-100 dark:bg-blue-900/50 text-xl font-semibold text-blue-700 dark:text-blue-300">
 						{account.name.charAt(0).toUpperCase()}
 						{account.hasAvatar && (
 							<img src={`/api/accounts/${id}/avatar?v=${avatarVersion}`} alt="" className="absolute inset-0 h-full w-full object-cover" />
 						)}
 					</span>
 					<Label className="cursor-pointer">
-						<span className="inline-flex h-9 items-center gap-2 rounded-md border border-neutral-200 px-3 text-sm">
+						<span className="inline-flex h-9 items-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm">
 							<Upload className="h-4 w-4" />
 							{t("Change avatar")}</span>
 						<Input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadAvatar(event.target.files?.[0])} />
@@ -81,7 +81,7 @@ export default function AccountDetailsPage() {
 				</div>
 				<div className="space-y-2">
 					<Label htmlFor="account-email">{t("Email")}</Label>
-					<Input id="account-email" value={account.email} readOnly className="bg-neutral-50 text-neutral-500" />
+					<Input id="account-email" value={account.email} readOnly className="bg-neutral-50 dark:bg-neutral-950 text-neutral-500 dark:text-neutral-400" />
 				</div>
 				<div className="space-y-2">
 					<Label htmlFor="account-name">{t("Name")}</Label>
@@ -96,7 +96,7 @@ export default function AccountDetailsPage() {
 						onChange={(event) => setAccount({ ...account, forwardingEmail: event.target.value || null })}
 						placeholder="destination@example.com"
 					/>
-					<p className="text-xs leading-5 text-neutral-500">
+					<p className="text-xs leading-5 text-neutral-500 dark:text-neutral-400">
 						{t("Incoming mail will also be sent to this verified Cloudflare Email Routing destination.")}</p>
 				</div>}
 				<div className="space-y-2">
@@ -110,12 +110,12 @@ export default function AccountDetailsPage() {
 						onChange={(event) => setAccount({ ...account, newPassword: event.target.value })}
 						placeholder={t("Leave blank to keep the current password")}
 					/>
-					<p className="text-xs leading-5 text-neutral-500">
+					<p className="text-xs leading-5 text-neutral-500 dark:text-neutral-400">
 						{t("Setting a password signs this account out everywhere. Share it with the user through another channel.")}</p>
 				</div>
 				<label className="flex items-start gap-3 text-sm">
 					<Checkbox className="mt-0.5" checked={account.passwordChangeRequired} onChange={(event) => setAccount({ ...account, passwordChangeRequired: event.target.checked })} />
-					<span>{t("Require password change at next sign-in")}<span className="mt-1 block text-xs leading-5 text-neutral-500">{t("The user must choose a new password before accessing their mailbox.")}</span></span>
+					<span>{t("Require password change at next sign-in")}<span className="mt-1 block text-xs leading-5 text-neutral-500 dark:text-neutral-400">{t("The user must choose a new password before accessing their mailbox.")}</span></span>
 				</label>
 				<label className="flex items-center gap-3 text-sm">
 					<Checkbox checked={!account.disabled} onChange={(event) => setAccount({ ...account, disabled: !event.target.checked })} />
@@ -124,7 +124,7 @@ export default function AccountDetailsPage() {
 					{saving ? t("Saving...") : t("Save details")}
 				</Button>
 			</section>
-			{message && <p className="text-sm text-neutral-500">{t(message)}</p>}
+			{message && <p className="text-sm text-neutral-500 dark:text-neutral-400">{t(message)}</p>}
 		</div>
 	);
 }

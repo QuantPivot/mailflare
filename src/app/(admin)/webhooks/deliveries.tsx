@@ -17,11 +17,11 @@ import { useLocale } from "next-intl";
 import { useT } from "@/i18n/use-t";
 
 const STATUS_STYLES: Record<WebhookDelivery["status"], string> = {
-	delivered: "bg-green-600/10 text-green-700",
-	failed: "bg-red-600/10 text-red-700",
-	exhausted: "bg-red-600/10 text-red-700",
-	retrying: "bg-amber-500/10 text-amber-700",
-	pending: "bg-neutral-200 text-neutral-700",
+	delivered: "bg-green-600/10 text-green-700 dark:text-green-300",
+	failed: "bg-red-600/10 text-red-700 dark:text-red-300",
+	exhausted: "bg-red-600/10 text-red-700 dark:text-red-300",
+	retrying: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+	pending: "bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300",
 };
 
 export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
@@ -45,17 +45,17 @@ export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
 	});
 
 	if (deliveries.isLoading) {
-		return <p className="text-sm text-neutral-500">{t("Loading deliveries…")}</p>;
+		return <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("Loading deliveries…")}</p>;
 	}
 
 	if (!deliveries.data?.length) {
-		return <p className="text-sm text-neutral-500">{t("No deliveries recorded yet.")}</p>;
+		return <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("No deliveries recorded yet.")}</p>;
 	}
 
 	return (
-		<div className="overflow-x-auto rounded-xl border border-neutral-200">
+		<div className="overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-700">
 			<table className="w-full min-w-[820px] text-left text-sm">
-				<thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
+				<thead className="bg-neutral-50 dark:bg-neutral-950 text-xs uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
 					<tr>
 						<th className="px-3 py-2 font-medium">{t("Event")}</th>
 						<th className="px-3 py-2 font-medium">{t("Status")}</th>
@@ -68,7 +68,7 @@ export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
 				</thead>
 				<tbody>
 					{deliveries.data.map((delivery) => (
-						<tr key={delivery.id} className="border-t border-neutral-100 align-top">
+						<tr key={delivery.id} className="border-t border-neutral-100 dark:border-neutral-800 align-top">
 							<td className="px-3 py-2">
 								<span className="block">{delivery.eventType}</span>
 								<span className="block text-xs text-neutral-400">
@@ -95,15 +95,15 @@ export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
 									)}
 								</span>
 								{delivery.error && (
-									<span className="mt-1 block max-w-xs truncate text-xs text-red-600" title={t(delivery.error)}>
+									<span className="mt-1 block max-w-xs truncate text-xs text-red-600 dark:text-red-400" title={t(delivery.error)}>
 										{t(delivery.error)}
 									</span>
 								)}
 							</td>
-							<td className="px-3 py-2 whitespace-nowrap text-neutral-600">
+							<td className="px-3 py-2 whitespace-nowrap text-neutral-600 dark:text-neutral-300">
 								{formatTimestamp(delivery.lastAttemptAt, locale)}
 							</td>
-							<td className="px-3 py-2 whitespace-nowrap text-neutral-600">
+							<td className="px-3 py-2 whitespace-nowrap text-neutral-600 dark:text-neutral-300">
 								{formatTimestamp(delivery.nextRetryAt, locale)}
 							</td>
 							<td className="px-3 py-2">

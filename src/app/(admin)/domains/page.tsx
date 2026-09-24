@@ -209,7 +209,7 @@ export default function DomainsPage() {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-medium">{t("Domains")}</h1>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
             {managesDns
               ? t("Domains must be on your Cloudflare account. Email Routing is enabled automatically, and Email Sending can be enabled when available.")
               : t("Add the domains this server receives mail for. Open DNS on a domain to see the MX, SPF and DMARC records to create.")}
@@ -244,10 +244,10 @@ export default function DomainsPage() {
                   placeholder={t("example.com")}
                 />
               </div>
-              <div className="flex items-center justify-between gap-4 rounded-xl bg-neutral-50 px-4 py-3">
+              <div className="flex items-center justify-between gap-4 rounded-xl bg-neutral-50 dark:bg-neutral-950 px-4 py-3">
                 <div>
                   <Label htmlFor="enable-sending">{t("Enable sending")}</Label>
-                  <p className="mt-1 text-xs leading-5 text-neutral-500">
+                  <p className="mt-1 text-xs leading-5 text-neutral-500 dark:text-neutral-400">
                     {domainChecking
                       ? t("Checking Cloudflare access...")
                       : domainCheck
@@ -258,7 +258,7 @@ export default function DomainsPage() {
                   </p>
                 </div>
                 {domainChecking ? (
-                  <LoaderCircle className="h-4 w-4 animate-spin text-neutral-500" />
+                  <LoaderCircle className="h-4 w-4 animate-spin text-neutral-500 dark:text-neutral-400" />
                 ) : (
                   <Switch
                     id="enable-sending"
@@ -269,18 +269,18 @@ export default function DomainsPage() {
                 )}
               </div>
               {domainCheck && (
-                <div className="flex items-center gap-3 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">
+                <div className="flex items-center gap-3 rounded-xl bg-green-50 dark:bg-green-950/50 px-4 py-3 text-sm text-green-700 dark:text-green-300">
                   <CheckCircle2 className="h-4 w-4" />
                   {t("Domain found in Cloudflare as {domain}", { domain: domainCheck.zone.name })}
                 </div>
               )}
               {domainCheckError && (
-                <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                <p className="rounded-xl bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm text-red-700 dark:text-red-300">
                   {t(domainCheckError)}
                 </p>
               )}
               {create.isError && (
-                <div className="space-y-3 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                <div className="space-y-3 rounded-xl bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm text-red-700 dark:text-red-300">
                   <p>{t((create.error as Error).message)}</p>
                   <div className="space-y-2">
                     <p className="font-medium">
@@ -306,13 +306,13 @@ export default function DomainsPage() {
       </div>
       <section className="space-y-3">
         {/* <div className="flex items-center justify-between">
-					<span className="text-sm text-neutral-500">{(data?.domains ?? []).length} total</span>
+					<span className="text-sm text-neutral-500 dark:text-neutral-400">{(data?.domains ?? []).length} total</span>
 				</div> */}
         {isLoading && (
           <SectionRowSkeleton />
         )}
         {!isLoading && (data?.domains ?? []).length === 0 && (
-          <p className="rounded-2xl bg-white px-5 py-4 text-sm text-neutral-500">
+          <p className="rounded-2xl bg-card px-5 py-4 text-sm text-neutral-500 dark:text-neutral-400">
             {t("No domains yet")}</p>
         )}
         <List>

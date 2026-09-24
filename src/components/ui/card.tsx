@@ -5,7 +5,7 @@ export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 	return (
 		<div
 			className={cn(
-				"border-t border-neutral-200",
+				"border-t border-neutral-200 dark:border-neutral-700",
 				className,
 			)}
 			{...props}
@@ -22,7 +22,7 @@ export function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHead
 }
 
 export function CardDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-	return <p className={cn("text-sm text-neutral-500", className)} {...props} />;
+	return <p className={cn("text-sm text-neutral-500 dark:text-neutral-400", className)} {...props} />;
 }
 
 export function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

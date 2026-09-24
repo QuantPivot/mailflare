@@ -24,11 +24,11 @@ export function getDnsAuthStatusLabel(status: DnsAuthStatus): string {
 export function getDnsAuthItemClass(status: DnsAuthStatus): string {
 	switch (status) {
 		case "ok":
-			return "bg-green-50 text-green-800";
+			return "bg-green-50 dark:bg-green-950/50 text-green-800 dark:text-green-300";
 		case "missing":
-			return "bg-red-50 text-red-800";
+			return "bg-red-50 dark:bg-red-950/50 text-red-800 dark:text-red-300";
 		default:
-			return "bg-neutral-100 text-neutral-600";
+			return "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300";
 	}
 }
 

@@ -61,8 +61,8 @@ export default function AdminSettingsPage() {
 	return (
 		<div>
 			<div className="mb-8">
-				<h1 className="text-3xl font-medium text-neutral-900">{t("Admin settings")}</h1>
-				<p className="mt-2 text-sm text-neutral-500">
+				<h1 className="text-3xl font-medium text-neutral-900 dark:text-neutral-100">{t("Admin settings")}</h1>
+				<p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
 					{t("Manage workspace-level mail infrastructure and integrations.")}</p>
 			</div>
 			<div className="grid lg:grid-cols-2 gap-4">
@@ -71,15 +71,15 @@ export default function AdminSettingsPage() {
 
 					return (
 						<Link key={section.href} href={section.href}>
-							<Card className="h-full rounded-3xl border-0 bg-white p-6 transition-colors hover:bg-blue-50/60">
+							<Card className="h-full rounded-3xl border-0 bg-card p-6 transition-colors hover:bg-blue-50/60 dark:hover:bg-blue-950/60">
 								<CardHeader className="flex-row items-center gap-4 space-y-0 py-0">
-									<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+									<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
 										<Icon className="h-5 w-5" />
 									</div>
 									<CardTitle className="text-base">{t(section.title)}</CardTitle>
 								</CardHeader>
 								<CardContent className="pt-4">
-									<p className="text-sm text-neutral-500">{t(section.description)}</p>
+									<p className="text-sm text-neutral-500 dark:text-neutral-400">{t(section.description)}</p>
 								</CardContent>
 							</Card>
 						</Link>

@@ -89,14 +89,14 @@ export function AdminUpdateCard() {
 	}
 
 	return (
-		<Card className="rounded-3xl border-0 bg-white p-6">
+		<Card className="rounded-3xl border-0 bg-card p-6">
 			<CardHeader className="flex-row items-center gap-4 space-y-0 py-0">
-				<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+				<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
 					<RefreshCw className="h-5 w-5" />
 				</div>
 				<div>
 					<CardTitle className="text-base">{t("Application update")}</CardTitle>
-					<p className="mt-1 text-sm text-neutral-500">
+					<p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
 						{t("Sync the latest Mailflare release and keep its database schema up to date.")}</p>
 				</div>
 			</CardHeader>
@@ -105,17 +105,17 @@ export function AdminUpdateCard() {
 
 				{!isChecking && status?.configured === false && (
 					<div className="space-y-3">
-						<p className="text-sm text-neutral-600">{t("Complete the required Cloudflare Worker configuration:")}</p>
-						<ul className="divide-y divide-neutral-100 overflow-hidden rounded-2xl border border-neutral-100">
+						<p className="text-sm text-neutral-600 dark:text-neutral-300">{t("Complete the required Cloudflare Worker configuration:")}</p>
+						<ul className="divide-y divide-neutral-100 dark:divide-neutral-800 overflow-hidden rounded-2xl border border-neutral-100 dark:border-neutral-800">
 							{status.configuration?.map((item) => (
 								<li key={item.name} className="flex items-center gap-3 px-4 py-3 text-sm">
 									{item.configured ? (
-										<CheckCircle2 className="h-4 w-4 shrink-0 text-green-600" />
+										<CheckCircle2 className="h-4 w-4 shrink-0 text-green-600 dark:text-green-400" />
 									) : (
-										<CircleX className="h-4 w-4 shrink-0 text-red-600" />
+										<CircleX className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
 									)}
-									<code className="text-xs font-medium text-neutral-800">{item.name}</code>
-									<span className={`ml-auto text-xs font-medium ${item.configured ? "text-green-700" : "text-red-600"}`}>
+									<code className="text-xs font-medium text-neutral-800 dark:text-neutral-200">{item.name}</code>
+									<span className={`ml-auto text-xs font-medium ${item.configured ? "text-green-700 dark:text-green-300" : "text-red-600 dark:text-red-400"}`}>
 										{item.configured ? t("Configured") : t("Missing")}
 									</span>
 								</li>
@@ -125,14 +125,14 @@ export function AdminUpdateCard() {
 				)}
 
 				{!isChecking && status?.configured && (
-					<div className="divide-y divide-neutral-100 overflow-hidden rounded-2xl border border-neutral-100">
+					<div className="divide-y divide-neutral-100 dark:divide-neutral-800 overflow-hidden rounded-2xl border border-neutral-100 dark:border-neutral-800">
 						<div className="flex items-center gap-3 px-4 py-4">
 							{status.available ? (
-								<RefreshCw className={`h-4 w-4 shrink-0 text-blue-600 ${isPending ? "animate-spin" : ""}`} />
+								<RefreshCw className={`h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400 ${isPending ? "animate-spin" : ""}`} />
 							) : (
-								<CheckCircle2 className="h-4 w-4 shrink-0 text-green-600" />
+								<CheckCircle2 className="h-4 w-4 shrink-0 text-green-600 dark:text-green-400" />
 							)}
-							<p className="min-w-0 text-sm text-neutral-700">
+							<p className="min-w-0 text-sm text-neutral-700 dark:text-neutral-300">
 								{status.available
 									? t("Mailflare v{value0} is available. You are using v{value1}.", { value0: String(status.targetVersion), value1: String(status.currentVersion) })
 									: t("Mailflare v{value0} is up to date.", { value0: String(status.currentVersion) })}
@@ -142,7 +142,7 @@ export function AdminUpdateCard() {
 									type="button"
 									onClick={handleUpdate}
 									disabled={isPending}
-									className="ml-auto shrink-0 text-sm font-medium text-blue-700 hover:underline disabled:pointer-events-none disabled:opacity-50"
+									className="ml-auto shrink-0 text-sm font-medium text-blue-700 dark:text-blue-300 hover:underline disabled:pointer-events-none disabled:opacity-50"
 								>
 									{isPending ? t("Starting update...") : t("Update Mailflare")}
 								</button>
@@ -158,14 +158,14 @@ export function AdminUpdateCard() {
 
 						{!isCheckingMigrations && !!migrationStatus?.pending.length && !migrationStatus.unknown.length && (
 							<div className="flex items-center gap-3 px-4 py-4">
-								<Database className={`h-4 w-4 shrink-0 text-amber-600 ${isMigrating ? "animate-pulse" : ""}`} />
-								<p className="text-sm text-neutral-700">
+								<Database className={`h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400 ${isMigrating ? "animate-pulse" : ""}`} />
+								<p className="text-sm text-neutral-700 dark:text-neutral-300">
 									{t("{count, plural, one {# database migration is pending.} other {# database migrations are pending.}}", { count: migrationStatus.pending.length })}</p>
 								<button
 									type="button"
 									onClick={handleMigrate}
 									disabled={isMigrating}
-									className="ml-auto shrink-0 text-sm font-medium text-blue-700 hover:underline disabled:pointer-events-none disabled:opacity-50"
+									className="ml-auto shrink-0 text-sm font-medium text-blue-700 dark:text-blue-300 hover:underline disabled:pointer-events-none disabled:opacity-50"
 								>
 									{isMigrating ? t("Updating database...") : t("Update database")}
 								</button>
@@ -173,7 +173,7 @@ export function AdminUpdateCard() {
 						)}
 
 						{!isCheckingMigrations && !!migrationStatus?.unknown.length && (
-							<div className="flex items-center gap-3 px-4 py-4 text-sm text-red-600">
+							<div className="flex items-center gap-3 px-4 py-4 text-sm text-red-600 dark:text-red-400">
 								<CircleX className="h-4 w-4 shrink-0" />
 								{t("Deploy the matching Mailflare release before changing this database.")}</div>
 						)}
@@ -181,7 +181,7 @@ export function AdminUpdateCard() {
 				)}
 
 				{result?.ok && (
-					<p className="text-sm text-green-700">
+					<p className="text-sm text-green-700 dark:text-green-300">
 						{t("Update started for {repository}@{ref}. Refresh this page after Cloudflare deploys it.", { repository: result.repository ?? "", ref: result.ref ?? "" })}{" "}{" "}
 						{result.runUrl && (
 							<a className="font-medium underline" href={result.runUrl} target="_blank" rel="noreferrer">
@@ -189,8 +189,8 @@ export function AdminUpdateCard() {
 						)}
 					</p>
 				)}
-				{error && <p className="text-sm text-red-600">{t(error)}</p>}
-				{migrationError && <p className="text-sm text-red-600">{t(migrationError)}</p>}
+				{error && <p className="text-sm text-red-600 dark:text-red-400">{t(error)}</p>}
+				{migrationError && <p className="text-sm text-red-600 dark:text-red-400">{t(migrationError)}</p>}
 			</CardContent>
 		</Card>
 	);

@@ -21,14 +21,14 @@ export function MessageAttachmentCard({
 		<button
 			type="button"
 			onClick={() => onPreview(attachment)}
-			className="group flex w-full items-center gap-3 rounded-lg border border-neutral-200 p-2.5 text-left transition-colors hover:border-blue-200 hover:bg-blue-50/40"
+			className="group flex w-full items-center gap-3 rounded-lg border border-neutral-200 dark:border-neutral-700 p-2.5 text-left transition-colors hover:border-blue-200 dark:hover:border-blue-800 hover:bg-blue-50/40 dark:hover:bg-blue-950/40"
 		>
 			{visual.thumbnail === "image" && (
 				<img
 					src={previewUrl}
 					alt=""
 					loading="lazy"
-					className="h-14 w-14 shrink-0 rounded-md bg-neutral-100 object-cover"
+					className="h-14 w-14 shrink-0 rounded-md bg-neutral-100 dark:bg-neutral-800 object-cover"
 				/>
 			)}
 			{visual.thumbnail === "video" && (
@@ -51,14 +51,14 @@ export function MessageAttachmentCard({
 				</span>
 			)}
 			<span className="min-w-0 flex-1 text-left">
-				<span className="block truncate text-sm font-medium text-neutral-900">
+				<span className="block truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
 					{attachment.filename}
 				</span>
-				<span className="mt-0.5 block truncate text-xs text-neutral-500">
+				<span className="mt-0.5 block truncate text-xs text-neutral-500 dark:text-neutral-400">
 					{t(visual.label)} · {formatAttachmentSize(attachment.size)}
 				</span>
 			</span>
-			<ArrowDownToLine className="h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-blue-600" />
+			<ArrowDownToLine className="h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400" />
 		</button>
 	);
 }

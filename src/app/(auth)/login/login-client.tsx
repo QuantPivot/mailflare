@@ -104,7 +104,7 @@ export function LoginClient() {
             />
           </div>
           {error && (
-            <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <p className="rounded-2xl border border-red-100 dark:border-red-900 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-300">
               {t(error)}
             </p>
           )}
@@ -113,7 +113,7 @@ export function LoginClient() {
           </Button>
           <button
             type="button"
-            className="w-full text-center text-sm text-neutral-500 hover:text-neutral-800"
+            className="w-full text-center text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
             onClick={() => {
               setChallengeToken(null);
               setCode("");
@@ -146,7 +146,7 @@ export function LoginClient() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="password">{t("Password")}</Label>
-            <Link href="/forgot-password" className="text-xs font-medium text-blue-600 hover:underline">
+            <Link href="/forgot-password" className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline">
               {t("Forgot password?")}</Link>
           </div>
           <Input
@@ -158,7 +158,7 @@ export function LoginClient() {
           />
         </div>
         {error && (
-          <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          <p className="rounded-2xl border border-red-100 dark:border-red-900 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-300">
             {t(error)}
           </p>
         )}

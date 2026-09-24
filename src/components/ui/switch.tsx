@@ -19,14 +19,14 @@ export function Switch({
 			onClick={() => onCheckedChange(!checked)}
 			className={cn(
 				"relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-				checked ? "bg-blue-600" : "bg-neutral-300",
+				checked ? "bg-blue-600" : "bg-neutral-300 dark:bg-neutral-600",
 				className,
 			)}
 			{...props}
 		>
 			<span
 				className={cn(
-					"pointer-events-none block h-5 w-5 rounded-full bg-white shadow-sm transition-transform",
+					"pointer-events-none block h-5 w-5 rounded-full bg-card shadow-sm transition-transform",
 					checked ? "translate-x-[21px]" : "translate-x-0.5",
 				)}
 			/>

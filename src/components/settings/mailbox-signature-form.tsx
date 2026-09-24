@@ -42,8 +42,8 @@ export function MailboxSignatureForm() {
 		}
 	}
 
-	if (isLoading) return <p className="text-sm text-neutral-500">{t("Loading inbox…")}</p>;
-	if (!selectedMailbox) return <p className="text-sm text-neutral-500">{t("Select an inbox to configure its signature.")}</p>;
+	if (isLoading) return <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("Loading inbox…")}</p>;
+	if (!selectedMailbox) return <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("Select an inbox to configure its signature.")}</p>;
 
 	const address = `${selectedMailbox.localPart}@${selectedMailbox.hostname}`;
 	const canManage = selectedMailbox.permission === "full_access";
@@ -60,15 +60,15 @@ export function MailboxSignatureForm() {
 					rows={6}
 					disabled={!canManage || saving}
 				/>
-				<p className="text-xs leading-5 text-neutral-500">
+				<p className="text-xs leading-5 text-neutral-500 dark:text-neutral-400">
 					{t("This signature is added when composing from the selected inbox.")}</p>
 			</div>
 			<div className="flex items-center gap-3">
 				<Button type="submit" disabled={!canManage || saving || signature.trim() === savedSignature}>
 					{saving ? t("Saving...") : t("Save signature")}
 				</Button>
-				{!canManage && <p className="text-sm text-neutral-500">{t("Full access is required to edit this signature.")}</p>}
-				{status && <p className="text-sm text-neutral-500">{t(status)}</p>}
+				{!canManage && <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("Full access is required to edit this signature.")}</p>}
+				{status && <p className="text-sm text-neutral-500 dark:text-neutral-400">{t(status)}</p>}
 			</div>
 		</form>
 	);

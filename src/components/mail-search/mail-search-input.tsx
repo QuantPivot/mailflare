@@ -14,19 +14,19 @@ export function MailSearchInput() {
 	const showShortcutHints = shortcutsEnabled && !shortcutsPreferenceLoading;
 
 	return (
-		<div className="flex h-12 flex-1 items-center gap-2.5 rounded-full bg-[#eaf1fb] px-4 text-neutral-600 focus-within:ring-2 focus-within:ring-blue-500/30 transition-all">
+		<div className="flex h-12 flex-1 items-center gap-2.5 rounded-full bg-search px-4 text-neutral-600 dark:text-neutral-300 focus-within:ring-2 focus-within:ring-blue-500/30 transition-all">
 			<Search className="h-5 w-5 shrink-0" />
 			<Input
 				value={query}
 				onChange={(event) => setQuery(event.target.value)}
 				placeholder={showShortcutHints ? t("Search mail (press / to focus)") : t("Search mail")}
-				className="h-full min-w-0 flex-1 bg-transparent text-[15px] text-neutral-800 outline-none! shadow-none! border-none! placeholder:text-neutral-500"
+				className="h-full min-w-0 flex-1 bg-transparent text-[15px] text-neutral-800 dark:text-neutral-200 outline-none! shadow-none! border-none! placeholder:text-neutral-500 dark:placeholder:text-neutral-400"
 			/>
 			{query ? (
 				<button
 					type="button"
 					onClick={() => setQuery("")}
-					className="rounded-full p-1 text-neutral-500 hover:bg-blue-100 hover:text-neutral-800"
+					className="rounded-full p-1 text-neutral-500 dark:text-neutral-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 hover:text-neutral-800 dark:hover:text-neutral-200"
 					aria-label={t("Clear search")}
 				>
 					<X className="h-4 w-4" />
@@ -35,7 +35,7 @@ export function MailSearchInput() {
 				<button
 					type="button"
 					onClick={openCommandPalette}
-					className="hidden sm:flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-neutral-500 bg-white/70 hover:bg-white border border-neutral-200/80 rounded-md shadow-2xs transition-colors"
+					className="hidden sm:flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-neutral-500 dark:text-neutral-400 bg-card/70 hover:bg-card border border-neutral-200/80 dark:border-neutral-700/80 rounded-md shadow-2xs transition-colors"
 					title={t("Open Command Palette (⌘K)")}
 				>
 					<span className="text-[11px] font-mono">⌘K</span>

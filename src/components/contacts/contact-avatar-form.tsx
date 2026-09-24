@@ -88,15 +88,15 @@ export function ContactAvatarForm({
 					</span>
 				</button>
 				<div>
-					<p className="text-sm font-medium text-neutral-900">{t("Profile picture")}</p>
-					<p className="text-xs text-neutral-500">{t("Upload a custom contact photo.")}</p>
+					<p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{t("Profile picture")}</p>
+					<p className="text-xs text-neutral-500 dark:text-neutral-400">{t("Upload a custom contact photo.")}</p>
 					{hasAvatar && (
-						<button type="button" onClick={() => void onRemove()} disabled={busy} className="mt-1 text-xs font-medium text-blue-600 hover:underline disabled:text-neutral-400">
+						<button type="button" onClick={() => void onRemove()} disabled={busy} className="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline disabled:text-neutral-400">
 							{t("Remove photo")}</button>
 					)}
 				</div>
 			</div>
-			{status && <p className="text-xs text-red-600">{t(status)}</p>}
+			{status && <p className="text-xs text-red-600 dark:text-red-400">{t(status)}</p>}
 		</div>
 	);
 }

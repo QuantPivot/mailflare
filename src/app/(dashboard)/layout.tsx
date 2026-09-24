@@ -29,7 +29,7 @@ export default function DashboardLayout({
           <ComposeProvider>
             <MailSearchProvider>
               <ShortcutsProvider>
-                <div className="grid h-dvh grid-cols-[var(--sidebar-width)_minmax(0,1fr)] overflow-hidden bg-[#f6f8fc] transition-[grid-template-columns] duration-200">
+                <div className="grid h-dvh grid-cols-[var(--sidebar-width)_minmax(0,1fr)] overflow-hidden bg-background transition-[grid-template-columns] duration-200">
                   <aside className="min-h-0 overflow-y-auto overscroll-contain px-3 py-4 scrollbar-gutter-stable">
                     <DashboardNav />
                   </aside>
@@ -38,7 +38,7 @@ export default function DashboardLayout({
                       <MailSearchInput />
                       <Link
                         href="/settings/account"
-                        className="flex h-10 w-10 items-center justify-center rounded-full text-neutral-600 hover:bg-neutral-200"
+                        className="flex h-10 w-10 items-center justify-center rounded-full text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700"
                         title={t("Account Settings")}
                       >
                         <HelpCircle className="h-5 w-5" />
@@ -46,7 +46,7 @@ export default function DashboardLayout({
                       <LicenseIndicator />
                       <MailboxSelector />
                     </header>
-                    <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-tl-3xl bg-white scrollbar-gutter-stable">
+                    <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-tl-3xl bg-card scrollbar-gutter-stable">
                       {children}
                     </main>
                   </div>

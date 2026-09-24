@@ -13,9 +13,9 @@ export function NewMessagePopup({
 	const t = useT();
 
 	return (
-		<div className="fixed right-5 top-5 z-[100] w-[min(380px,calc(100vw-40px))] rounded-xl bg-white p-4 shadow-xl">
+		<div className="fixed right-5 top-5 z-[100] w-[min(380px,calc(100vw-40px))] rounded-xl bg-card p-4 shadow-xl">
 			<div className="flex items-start gap-3">
-				<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+				<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
 					<Mail className="h-5 w-5" />
 				</div>
 				<Link
@@ -23,19 +23,19 @@ export function NewMessagePopup({
 					onClick={onDismiss}
 					className="min-w-0 flex-1"
 				>
-					<p className="text-sm font-semibold text-neutral-900">
+					<p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
 						{t("New email")}</p>
-					<p className="mt-0.5 truncate text-sm text-neutral-800">
+					<p className="mt-0.5 truncate text-sm text-neutral-800 dark:text-neutral-200">
 						{notification.subject || t("(no subject)")}
 					</p>
-					<p className="mt-1 truncate text-xs text-neutral-500">
+					<p className="mt-1 truncate text-xs text-neutral-500 dark:text-neutral-400">
 						{t("From")}{" "}{notification.fromName ?? getEmailDisplayName(notification.from)}
 					</p>
 				</Link>
 				<button
 					type="button"
 					onClick={onDismiss}
-					className="rounded-full p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700"
+					className="rounded-full p-1 text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-700 dark:hover:text-neutral-300"
 				>
 					<X className="h-4 w-4" />
 					<span className="sr-only">{t("Dismiss notification")}</span>

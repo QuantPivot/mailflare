@@ -32,24 +32,24 @@ export function ScheduleSendMenu({ disabled, value, onChange }: ScheduleSendMenu
 				<DropdownMenu.Content
 					align="start"
 					sideOffset={6}
-					className="z-50 min-w-56 rounded-lg border border-neutral-200 bg-white p-1 text-sm shadow-lg"
+					className="z-50 min-w-56 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-card p-1 text-sm shadow-lg"
 				>
 					{value && (
 						<>
 							<DropdownMenu.Item
 								onSelect={() => onChange(null)}
-								className="flex cursor-pointer items-center rounded-md px-3 py-2 outline-none hover:bg-neutral-100 focus:bg-neutral-100"
+								className="flex cursor-pointer items-center rounded-md px-3 py-2 outline-none hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:bg-neutral-100 dark:focus:bg-neutral-800"
 							>
 								<X className="mr-2 h-4 w-4" />
 								{t("Clear schedule")}</DropdownMenu.Item>
-							<DropdownMenu.Separator className="my-1 h-px bg-neutral-100" />
+							<DropdownMenu.Separator className="my-1 h-px bg-neutral-100 dark:bg-neutral-800" />
 						</>
 					)}
 					{options.map((option) => (
 						<DropdownMenu.Item
 							key={option.label}
 							onSelect={() => onChange(option.value)}
-							className="cursor-pointer rounded-md px-3 py-2 outline-none hover:bg-neutral-100 focus:bg-neutral-100"
+							className="cursor-pointer rounded-md px-3 py-2 outline-none hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:bg-neutral-100 dark:focus:bg-neutral-800"
 						>
 							{t(option.label)}
 							<span className="ml-2 text-xs text-neutral-400">
@@ -57,8 +57,8 @@ export function ScheduleSendMenu({ disabled, value, onChange }: ScheduleSendMenu
 							</span>
 						</DropdownMenu.Item>
 					))}
-					<DropdownMenu.Separator className="my-1 h-px bg-neutral-100" />
-					<DropdownMenu.Label className="px-3 pb-1 pt-2 text-xs font-medium text-neutral-500">
+					<DropdownMenu.Separator className="my-1 h-px bg-neutral-100 dark:bg-neutral-800" />
+					<DropdownMenu.Label className="px-3 pb-1 pt-2 text-xs font-medium text-neutral-500 dark:text-neutral-400">
 						{t("Pick date & time")}</DropdownMenu.Label>
 					<input
 						type="datetime-local"
@@ -66,7 +66,7 @@ export function ScheduleSendMenu({ disabled, value, onChange }: ScheduleSendMenu
 						value={value ? formatDateTimeLocal(value) : ""}
 						onChange={(event) => onChange(parseDateTimeLocal(event.target.value))}
 						onKeyDown={(event) => event.stopPropagation()}
-						className="mx-2 mb-2 h-9 rounded-md border border-neutral-200 px-2 text-sm outline-none focus:border-blue-400"
+						className="mx-2 mb-2 h-9 rounded-md border border-neutral-200 dark:border-neutral-700 px-2 text-sm outline-none focus:border-blue-400"
 					/>
 				</DropdownMenu.Content>
 			</DropdownMenu.Portal>

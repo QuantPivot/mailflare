@@ -81,23 +81,23 @@ export default function AccountMailboxesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-medium text-neutral-900">{t("Mailboxes")}</h1>
-        <p className="mt-2 text-sm text-neutral-500">
+        <h1 className="text-3xl font-medium text-neutral-900 dark:text-neutral-100">{t("Mailboxes")}</h1>
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
           {t("Manage inboxes owned by {name}.", { name: account?.name ?? t("this account") })}
         </p>
       </div>
-      <section className="space-y-4 rounded-3xl bg-white p-6">
+      <section className="space-y-4 rounded-3xl bg-card p-6">
         <div className="space-y-2">
           {mailboxes.map((mailbox) => (
             <div
               key={mailbox.id}
-              className="flex items-center justify-between rounded-2xl bg-neutral-50 px-4 py-3"
+              className="flex items-center justify-between rounded-2xl bg-neutral-50 dark:bg-neutral-950 px-4 py-3"
             >
               <span className="min-w-0">
                 <span className="block truncate font-medium">
                   {mailbox.displayName || mailbox.localPart}
                 </span>
-                <span className="block truncate text-sm text-neutral-500">
+                <span className="block truncate text-sm text-neutral-500 dark:text-neutral-400">
                   {mailbox.localPart}@{mailbox.hostname}
                 </span>
               </span>
@@ -108,12 +108,12 @@ export default function AccountMailboxesPage() {
                 onClick={() => void removeMailbox(mailbox.id)}
                 aria-label={t("Remove inbox")}
               >
-                <Trash2 className="h-4 w-4 text-red-600" />
+                <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
               </Button>
             </div>
           ))}
           {account && mailboxes.length === 0 && (
-            <p className="text-sm text-neutral-500">{t("No mailboxes yet.")}</p>
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">{t("No mailboxes yet.")}</p>
           )}
         </div>
         <form onSubmit={addMailbox} className="flex gap-2">
@@ -126,7 +126,7 @@ export default function AccountMailboxesPage() {
           <Select
             value={domainId}
             onChange={(event) => setDomainId(event.target.value)}
-            className="rounded-md border border-neutral-200 bg-white px-3 text-sm"
+            className="rounded-md border border-neutral-200 dark:border-neutral-700 bg-card px-3 text-sm"
           >
             {domains.map((domain) => (
               <option key={domain.id} value={domain.id}>
@@ -140,7 +140,7 @@ export default function AccountMailboxesPage() {
           </Button>
         </form>
       </section>
-      {message && <p className="text-sm text-neutral-500">{t(message)}</p>}
+      {message && <p className="text-sm text-neutral-500 dark:text-neutral-400">{t(message)}</p>}
     </div>
   );
 }

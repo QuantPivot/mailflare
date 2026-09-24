@@ -54,7 +54,7 @@ function AccountAvatar({
 			<img
 				src={avatarUrl}
 				alt={t("{value0} profile picture", { value0: String(name) })}
-				className={`${sizeClass} shrink-0 rounded-full border border-neutral-200 object-cover`}
+				className={`${sizeClass} shrink-0 rounded-full border border-neutral-200 dark:border-neutral-700 object-cover`}
 				onError={() => {
 					setImageFailed(true);
 					onAvatarError?.();
@@ -82,7 +82,7 @@ function MailboxAccountRow({ mailbox, unread, avatarUrl, onSelect }: MailboxAcco
 		<button
 			type="button"
 			onClick={onSelect}
-			className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition-colors hover:bg-white"
+			className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition-colors hover:bg-card"
 		>
 			<AccountAvatar
 				name={name}
@@ -91,19 +91,19 @@ function MailboxAccountRow({ mailbox, unread, avatarUrl, onSelect }: MailboxAcco
 			/>
 			<div className="min-w-0 flex-1">
 				<div className="flex items-center gap-1.5">
-					<p className="truncate text-sm font-semibold text-neutral-900">{name}</p>
+					<p className="truncate text-sm font-semibold text-neutral-900 dark:text-neutral-100">{name}</p>
 					{mailbox.type === "shared" && (
 						<Tooltip label={t("Shared inbox")}>
-							<span title={t("Shared inbox")} aria-label={t("Shared inbox")} className="shrink-0 text-blue-600">
+							<span title={t("Shared inbox")} aria-label={t("Shared inbox")} className="shrink-0 text-blue-600 dark:text-blue-400">
 								<UsersRound className="h-3.5 w-3.5" />
 							</span>
 						</Tooltip>
 					)}
 				</div>
-				<p className="truncate text-xs text-neutral-500">{getMailboxAddress(mailbox)}</p>
+				<p className="truncate text-xs text-neutral-500 dark:text-neutral-400">{getMailboxAddress(mailbox)}</p>
 			</div>
 			{unread > 0 && (
-				<span className="rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-semibold text-blue-700">
+				<span className="rounded-full bg-blue-100 dark:bg-blue-900/50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 dark:text-blue-300">
 					{unread > 99 ? "99+" : unread}
 				</span>
 			)}
@@ -220,7 +220,7 @@ export function MailboxSelector() {
 			<button
 				type="button"
 				onClick={() => setOpen((value) => !value)}
-				className="rounded-full p-1 transition-colors hover:bg-neutral-200"
+				className="rounded-full p-1 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-700"
 				aria-label={t("Open account menu")}
 				aria-expanded={open}
 			>
@@ -235,8 +235,8 @@ export function MailboxSelector() {
 			</button>
 
 			{open && (
-				<div className="absolute right-0 top-14 z-50 w-[360px] overflow-hidden rounded-[28px] border border-neutral-200 bg-[#eef3fb] p-3 shadow-2xl shadow-neutral-900/20 max-h-[82vh] overflow-y-auto">
-					<div className="rounded-[22px] bg-white px-5 py-5">
+				<div className="absolute right-0 top-14 z-50 w-[360px] overflow-hidden rounded-[28px] border border-neutral-200 dark:border-neutral-700 bg-muted p-3 shadow-2xl shadow-neutral-900/20 max-h-[82vh] overflow-y-auto">
+					<div className="rounded-[22px] bg-card px-5 py-5">
 						<div className="flex items-center gap-4">
 							<AccountAvatar
 								name={selectedName}
@@ -249,40 +249,40 @@ export function MailboxSelector() {
 							/>
 							<div className="min-w-0 flex-1">
 								<div className="flex items-center gap-2">
-									<p className="truncate text-lg font-semibold text-neutral-900">{selectedName}</p>
+									<p className="truncate text-lg font-semibold text-neutral-900 dark:text-neutral-100">{selectedName}</p>
 									{selectedMailbox?.type === "shared" && (
 										<Tooltip label={t("Shared inbox")}>
-											<span title={t("Shared inbox")} aria-label={t("Shared inbox")} className="shrink-0 text-blue-600">
+											<span title={t("Shared inbox")} aria-label={t("Shared inbox")} className="shrink-0 text-blue-600 dark:text-blue-400">
 												<UsersRound className="h-4 w-4" />
 											</span>
 										</Tooltip>
 									)}
 								</div>
-								<p className="truncate text-sm text-neutral-500">
+								<p className="truncate text-sm text-neutral-500 dark:text-neutral-400">
 									{selectedEmail}
 								</p>
 							</div>
-							<Check className="h-5 w-5 shrink-0 text-blue-600" />
+							<Check className="h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" />
 						</div>
 						<Link
 							href="/calendar"
 							onClick={() => setOpen(false)}
-							className="mt-4 flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-[#f2f6fc]"
+							className="mt-4 flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-row-hover"
 						>
-							<CalendarDays className="h-5 w-5 text-neutral-600" />
+							<CalendarDays className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
 							{t("Calendar")}</Link>
 						<Link
 							href="/settings/account"
 							onClick={() => setOpen(false)}
-							className="mt-1 flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-[#f2f6fc]"
+							className="mt-1 flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-row-hover"
 						>
-							<Settings className="h-5 w-5 text-neutral-600" />
+							<Settings className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
 							{t("Settings")}</Link>
 					</div>
 
 					{otherMailboxes.length > 0 && (
-						<div className="mt-2 rounded-[22px] bg-white/55 p-1">
-							<p className="px-4 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-neutral-500">
+						<div className="mt-2 rounded-[22px] bg-card/55 p-1">
+							<p className="px-4 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
 								{t("Other accounts")}</p>
 							{otherMailboxes.map((mailbox) => {
 								const mailboxCount = counts.mailboxes.find((count) => count.mailboxId === mailbox.id);
@@ -302,23 +302,23 @@ export function MailboxSelector() {
 						</div>
 					)}
 
-					<div className="mt-2 overflow-hidden rounded-[22px] bg-white">
+					<div className="mt-2 overflow-hidden rounded-[22px] bg-card">
 						{user?.role === "admin" && (
 							<Link
 								href="/admin"
 								onClick={() => setOpen(false)}
-								className={`flex items-center gap-3 border-t border-neutral-100 px-5 py-4 text-sm font-medium text-neutral-800 hover:bg-[#f2f6fc] ${adminActive ? "bg-blue-50" : ""}`}
+								className={`flex items-center gap-3 border-t border-neutral-100 dark:border-neutral-800 px-5 py-4 text-sm font-medium text-neutral-800 dark:text-neutral-200 hover:bg-row-hover ${adminActive ? "bg-blue-50 dark:bg-blue-950/50" : ""}`}
 							>
-								<ShieldCheck className="h-5 w-5 text-neutral-600" />
-								{t("Admin")}{adminActive && <Check className="ml-auto h-4 w-4 text-blue-600" />}
+								<ShieldCheck className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
+								{t("Admin")}{adminActive && <Check className="ml-auto h-4 w-4 text-blue-600 dark:text-blue-400" />}
 							</Link>
 						)}
 						<button
 							type="button"
 							onClick={logout}
-							className="flex w-full items-center gap-3 border-t border-neutral-100 px-5 py-4 text-left text-sm font-medium text-neutral-800 hover:bg-[#f2f6fc]"
+							className="flex w-full items-center gap-3 border-t border-neutral-100 dark:border-neutral-800 px-5 py-4 text-left text-sm font-medium text-neutral-800 dark:text-neutral-200 hover:bg-row-hover"
 						>
-							<LogOut className="h-5 w-5 text-neutral-600" />
+							<LogOut className="h-5 w-5 text-neutral-600 dark:text-neutral-300" />
 							{t("Sign out")}</button>
 					</div>
 				</div>

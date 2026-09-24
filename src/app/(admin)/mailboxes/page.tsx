@@ -143,7 +143,7 @@ export default function MailboxesPage() {
 										id="mailbox-type"
 										value={mailboxType}
 										onChange={(event) => setMailboxType(event.target.value as "personal" | "shared")}
-										className="flex h-10 w-full rounded-md border border-neutral-200 bg-white px-3 text-sm shadow-sm shadow-neutral-200/50 focus-visible:border-blue-600 focus-visible:outline-none"
+										className="flex h-10 w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-card px-3 text-sm shadow-sm shadow-neutral-200/50 dark:shadow-black/50 focus-visible:border-blue-600 focus-visible:outline-none"
 									>
 										<option value="personal">{t("Personal inbox")}</option>
 										<option value="shared">{t("Shared inbox")}</option>
@@ -161,7 +161,7 @@ export default function MailboxesPage() {
 										setOwnerUserId(event.target.value);
 										if (owner) setDisplayName(owner.name);
 									}}
-									className="flex h-10 w-full rounded-md border border-neutral-200 bg-white px-3 text-sm shadow-sm shadow-neutral-200/50 focus-visible:border-blue-600 focus-visible:outline-none"
+									className="flex h-10 w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-card px-3 text-sm shadow-sm shadow-neutral-200/50 dark:shadow-black/50 focus-visible:border-blue-600 focus-visible:outline-none"
 								>
 									{mailboxOwners.map((owner) => (
 										<option key={owner.id} value={owner.id}>
@@ -171,7 +171,7 @@ export default function MailboxesPage() {
 								</Select>
 							</div>
 							) : (
-								<p className="rounded-2xl bg-blue-50 px-4 py-3 text-sm text-blue-800">
+								<p className="rounded-2xl bg-blue-50 dark:bg-blue-950/50 px-4 py-3 text-sm text-blue-800 dark:text-blue-300">
 									{t("After creating the shared inbox, choose which Team accounts can access it.")}</p>
 							)}
 							<div className="space-y-2">
@@ -185,7 +185,7 @@ export default function MailboxesPage() {
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="mailbox-username">{t("Email address")}</Label>
-								<div className="flex h-10 overflow-hidden rounded-md border border-neutral-200 bg-white shadow-sm shadow-neutral-200/50 focus-within:border-blue-600">
+								<div className="flex h-10 overflow-hidden rounded-md border border-neutral-200 dark:border-neutral-700 bg-card shadow-sm shadow-neutral-200/50 dark:shadow-black/50 focus-within:border-blue-600">
 									<Input
 										id="mailbox-username"
 										value={localPart}
@@ -196,7 +196,7 @@ export default function MailboxesPage() {
 									<span className="flex items-center text-sm text-neutral-400">@</span>
 									<Select
 										aria-label={t("Domain")}
-										className="min-w-0 max-w-[55%] bg-transparent px-3 text-sm text-neutral-700 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+										className="min-w-0 max-w-[55%] bg-transparent px-3 text-sm text-neutral-700 dark:text-neutral-300 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 										value={domainId}
 										onChange={(event) => setDomainId(event.target.value)}
 									>
@@ -210,7 +210,7 @@ export default function MailboxesPage() {
 								</div>
 							</div>
 							{create.isError && (
-								<p className="text-sm text-red-600">{t((create.error as Error).message)}</p>
+								<p className="text-sm text-red-600 dark:text-red-400">{t((create.error as Error).message)}</p>
 							)}
 							<Button
 								onClick={() => create.mutate()}
@@ -224,7 +224,7 @@ export default function MailboxesPage() {
 			</div>
 			<section className="space-y-3">
 				{/* <div className="flex items-center justify-between">
-					<span className="text-sm text-neutral-500">
+					<span className="text-sm text-neutral-500 dark:text-neutral-400">
 						{(mailboxes.data?.mailboxes ?? []).length} total
 					</span>
 				</div> */}
@@ -232,7 +232,7 @@ export default function MailboxesPage() {
 					<SectionRowSkeleton />
 				)}
 				{!mailboxes.isLoading && (mailboxes.data?.mailboxes ?? []).length === 0 && (
-					<p className="rounded-2xl bg-white px-5 py-4 text-sm text-neutral-500">
+					<p className="rounded-2xl bg-card px-5 py-4 text-sm text-neutral-500 dark:text-neutral-400">
 						{t("No mailboxes yet")}</p>
 				)}
 				<List>
@@ -246,9 +246,9 @@ export default function MailboxesPage() {
 							<ListRow key={mailbox.id} asChild>
 								<Link
 									href={`/mailboxes/${mailbox.id}`}
-									className="group px-5 py-4 transition-colors hover:bg-blue-50/40"
+									className="group px-5 py-4 transition-colors hover:bg-blue-50/40 dark:hover:bg-blue-950/40"
 								>
-									<span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-sm font-semibold text-blue-700">
+									<span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 dark:bg-blue-900/50 text-sm font-semibold text-blue-700 dark:text-blue-300">
 										{getMailboxName(mailboxWithHostname).trim().charAt(0).toUpperCase() || "?"}
 										{mailbox.hasAvatar && (
 											<img
@@ -261,16 +261,16 @@ export default function MailboxesPage() {
 									</span>
 									<span className="min-w-0">
 										<span className="flex min-w-0 items-center gap-2">
-											<span className="block truncate text-sm font-semibold text-neutral-900">
+											<span className="block truncate text-sm font-semibold text-neutral-900 dark:text-neutral-100">
 												{getMailboxName(mailboxWithHostname)}
 											</span>
 											{mailbox.type === "shared" && (
-												<span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
+												<span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">
 													<UsersRound className="h-3 w-3" />
 													{t("Shared")}</span>
 											)}
 										</span>
-										<span className="block truncate no-font-mono text-sm text-neutral-500">
+										<span className="block truncate no-font-mono text-sm text-neutral-500 dark:text-neutral-400">
 											{getMailboxAddress(mailboxWithHostname)}
 										</span>
 									</span>

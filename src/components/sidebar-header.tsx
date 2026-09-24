@@ -14,10 +14,10 @@ export function SidebarHeader({ href, label }: SidebarHeaderProps) {
 	const { minimal, toggle } = useSidebar();
 	return (
 		<div className={`mb-3 flex h-10 items-center ${minimal ? "justify-center" : "gap-2 px-1"}`}>
-			<button type="button" onClick={toggle} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-neutral-600 hover:bg-neutral-200" aria-label={minimal ? t("Expand menu") : t("Collapse menu")}>
+			<button type="button" onClick={toggle} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700" aria-label={minimal ? t("Expand menu") : t("Collapse menu")}>
 				{minimal ? <img src={branding.iconUrl} height={28} width={28} alt="" /> : <Menu className="h-5 w-5" />}
 			</button>
-			{!minimal && <Link href={href} className="flex min-w-0 items-center gap-3"><img src={branding.iconUrl} height={28} width={28} alt="" /><span className="truncate text-lg font-semibold text-neutral-800">{label ?? branding.appName}</span></Link>}
+			{!minimal && <Link href={href} className="flex min-w-0 items-center gap-3"><img src={branding.iconUrl} height={28} width={28} alt="" /><span className="truncate text-lg font-semibold text-neutral-800 dark:text-neutral-200">{label ?? branding.appName}</span></Link>}
 		</div>
 	);
 }

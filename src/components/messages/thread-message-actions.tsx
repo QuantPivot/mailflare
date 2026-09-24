@@ -134,7 +134,7 @@ export function ThreadMessageActions({
 
 	return (
 		<div className="flex items-center gap-0.5">
-			{error && <span className="mr-1 max-w-32 truncate text-xs text-red-600" title={t(error)}>{t(error)}</span>}
+			{error && <span className="mr-1 max-w-32 truncate text-xs text-red-600 dark:text-red-400" title={t(error)}>{t(error)}</span>}
 			<Tooltip label={starred ? t("Remove star") : t("Star")}>
 				<Button
 					type="button"
@@ -178,34 +178,34 @@ export function ThreadMessageActions({
 					</Button>
 				</Tooltip>
 				{moreOpen && (
-					<div className="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-neutral-200 bg-white p-2 text-neutral-700 shadow-lg">
-						<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100" onClick={() => void onReply("reply")}>
+					<div className="absolute right-0 z-30 mt-1 w-56 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-card p-2 text-neutral-700 dark:text-neutral-300 shadow-lg">
+						<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800" onClick={() => void onReply("reply")}>
 							<Reply className="h-4 w-4" /> {" "}{t("Reply")}</button>
 						{canReplyAll && (
-							<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100" onClick={() => void onReply("replyAll")}>
+							<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800" onClick={() => void onReply("replyAll")}>
 								<ReplyAll className="h-4 w-4" /> {" "}{t("Reply all")}</button>
 						)}
-						<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100" onClick={() => void onForward()}>
+						<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800" onClick={() => void onForward()}>
 							<Forward className="h-4 w-4" /> {" "}{t("Forward")}</button>
-						<hr className="my-1 border-neutral-100" />
-						<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100" onClick={() => void onMessageAction(message.read ? "unread" : "read")}>
+						<hr className="my-1 border-neutral-100 dark:border-neutral-800" />
+						<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800" onClick={() => void onMessageAction(message.read ? "unread" : "read")}>
 							{message.read ? <Mail className="h-4 w-4" /> : <MailOpen className="h-4 w-4" />}
 							{message.read ? t("Mark as unread") : t("Mark as read")}
 						</button>
 						{moveActions.map((item) => (
-							<button key={item.action} type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100" onClick={() => void onMessageAction(item.action)}>
+							<button key={item.action} type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800" onClick={() => void onMessageAction(item.action)}>
 								{createElement(item.icon, { size: 16 })} {t(item.label)}
 							</button>
 						))}
 						{message.status === "trash" && (
-							<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => void onMessageAction("delete")}>
+							<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50 hover:text-red-700 dark:hover:text-red-300" onClick={() => void onMessageAction("delete")}>
 								<Trash2 className="h-4 w-4" /> {t("Delete permanently")}
 							</button>
 						)}
 						{message.direction === "inbound" && mailboxId && (
 							<>
-								<hr className="my-1 border-neutral-100" />
-								<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100" onClick={() => void onBlock()}>
+								<hr className="my-1 border-neutral-100 dark:border-neutral-800" />
+								<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800" onClick={() => void onBlock()}>
 									<Ban className="h-4 w-4" /> {" "}{t("Block contact")}</button>
 							</>
 						)}

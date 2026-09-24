@@ -43,14 +43,14 @@ export function ForwardingEmailForm({ initialForwardingEmail }: ForwardingEmailF
 					type="email"
 					placeholder="destination@example.com"
 				/>
-				<p className="text-xs leading-5 text-neutral-500">
+				<p className="text-xs leading-5 text-neutral-500 dark:text-neutral-400">
 					{t("Incoming mail will also be sent to this verified Cloudflare Email Routing destination.")}</p>
 			</div>
 			<div className="flex items-center gap-3">
 				<Button type="submit" disabled={saving || forwardingEmail.trim() === savedForwardingEmail}>
 					{saving ? t("Saving...") : t("Save forwarding")}
 				</Button>
-				{status && <p className="text-sm text-neutral-500">{t(status)}</p>}
+				{status && <p className="text-sm text-neutral-500 dark:text-neutral-400">{t(status)}</p>}
 			</div>
 		</form>
 	);

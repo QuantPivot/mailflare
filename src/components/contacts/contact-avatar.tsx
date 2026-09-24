@@ -62,7 +62,7 @@ export function ContactAvatar({
 			<img
 				src={avatarUrl}
 				alt=""
-				className={cn("h-8 w-8 shrink-0 rounded-full border border-neutral-200 object-cover", className)}
+				className={cn("h-8 w-8 shrink-0 rounded-full border border-neutral-200 dark:border-neutral-700 object-cover", className)}
 				onError={() => {
 					if (managedAvatarUrl) setImageFailed(true);
 					else if (managedAvatar) setManagedAvatar(false);
@@ -74,7 +74,7 @@ export function ContactAvatar({
 
 	return (
 		<span
-			className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-200 text-sm font-semibold text-neutral-700", className)}
+			className={cn("flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-200 dark:bg-neutral-700 text-sm font-semibold text-neutral-700 dark:text-neutral-300", className)}
 			aria-hidden
 		>
 			{getContactAvatarInitial(name, address)}

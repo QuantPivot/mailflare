@@ -101,9 +101,9 @@ export default function BackupsPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-medium text-neutral-900">
+          <h1 className="text-3xl font-medium text-neutral-900 dark:text-neutral-100">
             {t("Database Backups")}</h1>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
             {t("Export database records through the D1 binding and store them in the configured R2 bucket.")}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -131,20 +131,20 @@ export default function BackupsPage() {
       </div>
 
       {error && (
-        <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/50 px-4 py-3 text-sm text-red-700 dark:text-red-300">
           {error instanceof Error ? t(error.message) : t("Backup operation failed")}
         </p>
       )}
 
       {configuration && !configuration.configured && (
-        <Card className="rounded-3xl border border-amber-200 bg-amber-50 p-6">
+        <Card className="rounded-3xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 p-6">
           <CardHeader className="py-0">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
+              <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-700 dark:text-amber-300" />
               <div>
-                <CardTitle className="text-amber-950">
+                <CardTitle className="text-amber-950 dark:text-amber-100">
                   {t("Complete backup setup")}</CardTitle>
-                <CardDescription className="mt-1 text-amber-800">
+                <CardDescription className="mt-1 text-amber-800 dark:text-amber-300">
                   {t("Add the missing values under the deployed Worker's Variables and Secrets settings. This check disappears after backup configuration is complete.")}</CardDescription>
               </div>
             </div>
@@ -155,7 +155,7 @@ export default function BackupsPage() {
                 <Badge
                   key={item}
                   variant="outline"
-                  className="border-amber-300 bg-white/70 text-amber-900"
+                  className="border-amber-300 dark:border-amber-800 bg-card/70 text-amber-900 dark:text-amber-200"
                 >
                   {item}
                 </Badge>
@@ -164,7 +164,7 @@ export default function BackupsPage() {
                 type="button"
                 size="sm"
                 variant="outline"
-                className="ml-auto border-amber-300 bg-white/70"
+                className="ml-auto border-amber-300 dark:border-amber-800 bg-card/70"
                 disabled={backups.isFetching}
                 onClick={() => void backups.refetch()}
               >
@@ -177,7 +177,7 @@ export default function BackupsPage() {
         </Card>
       )}
 
-      <Card className="rounded-3xl border-0 bg-white p-6">
+      <Card className="rounded-3xl border-0 bg-card p-6">
         <CardHeader className="py-0">
           <CardTitle>{t("Automatic backup")}</CardTitle>
           <CardDescription>
@@ -219,7 +219,7 @@ export default function BackupsPage() {
                                   : null,
                           });
                         }}
-                        className="flex h-10 w-full rounded-md border border-neutral-200 bg-white px-3 text-sm"
+                        className="flex h-10 w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-card px-3 text-sm"
                       >
                         <option value="daily">{t("Daily")}</option>
                         <option value="weekly">{t("Selected day of week")}</option>
@@ -239,7 +239,7 @@ export default function BackupsPage() {
                               scheduleValue: Number(event.target.value),
                             })
                           }
-                          className="flex h-10 w-full rounded-md border border-neutral-200 bg-white px-3 text-sm"
+                          className="flex h-10 w-full rounded-md border border-neutral-200 dark:border-neutral-700 bg-card px-3 text-sm"
                         >
                           {WEEKDAYS.map((day) => (
                             <option key={day.value} value={day.value}>
@@ -270,7 +270,7 @@ export default function BackupsPage() {
                     )}
                   </div>
 
-                  <div className="grid gap-4 border-t border-neutral-100 pt-5">
+                  <div className="grid gap-4 border-t border-neutral-100 dark:border-neutral-800 pt-5">
                     <div className="flex items-center gap-3 text-sm font-medium">
                       <Switch
                         checked={settings.retentionEnabled}
@@ -303,7 +303,7 @@ export default function BackupsPage() {
                             })
                           }
                         />
-                        <span className="text-sm text-neutral-500">{t("days")}</span>
+                        <span className="text-sm text-neutral-500 dark:text-neutral-400">{t("days")}</span>
                       </div>
                     </div>
                   </div>
@@ -322,12 +322,12 @@ export default function BackupsPage() {
         </CardContent>
       </Card>
 
-      <section className="overflow-hidden rounded-3xl bg-white">
-        <div className="flex items-center gap-3 border-b border-neutral-100 px-4 py-4">
-          <DatabaseBackup className="h-5 w-5 text-neutral-500" />
-          <h2 className="font-semibold text-neutral-900">{t("Backup history")}</h2>
+      <section className="overflow-hidden rounded-3xl bg-card">
+        <div className="flex items-center gap-3 border-b border-neutral-100 dark:border-neutral-800 px-4 py-4">
+          <DatabaseBackup className="h-5 w-5 text-neutral-500 dark:text-neutral-400" />
+          <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">{t("Backup history")}</h2>
         </div>
-        <div className="grid grid-cols-[1fr_110px_110px_170px_120px] gap-4 border-b border-neutral-100 bg-neutral-50 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">
+        <div className="grid grid-cols-[1fr_110px_110px_170px_120px] gap-4 border-b border-neutral-100 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
           <span>{t("File")}</span>
           <span>{t("Status")}</span>
           <span>{t("Size")}</span>
@@ -336,18 +336,18 @@ export default function BackupsPage() {
         </div>
         {backups.isLoading && <SkeletonRows count={5} />}
         {!backups.isLoading && (backups.data?.backups ?? []).length === 0 && (
-          <p className="px-4 py-6 text-sm text-neutral-500">{t("No backups yet.")}</p>
+          <p className="px-4 py-6 text-sm text-neutral-500 dark:text-neutral-400">{t("No backups yet.")}</p>
         )}
         {(backups.data?.backups ?? []).map((backup: BackupItem) => (
           <div
             key={backup.id}
-            className="grid grid-cols-[1fr_110px_110px_170px_120px] items-center gap-4 border-b border-neutral-100 px-4 py-3 last:border-b-0"
+            className="grid grid-cols-[1fr_110px_110px_170px_120px] items-center gap-4 border-b border-neutral-100 dark:border-neutral-800 px-4 py-3 last:border-b-0"
           >
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-neutral-900">
+              <p className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
                 {backup.filename ?? backup.id}
               </p>
-              <p className="truncate text-xs text-neutral-500">
+              <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
                 {backup.trigger === "manual" ? t("Manual") : t("Scheduled")}
                 {backup.error ? t(": {value0}", { value0: String(backup.error) }) : ""}
               </p>
@@ -355,10 +355,10 @@ export default function BackupsPage() {
             <Badge variant="outline" className={getStatusClass(backup.status)}>
               {t(backup.status)}
             </Badge>
-            <span className="text-sm text-neutral-600">
+            <span className="text-sm text-neutral-600 dark:text-neutral-300">
               {formatBackupSize(backup.size)}
             </span>
-            <span className="text-sm text-neutral-600">
+            <span className="text-sm text-neutral-600 dark:text-neutral-300">
               {formatBackupDate(backup.createdAt, locale)}
             </span>
             <div className="flex gap-1">
@@ -382,7 +382,7 @@ export default function BackupsPage() {
                 }
                 onClick={() => deleteBackup.mutate(backup.id)}
               >
-                <Trash2 className="h-4 w-4 text-red-600" />
+                <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
               </Button>
             </div>
           </div>
