@@ -3,6 +3,7 @@
 import React from "react";
 import { X, Keyboard } from "lucide-react";
 import type { ShortcutDefinition } from "./types";
+import { useT } from "@/i18n/use-t";
 
 interface ShortcutsHelpDialogProps {
   isOpen: boolean;
@@ -15,6 +16,8 @@ export function ShortcutsHelpDialog({
   onClose,
   shortcuts,
 }: ShortcutsHelpDialogProps) {
+	const t = useT();
+
   if (!isOpen) return null;
 
   const grouped = shortcuts.reduce((acc, item) => {
@@ -53,11 +56,9 @@ export function ShortcutsHelpDialog({
             </div>
             <div>
               <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">
-                Keyboard Shortcuts
-              </h2>
+                {t("Keyboard Shortcuts")}</h2>
               <p className="text-xs text-neutral-400">
-                Superhuman &amp; Gmail style quick keys
-              </p>
+                {t("Superhuman & Gmail style quick keys")}</p>
             </div>
           </div>
           <button
@@ -74,7 +75,7 @@ export function ShortcutsHelpDialog({
           {Object.entries(grouped).map(([category, items]) => (
             <div key={category} className="space-y-3">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 border-b border-neutral-100 dark:border-neutral-800/80 pb-1.5">
-                {category}
+                {t(category)}
               </h3>
               <div className="space-y-2">
                 {items.map((item, idx) => (
@@ -83,7 +84,7 @@ export function ShortcutsHelpDialog({
                     className="flex items-center justify-between text-sm"
                   >
                     <span className="text-neutral-700 dark:text-neutral-300">
-                      {item.label}
+                      {t(item.label)}
                     </span>
                     <kbd className="px-2 py-0.5 text-xs font-mono font-medium text-neutral-600 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-2xs">
                       {formatKey(item)}
@@ -98,19 +99,17 @@ export function ShortcutsHelpDialog({
         {/* Footer */}
         <div className="px-6 py-3 bg-neutral-50 dark:bg-neutral-950/60 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-xs text-neutral-400">
           <span>
-            Press{" "}
+            {t("Press")}{" "}
             <kbd className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded font-mono">
               ?
             </kbd>{" "}
-            to toggle
-          </span>
+            {t("to toggle")}</span>
           <span>
-            Press{" "}
+            {t("Press")}{" "}
             <kbd className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded font-mono">
               ESC
             </kbd>{" "}
-            to close
-          </span>
+            {t("to close")}</span>
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import type { Translate } from "@/i18n/catalog";
 import type { Message } from "@/hooks/types";
 import { authFetch } from "@/lib/auth/client";
 import { getEmailDisplayName, splitEmailAddressList } from "@/lib/email/address";
@@ -11,17 +12,18 @@ export function getMessageParty(
 	message: Message,
 	folder: MessageFolderConfig["folder"],
 	currentAccountName?: string,
+ t: Translate = (source) => source,
 ) {
-	if (folder === "drafts") return "Draft";
-	if (folder === "sent") return formatRecipientSummary(message.toAddr, message.toContactName);
+	if (folder === "drafts") return t("Draft");
+	if (folder === "sent") return formatRecipientSummary(message.toAddr, message.toContactName, t);
 	if (message.direction === "outbound" && currentAccountName) return currentAccountName;
-	return message.fromContactName ?? (message.fromAddr ? getEmailDisplayName(message.fromAddr) : "Unknown sender");
+	return message.fromContactName ?? (message.fromAddr ? getEmailDisplayName(message.fromAddr) : t("Unknown sender"));
 }
 
 /** "Maya Chen, +2" for a multi-recipient message, or just the one name. */
-export function formatRecipientSummary(toAddr: string, firstContactName?: string | null): string {
+export function formatRecipientSummary(toAddr: string, firstContactName?: string | null, t: Translate = (source) => source): string {
 	const entries = splitEmailAddressList(toAddr);
-	if (entries.length === 0) return "No recipient";
+	if (entries.length === 0) return t("No recipient");
 	const first = firstContactName ?? getEmailDisplayName(entries[0]);
 	return entries.length > 1 ? `${first}, +${entries.length - 1}` : first;
 }
@@ -39,16 +41,17 @@ export function isMessageListRowUnread(message: Message): boolean {
 	return message.direction === "inbound" && !message.read;
 }
 
-export function getMessagePreview(message: Message, folder: MessageFolderConfig["folder"]) {
-	if (folder === "drafts") return message.snippet || message.toAddr || "No content";
-	return message.snippet || "No preview";
+export function getMessagePreview(message: Message, folder: MessageFolderConfig["folder"], t: Translate = (source) => source) {
+	if (folder === "drafts") return message.snippet || message.toAddr || t("No content");
+	return message.snippet || t("No preview");
 }
 
-export function formatMessageListTimestamp(createdAt: string): string {
+export function formatMessageListTimestamp(createdAt: string, locale?: string): string {
 	const date = dayjs(createdAt);
-	if (date.isSame(dayjs(), "day")) return date.format("hh:mm A");
-	if (date.isSame(dayjs(), "year")) return date.format("MMM DD");
-	return date.format("MMM DD, YYYY");
+	const options: Intl.DateTimeFormatOptions = date.isSame(dayjs(), "day")
+  ? { hour: "numeric", minute: "2-digit" }
+  : { month: "short", day: "numeric", ...(date.isSame(dayjs(), "year") ? {} : { year: "numeric" as const }) };
+ return new Intl.DateTimeFormat(locale, options).format(date.toDate());
 }
 
 export function getPageRange(offset: number, count: number, total: number): PageRange {

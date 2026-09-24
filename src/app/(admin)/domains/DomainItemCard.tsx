@@ -17,6 +17,7 @@ import {
   Trash2,
 } from "lucide-react";
 import type { DomainItemCardProps } from "./types";
+import { useT } from "@/i18n/use-t";
 
 function StatusIcon({ ok, className }: { ok: boolean; className?: string }) {
   if (ok) return <Check className={cn(className, "text-green-600")} />;
@@ -36,6 +37,8 @@ export default function DomainItemCard({
   setupRecord,
   setupMessage,
 }: DomainItemCardProps) {
+	const t = useT();
+
   const auth = dns?.auth;
 
   return (
@@ -62,22 +65,20 @@ export default function DomainItemCard({
               className="gap-1"
             >
               <StatusIcon ok={item.status === "active"} className="h-3 w-3" />
-              {item.status}
+              {t(item.status)}
             </Badge>
             <Badge
               variant={item.routingEnabled ? "outline" : "secondary"}
               className={cn("gap-1", !item.routingEnabled && "opacity-50")}
             >
               <StatusIcon ok={item.routingEnabled} className="h-3 w-3" />
-              routing
-            </Badge>
+              {t("routing")}</Badge>
             <Badge
               variant={item.sendingEnabled ? "outline" : "secondary"}
               className={cn("gap-1", !item.sendingEnabled && "opacity-50")}
             >
               <StatusIcon ok={item.sendingEnabled} className="h-3 w-3" />
-              sending
-            </Badge>
+              {t("sending")}</Badge>
           </div>
 
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
@@ -87,7 +88,7 @@ export default function DomainItemCard({
                   {index > 0 && <span className="text-neutral-300">|</span>}
                   <span
                     className="flex items-center gap-1 text-neutral-500"
-                    title={`${record.toUpperCase()} · ${getDnsAuthStatusLabel(auth[record])}`}
+                    title={t("{value0} · {value1}", { value0: String(record.toUpperCase()), value1: String(getDnsAuthStatusLabel(auth[record])) })}
                   >
                     <span className="uppercase">{record}</span>
                     <StatusIcon
@@ -104,11 +105,11 @@ export default function DomainItemCard({
             >
               {expanded ? (
                 <>
-                  Hide details <ChevronRight className="h-3 w-3" />
+                  {t("Hide details")}{" "}<ChevronRight className="h-3 w-3" />
                 </>
               ) : (
                 <>
-                  Show details <ChevronDown className="h-3 w-3" />
+                  {t("Show details")}{" "}<ChevronDown className="h-3 w-3" />
                 </>
               )}
             </button>
@@ -127,7 +128,7 @@ export default function DomainItemCard({
           />
         ) : dnsError ? (
           <div className="px-4 pb-4 pt-4 text-sm text-red-600 sm:px-5 sm:pb-5">
-            {dnsError}
+            {t(dnsError)}
           </div>
         ) : dnsLoading ? (
           <DomainDnsSkeleton />
@@ -140,7 +141,7 @@ export default function DomainItemCard({
             size="sm"
             className="absolute right-4 top-4 h-8 w-8 p-0"
             disabled={remove.isPending}
-            aria-label={`Actions for ${item.hostname}`}
+            aria-label={t("Actions for {value0}", { value0: String(item.hostname) })}
           >
             <MoreVertical className="h-4 w-4" />
           </Button>
@@ -157,8 +158,7 @@ export default function DomainItemCard({
               className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-red-600 outline-none hover:bg-red-50 focus:bg-red-50 data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
             >
               <Trash2 className="h-4 w-4" />
-              Remove domain
-            </DropdownMenu.Item>
+              {t("Remove domain")}</DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>

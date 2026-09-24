@@ -19,8 +19,11 @@ import {
   submitRegistration,
 } from "./utils";
 import type { DomainPreflight, DomainSetupResult, SetupRequirementCheck } from "./types";
+import { useT } from "@/i18n/use-t";
 
 export function RegisterClient() {
+	const t = useT();
+
   const router = useRouter();
   const [hasAdminAccount, setHasAdminAccount] = useState<boolean | null>(null);
   const [hasPrimaryDomain, setHasPrimaryDomain] = useState<boolean | null>(
@@ -195,28 +198,26 @@ export function RegisterClient() {
     return (
       <AuthShell
         icon={MailPlus}
-        title="Account registration is closed"
+        title={t("Account registration is closed")}
         footer={
           <Link
             href="/login"
             className="inline-flex items-center gap-2 hover:underline"
           >
-            Sign in instead
-            <ArrowRight className="h-4 w-4" />
+            {t("Sign in instead")}<ArrowRight className="h-4 w-4" />
           </Link>
         }
       >
         <div className="space-y-5">
           <p className="text-sm leading-6 text-neutral-600">
-            This installation already has an account for {primaryDomain ?? "this workspace"}.
+            {t("This installation already has an account for {domain}.", { domain: primaryDomain ?? t("this workspace") })}
           </p>
           <Button
             type="button"
             className="h-11 w-full rounded-full px-6 active:scale-[0.98]"
             onClick={() => router.push("/login")}
           >
-            Go to login
-          </Button>
+            {t("Go to login")}</Button>
         </div>
       </AuthShell>
     );
@@ -225,7 +226,7 @@ export function RegisterClient() {
   return (
     <AuthShell
       icon={MailPlus}
-      title={step === 1 ? "Prepare installation" : showDomainStep ? "Add your domain" : "Create your mailbox"}
+      title={step === 1 ? t("Prepare installation") : showDomainStep ? t("Add your domain") : t("Create your mailbox")}
       // description={
       // 	showDomainStep
       // 		? "Connect the primary Cloudflare zone first so routing records can be created before the first mailbox."
@@ -242,14 +243,12 @@ export function RegisterClient() {
       {step === 1 ? (
         <div className="space-y-5">
           <p className="text-sm leading-6 text-neutral-600">
-            Mailflare checks its required Cloudflare configuration and initializes a clean D1 database before setup continues.
-          </p>
+            {t("Mailflare checks its required Cloudflare configuration and initializes a clean D1 database before setup continues.")}</p>
           <div className="space-y-2">
             {loading && checks.length === 0 && (
               <div className="flex items-center gap-3 rounded-2xl bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
                 <LoaderCircle className="h-4 w-4 animate-spin" />
-                Checking installation
-              </div>
+                {t("Checking installation")}</div>
             )}
             {checks.map((check) => (
               <div key={check.key} className="flex items-start gap-3 rounded-2xl bg-neutral-50 px-4 py-3">
@@ -260,20 +259,20 @@ export function RegisterClient() {
                 )}
                 <div>
                   <p className="text-sm font-medium text-neutral-800">{check.key}</p>
-                  {!check.configured && <p className="mt-1 text-xs leading-5 text-neutral-500">{check.message}</p>}
+                  {!check.configured && <p className="mt-1 text-xs leading-5 text-neutral-500">{t(check.message)}</p>}
                 </div>
               </div>
             ))}
             {preparationComplete && (
               <div className="flex items-center gap-3 rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700">
                 <CheckCircle2 className="h-4 w-4" />
-                {databaseMigrated ? "Clean database migrated successfully" : "Database schema is ready"}
+                {databaseMigrated ? t("Clean database migrated successfully") : t("Database schema is ready")}
               </div>
             )}
           </div>
           {error && (
             <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-              {error}
+              {t(error)}
             </p>
           )}
           {preparationComplete ? (
@@ -282,8 +281,7 @@ export function RegisterClient() {
               className="h-11 w-full rounded-full px-6 active:scale-[0.98]"
               onClick={() => setStep(hasPrimaryDomain ? 3 : 2)}
             >
-              Continue
-            </Button>
+              {t("Continue")}</Button>
           ) : (
             <Button
               type="button"
@@ -292,18 +290,18 @@ export function RegisterClient() {
               disabled={loading}
               onClick={() => void runPreparation()}
             >
-              {loading ? "Checking..." : "Check again"}
+              {loading ? t("Checking...") : t("Check again")}
             </Button>
           )}
         </div>
       ) : showDomainStep ? (
         <form method="post" onSubmit={onDomainSubmit} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="domain">Primary domain</Label>
+            <Label htmlFor="domain">{t("Primary domain")}</Label>
             <Input
               id="domain"
               name="domain"
-              placeholder="example.com"
+              placeholder={t("example.com")}
               autoComplete="url"
               required
               onBlur={(event) => void onDomainBlur(event)}
@@ -315,20 +313,19 @@ export function RegisterClient() {
               }}
             />
             <p className="text-xs leading-5 text-neutral-500">
-              The domain must already be a Cloudflare zone on this account.
-            </p>
+              {t("The domain must already be a Cloudflare zone on this account.")}</p>
           </div>
           <div className="flex items-center justify-between gap-4 rounded-2xl bg-neutral-50 px-4 py-3">
             <div>
-              <Label htmlFor="setup-enable-sending">Enable sending</Label>
+              <Label htmlFor="setup-enable-sending">{t("Enable sending")}</Label>
               <p className="mt-1 text-xs leading-5 text-neutral-500">
                 {domainChecking
-                  ? "Checking Cloudflare access..."
+                  ? t("Checking Cloudflare access...")
                   : domainCheck
                     ? enableSending
-                      ? "Required to send email."
-                      : "Receive-only mode."
-                    : "Enter the domain and leave the field to verify it."}
+                      ? t("Required to send email.")
+                      : t("Receive-only mode.")
+                    : t("Enter the domain and leave the field to verify it.")}
               </p>
             </div>
             <Switch
@@ -341,12 +338,12 @@ export function RegisterClient() {
           {domainCheck && (
             <div className="flex items-center gap-3 rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700">
               <CheckCircle2 className="h-4 w-4" />
-              Domain found in Cloudflare as {domainCheck.zone.name}
+              {t("Domain found in Cloudflare as {domain}", { domain: domainCheck.zone.name })}
             </div>
           )}
           {error && (
             <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-              {error}
+              {t(error)}
             </p>
           )}
           <Button
@@ -354,7 +351,7 @@ export function RegisterClient() {
             className="h-11 w-full rounded-full px-6 active:scale-[0.98]"
             disabled={loading || domainChecking}
           >
-            {loading ? "Adding domain..." : "Continue"}
+            {loading ? t("Adding domain...") : t("Continue")}
           </Button>
         </form>
       ) : (
@@ -362,14 +359,12 @@ export function RegisterClient() {
 					{mxChecking && (
 						<div className="flex items-center gap-3 rounded-2xl bg-neutral-50 px-4 py-3 text-sm text-neutral-600">
 							<LoaderCircle className="h-4 w-4 animate-spin" />
-							Checking existing MX records
-						</div>
+							{t("Checking existing MX records")}</div>
 					)}
 					{mxRecordsExist === false && (
 						<div className="flex items-center gap-3 rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700">
 							<CheckCircle2 className="h-4 w-4" />
-							No existing MX records found
-						</div>
+							{t("No existing MX records found")}</div>
 					)}
 					{mxRecordsExist === true && (
 						<label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-amber-900">
@@ -381,32 +376,30 @@ export function RegisterClient() {
 							<span>
 								<span className="flex items-center gap-2 text-sm font-medium">
 									<AlertTriangle className="h-4 w-4" />
-									Replace existing MX records
-								</span>
+									{t("Replace existing MX records")}</span>
 								<span className="mt-1 block text-xs leading-5">
-									This deletes the current mail provider's MX records and replaces them with Cloudflare Email Routing. The previous provider will stop receiving mail.
-								</span>
+									{t("This deletes the current mail provider's MX records and replaces them with Cloudflare Email Routing. The previous provider will stop receiving mail.")}</span>
 							</span>
 						</label>
 					)}
           <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="username">{t("Username")}</Label>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 relative">
               <Input
                 id="username"
                 name="username"
-                placeholder="you"
+                placeholder={t("you")}
                 autoComplete="username"
                 required
 								className="pr-34"
               />
               <span className="max-w-36 truncate text-sm font-medium text-neutral-500 absolute top-2.5 right-5">
-                @{accountDomain ?? "domain"}
+                @{accountDomain ?? t("domain")}
               </span>
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t("Password")}</Label>
             <Input
               id="password"
               name="password"
@@ -418,7 +411,7 @@ export function RegisterClient() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="resetEmail">Recovery email</Label>
+            <Label htmlFor="resetEmail">{t("Recovery email")}</Label>
             <Input
               id="resetEmail"
               name="resetEmail"
@@ -431,7 +424,7 @@ export function RegisterClient() {
 
           {error && (
             <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-              {error}
+              {t(error)}
             </p>
           )}
 					{!mxChecking && mxRecordsExist === null && (
@@ -441,8 +434,7 @@ export function RegisterClient() {
 							className="h-11 w-full rounded-full px-6 active:scale-[0.98]"
 							onClick={() => setMxCheckRevision((value) => value + 1)}
 						>
-							Check MX records again
-						</Button>
+							{t("Check MX records again")}</Button>
 					)}
           <TurnstileField resetSignal={turnstileReset} />
 					<Button
@@ -450,7 +442,7 @@ export function RegisterClient() {
 						className="h-11 w-full rounded-full px-6 active:scale-[0.98] mt-8"
 						disabled={loading || mxChecking || mxRecordsExist === null || (mxRecordsExist && !replaceMxRecords) || hasAdminAccount === null || hasPrimaryDomain === null}
 					>
-						{loading ? "Creating..." : "Create account"}
+						{loading ? t("Creating...") : t("Create account")}
 					</Button>
         </form>
       )}

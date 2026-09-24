@@ -8,8 +8,8 @@ export async function fetchActivity(): Promise<ActivityLog[]> {
 	return json.activities ?? [];
 }
 
-export function formatActivityDate(value: string): string {
-	return new Intl.DateTimeFormat(undefined, {
+export function formatActivityDate(value: string, locale?: string): string {
+	return new Intl.DateTimeFormat(locale, {
 		dateStyle: "medium",
 		timeStyle: "short",
 	}).format(new Date(value));

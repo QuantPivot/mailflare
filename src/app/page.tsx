@@ -1,14 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { authFetch, getClientSessionToken } from "@/lib/auth/client";
 import { getHomeActions, heroMessages, sidebarItems } from "./utils";
 import { ArrowRight, Inbox, Mail, Search, ShieldCheck } from "lucide-react";
 import { useBranding } from "@/components/branding-provider";
+import { useT } from "@/i18n/use-t";
 
 export default function HomePage() {
+	const t = useT();
+
   const branding = useBranding();
   const [hasUser, setHasUser] = useState(false);
 
@@ -37,7 +41,7 @@ export default function HomePage() {
         <Link
           href="/"
           className="flex items-center gap-3"
-          aria-label="Email Platform home"
+          aria-label={t("Email Platform home")}
         >
           <img src={branding.iconUrl} height={32} width={32} alt="" />
           <span className="text-base font-semibold tracking-tight">
@@ -48,15 +52,16 @@ export default function HomePage() {
         {/* <nav className="hidden items-center gap-6 text-sm font-medium text-neutral-600 md:flex">
 					{landingNavItems.map((item) => (
 						<a key={item.href} href={item.href} className="transition-colors hover:text-neutral-950">
-							{item.label}
+							{t(item.label)}
 						</a>
 					))}
 				</nav> */}
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           {actions.map((action) => (
             <Button key={action.href} variant={action.variant} asChild>
-              <Link href={action.href}>{action.label}</Link>
+              <Link href={action.href}>{t(action.label)}</Link>
             </Button>
           ))}
         </div>
@@ -67,19 +72,15 @@ export default function HomePage() {
           <div className="flex max-w-2xl flex-col justify-center">
             <div className="mb-6 flex w-fit items-center gap-2 text-sm font-medium text-blue-800">
               <ShieldCheck className="h-4 w-4" />
-              Cloudflare-native email operations
-            </div>
+              {t("Cloudflare-native email operations")}</div>
             <h1 className="max-w-[12ch] text-5xl font-semibold leading-[0.96] tracking-tight text-neutral-950 sm:text-6xl lg:text-7xl">
-              Mailboxes that feel like your inbox.
-            </h1>
+              {t("Mailboxes that feel like your inbox.")}</h1>
             <p className="mt-6 max-w-xl text-lg leading-8 text-neutral-600">
-              Add domains, route inbound mail, send through API keys, and manage
-              your mailboxes from one quiet workspace built around the message list.
-            </p>
+              {t("Add domains, route inbound mail, send through API keys, and manage your mailboxes from one quiet workspace built around the message list.")}</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button size="lg" asChild className="rounded-full px-6">
                 <Link href={actions.at(-1)?.href ?? "/setup"}>
-                  {hasUser ? "Open dashboard" : "Create account"}
+                  {hasUser ? t("Open dashboard") : t("Create account")}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -90,7 +91,7 @@ export default function HomePage() {
                 className="rounded-full border-neutral-200 bg-white px-6"
               >
                 <Link href={hasUser ? "/inbox" : "/login"}>
-                  {hasUser ? "View inbox" : "Log in"}
+                  {hasUser ? t("View inbox") : t("Log in")}
                 </Link>
               </Button>
             </div>
@@ -101,12 +102,11 @@ export default function HomePage() {
               <aside className="hidden flex-col gap-2 bg-[#f6f8fc] px-3 py-5 sm:flex">
                 <div className="mb-4 flex items-center gap-3 px-3 text-neutral-700">
                   <Inbox className="h-5 w-5" />
-                  <span className="font-semibold">Mail</span>
+                  <span className="font-semibold">{t("Mail")}</span>
                 </div>
                 <div className="mb-3 flex h-12 w-fit items-center gap-2 rounded-2xl bg-blue-100 px-5 text-sm font-semibold text-blue-950 shadow-sm">
                   <Mail className="h-4 w-4" />
-                  Compose
-                </div>
+                  {t("Compose")}</div>
                 {sidebarItems.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -120,7 +120,7 @@ export default function HomePage() {
                     >
                       <span className="flex items-center gap-3">
                         <Icon className="h-4 w-4" />
-                        {item.label}
+                        {t(item.label)}
                       </span>
                       {item.count && (
                         <span className="text-xs text-blue-800">
@@ -136,7 +136,7 @@ export default function HomePage() {
                 <div className="flex h-16 items-center gap-3 bg-[#f6f8fc] px-4">
                   <div className="flex h-12 flex-1 items-center gap-3 rounded-full bg-[#eaf1fb] px-4 text-neutral-600">
                     <Search className="h-5 w-5" />
-                    <span className="text-[15px]">Search mail</span>
+                    <span className="text-[15px]">{t("Search mail")}</span>
                   </div>
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
                     <Mail className="h-4 w-4" />
@@ -147,15 +147,13 @@ export default function HomePage() {
                   <div className="flex h-14 items-center justify-between border-b border-neutral-200 px-6">
                     <div className="flex items-center gap-3">
                       <h2 className="text-xl font-medium text-neutral-800">
-                        Priority inbox
-                      </h2>
+                        {t("Priority inbox")}</h2>
                       <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-600">
                         18
                       </span>
                     </div>
                     <span className="hidden text-sm font-medium text-neutral-500 md:inline">
-                      Updated 2 min ago
-                    </span>
+                      {t("Updated 2 min ago")}</span>
                   </div>
                   <div className="divide-y divide-neutral-100">
                     {heroMessages.map((message) => (
@@ -169,15 +167,15 @@ export default function HomePage() {
                         </span>
                         <span className="truncate text-neutral-600">
                           <span className="font-medium text-neutral-900">
-                            {message.subject}
+                            {t(message.subject)}
                           </span>
                           <span className="hidden text-neutral-500 md:inline">
                             {" "}
-                            - {message.preview}
+                            - {t(message.preview)}
                           </span>
                         </span>
                         <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
-                          {message.badge}
+                          {t(message.badge)}
                         </span>
                       </div>
                     ))}

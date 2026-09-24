@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { updatePassword } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 export function ChangePasswordForm() {
+	const t = useT();
+
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
@@ -39,7 +42,7 @@ export function ChangePasswordForm() {
 	return (
 		<form onSubmit={onSubmit} className="space-y-4">
 			<div className="space-y-2">
-				<Label htmlFor="currentPassword">Current password</Label>
+				<Label htmlFor="currentPassword">{t("Current password")}</Label>
 				<Input
 					id="currentPassword"
 					type="password"
@@ -50,7 +53,7 @@ export function ChangePasswordForm() {
 				/>
 			</div>
 			<div className="space-y-2">
-				<Label htmlFor="newPassword">New password</Label>
+				<Label htmlFor="newPassword">{t("New password")}</Label>
 				<Input
 					id="newPassword"
 					type="password"
@@ -62,7 +65,7 @@ export function ChangePasswordForm() {
 				/>
 			</div>
 			<div className="space-y-2">
-				<Label htmlFor="confirmPassword">Confirm new password</Label>
+				<Label htmlFor="confirmPassword">{t("Confirm new password")}</Label>
 				<Input
 					id="confirmPassword"
 					type="password"
@@ -75,9 +78,9 @@ export function ChangePasswordForm() {
 			</div>
 			<div className="flex items-center gap-3">
 				<Button type="submit" disabled={loading}>
-					{loading ? "Changing..." : "Change password"}
+					{loading ? t("Changing...") : t("Change password")}
 				</Button>
-				{status && <p className="text-sm text-neutral-500">{status}</p>}
+				{status && <p className="text-sm text-neutral-500">{t(status)}</p>}
 			</div>
 		</form>
 	);

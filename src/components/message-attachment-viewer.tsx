@@ -17,6 +17,7 @@ import {
 	getAttachmentFileUrl,
 	getAttachmentPreviewKind,
 } from "./message-attachment-viewer-utils";
+import { useT } from "@/i18n/use-t";
 
 export function MessageAttachmentViewer({
 	attachment,
@@ -24,6 +25,8 @@ export function MessageAttachmentViewer({
 	onOpenChange,
 	open,
 }: MessageAttachmentViewerProps) {
+	const t = useT();
+
 	const [textContent, setTextContent] = useState("");
 	const [textError, setTextError] = useState("");
 
@@ -92,7 +95,7 @@ export function MessageAttachmentViewer({
 					{previewKind === "text" && (
 						textError || textContent ? (
 							<pre className="h-full w-full overflow-auto whitespace-pre-wrap p-5 text-sm text-neutral-800">
-								{textError || textContent}
+								{textError ? t(textError) : textContent}
 							</pre>
 						) : (
 							<div className="h-full w-full space-y-3 bg-white p-5">
@@ -106,8 +109,7 @@ export function MessageAttachmentViewer({
 						<div className="flex flex-col items-center gap-3 px-6 text-center">
 							<FileWarning className="h-10 w-10 text-neutral-400" />
 							<p className="text-sm text-neutral-600">
-								This file type cannot be previewed safely in the browser.
-							</p>
+								{t("This file type cannot be previewed safely in the browser.")}</p>
 						</div>
 					)}
 				</div>
@@ -116,8 +118,7 @@ export function MessageAttachmentViewer({
 					<Button asChild>
 						<a href={downloadUrl} download={attachment.filename}>
 							<ArrowDownToLine className="h-4 w-4" />
-							Download
-						</a>
+							{t("Download")}</a>
 					</Button>
 				</div>
 			</DialogContent>

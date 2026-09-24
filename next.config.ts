@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 import { getSecurityHeaders } from "./src/lib/security/headers";
 
 const nextConfig: NextConfig = {
@@ -24,7 +25,7 @@ const nextConfig: NextConfig = {
 	},
 };
 
-export default nextConfig;
+export default createNextIntlPlugin()(nextConfig);
 
 // Enable calling `getCloudflareContext()` in `next dev`. The self-hosted
 // runtime provides its own env, so it skips this.

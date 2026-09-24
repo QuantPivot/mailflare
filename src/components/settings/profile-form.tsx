@@ -8,12 +8,15 @@ import { authFetch } from "@/lib/auth/client";
 import { dispatchProfileNameChanged } from "@/lib/profile/name-client";
 import { ProfileAvatarForm } from "./profile-avatar-form";
 import type { ProfileFormProps, ProfileFormResponse } from "./types";
+import { useT } from "@/i18n/use-t";
 
 export function ProfileForm({
   initialName,
   initialResetEmail,
   email,
 }: ProfileFormProps) {
+	const t = useT();
+
   const [name, setName] = useState(initialName);
   const [resetEmail, setResetEmail] = useState(initialResetEmail);
   const [savedName, setSavedName] = useState(initialName);
@@ -98,16 +101,14 @@ export function ProfileForm({
           <ProfileAvatarForm name={name} />
           <div>
             <p className="text-sm font-medium text-neutral-900">
-              Profile picture
-            </p>
+              {t("Profile picture")}</p>
             <p className="mt-1 text-sm text-neutral-500">
-              Choose a picture to show across your account.
-            </p>
+              {t("Choose a picture to show across your account.")}</p>
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">{t("Name")}</Label>
           <Input
             id="name"
             value={name}
@@ -116,7 +117,7 @@ export function ProfileForm({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="accountEmail">Current email</Label>
+          <Label htmlFor="accountEmail">{t("Current email")}</Label>
           <Input
             id="accountEmail"
             value={email}
@@ -132,10 +133,10 @@ export function ProfileForm({
             type="submit"
             disabled={savingProfile || name.trim() === savedName}
           >
-            {savingProfile ? "Saving..." : "Save profile"}
+            {savingProfile ? t("Saving...") : t("Save profile")}
           </Button>
           {profileStatus && (
-            <p className="text-sm text-neutral-500">{profileStatus}</p>
+            <p className="text-sm text-neutral-500">{t(profileStatus)}</p>
           )}
         </div>
       </form>
@@ -146,14 +147,12 @@ export function ProfileForm({
       >
         <div>
           <h3 className="text-lg font-semibold text-neutral-900">
-            Recovery email
-          </h3>
+            {t("Recovery email")}</h3>
           <p className="mt-1 text-sm text-neutral-500">
-            Used to recover access if you cannot sign in.
-          </p>
+            {t("Used to recover access if you cannot sign in.")}</p>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="resetEmail">Email address</Label>
+          <Label htmlFor="resetEmail">{t("Email address")}</Label>
           <Input
             id="resetEmail"
             value={resetEmail}
@@ -167,10 +166,10 @@ export function ProfileForm({
             type="submit"
             disabled={savingRecovery || resetEmail.trim() === savedResetEmail}
           >
-            {savingRecovery ? "Saving..." : "Save recovery email"}
+            {savingRecovery ? t("Saving...") : t("Save recovery email")}
           </Button>
           {recoveryStatus && (
-            <p className="text-sm text-neutral-500">{recoveryStatus}</p>
+            <p className="text-sm text-neutral-500">{t(recoveryStatus)}</p>
           )}
         </div>
       </form>

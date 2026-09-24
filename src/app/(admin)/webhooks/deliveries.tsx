@@ -13,6 +13,8 @@ import {
 	isRetryable,
 	retryDelivery,
 } from "./utils";
+import { useLocale } from "next-intl";
+import { useT } from "@/i18n/use-t";
 
 const STATUS_STYLES: Record<WebhookDelivery["status"], string> = {
 	delivered: "bg-green-600/10 text-green-700",
@@ -23,6 +25,9 @@ const STATUS_STYLES: Record<WebhookDelivery["status"], string> = {
 };
 
 export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
+	const t = useT();
+	const locale = useLocale();
+
 	const qc = useQueryClient();
 	const deliveries = useQuery({
 		queryKey: ["webhook-deliveries", webhookId],
@@ -40,11 +45,11 @@ export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
 	});
 
 	if (deliveries.isLoading) {
-		return <p className="text-sm text-neutral-500">Loading deliveries…</p>;
+		return <p className="text-sm text-neutral-500">{t("Loading deliveries…")}</p>;
 	}
 
 	if (!deliveries.data?.length) {
-		return <p className="text-sm text-neutral-500">No deliveries recorded yet.</p>;
+		return <p className="text-sm text-neutral-500">{t("No deliveries recorded yet.")}</p>;
 	}
 
 	return (
@@ -52,12 +57,12 @@ export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
 			<table className="w-full min-w-[820px] text-left text-sm">
 				<thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
 					<tr>
-						<th className="px-3 py-2 font-medium">Event</th>
-						<th className="px-3 py-2 font-medium">Status</th>
-						<th className="px-3 py-2 font-medium">Attempts</th>
-						<th className="px-3 py-2 font-medium">Response</th>
-						<th className="px-3 py-2 font-medium">Last attempt</th>
-						<th className="px-3 py-2 font-medium">Next retry</th>
+						<th className="px-3 py-2 font-medium">{t("Event")}</th>
+						<th className="px-3 py-2 font-medium">{t("Status")}</th>
+						<th className="px-3 py-2 font-medium">{t("Attempts")}</th>
+						<th className="px-3 py-2 font-medium">{t("Response")}</th>
+						<th className="px-3 py-2 font-medium">{t("Last attempt")}</th>
+						<th className="px-3 py-2 font-medium">{t("Next retry")}</th>
 						<th className="px-3 py-2 font-medium" />
 					</tr>
 				</thead>
@@ -67,12 +72,12 @@ export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
 							<td className="px-3 py-2">
 								<span className="block">{delivery.eventType}</span>
 								<span className="block text-xs text-neutral-400">
-									{formatTimestamp(delivery.createdAt)}
+									{formatTimestamp(delivery.createdAt, locale)}
 								</span>
 							</td>
 							<td className="px-3 py-2">
 								<Badge className={STATUS_STYLES[delivery.status]}>
-									{DELIVERY_STATUS_LABELS[delivery.status] ?? delivery.status}
+									{t(DELIVERY_STATUS_LABELS[delivery.status] ?? delivery.status)}
 								</Badge>
 							</td>
 							<td className="px-3 py-2 whitespace-nowrap">
@@ -90,16 +95,16 @@ export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
 									)}
 								</span>
 								{delivery.error && (
-									<span className="mt-1 block max-w-xs truncate text-xs text-red-600" title={delivery.error}>
-										{delivery.error}
+									<span className="mt-1 block max-w-xs truncate text-xs text-red-600" title={t(delivery.error)}>
+										{t(delivery.error)}
 									</span>
 								)}
 							</td>
 							<td className="px-3 py-2 whitespace-nowrap text-neutral-600">
-								{formatTimestamp(delivery.lastAttemptAt)}
+								{formatTimestamp(delivery.lastAttemptAt, locale)}
 							</td>
 							<td className="px-3 py-2 whitespace-nowrap text-neutral-600">
-								{formatTimestamp(delivery.nextRetryAt)}
+								{formatTimestamp(delivery.nextRetryAt, locale)}
 							</td>
 							<td className="px-3 py-2">
 								{isRetryable(delivery) && (
@@ -109,8 +114,7 @@ export function WebhookDeliveries({ webhookId }: { webhookId: string }) {
 										disabled={retry.isPending}
 										onClick={() => retry.mutate(delivery.id)}
 									>
-										<RotateCw className="h-3 w-3" /> Retry
-									</Button>
+										<RotateCw className="h-3 w-3" /> {" "}{t("Retry")}</Button>
 								)}
 							</td>
 						</tr>

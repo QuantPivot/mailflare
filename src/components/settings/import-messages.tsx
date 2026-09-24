@@ -9,9 +9,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import type { ImportMessagesProps, ImportMessagesResult } from "./import-messages-types";
-import { getImportSummary, importMessageFiles } from "./import-messages-utils";
+import { importMessageFiles } from "./import-messages-utils";
+import { useT } from "@/i18n/use-t";
 
 export function ImportMessages({ destination, sourceLabel }: ImportMessagesProps) {
+	const t = useT();
+
 	const { selectedMailbox } = useSelectedMailbox();
 	const [files, setFiles] = useState<File[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -41,17 +44,14 @@ export function ImportMessages({ destination, sourceLabel }: ImportMessagesProps
 			<CardHeader>
 				<CardTitle className="flex items-center gap-2">
 					<Upload className="h-4 w-4" />
-					Import mail
-				</CardTitle>
+					{t("Import mail")}</CardTitle>
 				<CardDescription>
-					Upload exported .eml or .mbox files from source {sourceLabel}. They will be saved to the
-					matching section in the selected mailbox.
-				</CardDescription>
+					{t("Upload exported .eml or .mbox files from {source}. They will be saved to the matching section in the selected mailbox.", { source: t(sourceLabel) })}</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<form onSubmit={onSubmit} className="space-y-4">
 					<div className="space-y-2">
-						<Label htmlFor="mail-import">Mail export files</Label>
+						<Label htmlFor="mail-import">{t("Mail export files")}</Label>
 						<Input
 							id="mail-import"
 							type="file"
@@ -61,21 +61,20 @@ export function ImportMessages({ destination, sourceLabel }: ImportMessagesProps
 							className="block w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm shadow-sm shadow-neutral-200/50 file:mr-3 file:rounded-md file:border-0 file:bg-neutral-100 file:px-3 file:py-1.5 file:text-sm file:font-medium"
 						/>
 						<p className="text-xs leading-5 text-neutral-500">
-							Imports up to 100 messages and 25 MB per upload. Duplicate Message-ID values are skipped.
-						</p>
+							{t("Imports up to 100 messages and 25 MB per upload. Duplicate Message-ID values are skipped.")}</p>
 					</div>
 
 					<Button type="submit" disabled={!selectedMailbox || files.length === 0 || loading}>
-						{loading ? "Importing..." : "Import messages"}
+						{loading ? t("Importing...") : t("Import messages")}
 					</Button>
 
 					{result && (
 						<div className="rounded-lg border border-green-100 bg-green-50 px-4 py-3 text-sm text-green-700">
-							<p className="font-medium">{getImportSummary(result)}</p>
+							<p className="font-medium">{result && t("{imported} imported, {skipped} skipped", { imported: result.imported ?? 0, skipped: result.skipped ?? 0 })}</p>
 							{(result.errors ?? []).length > 0 && (
 								<ul className="mt-2 list-disc space-y-1 pl-5 text-xs">
 									{result.errors.slice(0, 5).map((item) => (
-										<li key={item}>{item}</li>
+										<li key={item}>{t(item)}</li>
 									))}
 								</ul>
 							)}
@@ -84,7 +83,7 @@ export function ImportMessages({ destination, sourceLabel }: ImportMessagesProps
 
 					{error && (
 						<p className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
-							{error}
+							{t(error)}
 						</p>
 					)}
 				</form>

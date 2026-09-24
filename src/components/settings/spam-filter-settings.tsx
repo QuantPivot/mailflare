@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react";
 import { authFetch } from "@/lib/auth/client";
 import { Switch } from "@/components/ui/switch";
+import { useT } from "@/i18n/use-t";
 
 export function SpamFilterSettings() {
+	const t = useT();
+
 	const [enabled, setEnabled] = useState(true);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -46,12 +49,12 @@ export function SpamFilterSettings() {
 		<div>
 			<label className="flex items-start gap-3 rounded-xl bg-neutral-50 p-4">
 				<span className="flex-1">
-					<span className="block text-sm font-medium text-neutral-900">Spam Filter</span>
-					<span className="mt-1 block text-sm text-neutral-500">Analyze incoming messages locally and detect high-confidence spam</span>
+					<span className="block text-sm font-medium text-neutral-900">{t("Spam Filter")}</span>
+					<span className="mt-1 block text-sm text-neutral-500">{t("Analyze incoming messages locally and detect high-confidence spam")}</span>
 				</span>
-				<Switch checked={enabled} disabled={loading} onCheckedChange={(value) => void updateEnabled(value)} aria-label="Enable spam filter" />
+				<Switch checked={enabled} disabled={loading} onCheckedChange={(value) => void updateEnabled(value)} aria-label={t("Enable spam filter")} />
 			</label>
-			{error && <p className="mt-2 px-4 text-sm text-red-600">{error}</p>}
+			{error && <p className="mt-2 px-4 text-sm text-red-600">{t(error)}</p>}
 		</div>
 	);
 }

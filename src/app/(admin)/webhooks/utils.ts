@@ -80,12 +80,12 @@ export async function retryDelivery(webhookId: string, deliveryId: string) {
 }
 
 /** Drizzle timestamps arrive as epoch seconds when they bypass the column mapper. */
-export function formatTimestamp(value: string | number | null | undefined): string {
+export function formatTimestamp(value: string | number | null | undefined, locale?: string): string {
 	if (value === null || value === undefined) return "—";
 	const numeric = typeof value === "number" ? value : Date.parse(String(value));
 	if (!Number.isFinite(numeric)) return "—";
 	const ms = numeric < 1e12 ? numeric * 1000 : numeric;
-	return new Date(ms).toLocaleString();
+	return new Date(ms).toLocaleString(locale);
 }
 
 export function formatDuration(ms: number | null): string {

@@ -10,8 +10,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TurnstileField } from "@/components/auth/turnstile";
 import { submitLogin, submitMfaCode } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 export function LoginClient() {
+	const t = useT();
+
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -82,12 +85,12 @@ export function LoginClient() {
     return (
       <AuthShell
         icon={ShieldCheck}
-        title="Two-factor authentication"
-        description="Enter the 6-digit code from your authenticator app, or one of your recovery codes."
+        title={t("Two-factor authentication")}
+        description={t("Enter the 6-digit code from your authenticator app, or one of your recovery codes.")}
       >
         <form onSubmit={onSubmitCode} className="space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="code">Code</Label>
+            <Label htmlFor="code">{t("Code")}</Label>
             <Input
               id="code"
               name="code"
@@ -102,11 +105,11 @@ export function LoginClient() {
           </div>
           {error && (
             <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-              {error}
+              {t(error)}
             </p>
           )}
           <Button type="submit" className="h-11 w-full rounded-full px-6 active:scale-[0.98]" disabled={loading}>
-            {loading ? "Verifying..." : "Verify"}
+            {loading ? t("Verifying...") : t("Verify")}
           </Button>
           <button
             type="button"
@@ -117,8 +120,7 @@ export function LoginClient() {
               setError(null);
             }}
           >
-            Back to sign in
-          </button>
+            {t("Back to sign in")}</button>
         </form>
       </AuthShell>
     );
@@ -127,12 +129,12 @@ export function LoginClient() {
   return (
     <AuthShell
       icon={Mail}
-      title="Sign in"
-      description="Open your mailbox and continue from the same inbox workspace."
+      title={t("Sign in")}
+      description={t("Open your mailbox and continue from the same inbox workspace.")}
     >
       <form method="post" onSubmit={onSubmit} className="space-y-5">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t("Email")}</Label>
           <Input
             id="email"
             name="email"
@@ -143,10 +145,9 @@ export function LoginClient() {
         </div>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t("Password")}</Label>
             <Link href="/forgot-password" className="text-xs font-medium text-blue-600 hover:underline">
-              Forgot password?
-            </Link>
+              {t("Forgot password?")}</Link>
           </div>
           <Input
             id="password"
@@ -158,7 +159,7 @@ export function LoginClient() {
         </div>
         {error && (
           <p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-            {error}
+            {t(error)}
           </p>
         )}
         <TurnstileField resetSignal={turnstileReset} />
@@ -167,7 +168,7 @@ export function LoginClient() {
           className="h-11 w-full rounded-full px-6 active:scale-[0.98]"
           disabled={loading}
         >
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? t("Signing in...") : t("Sign in")}
         </Button>
       </form>
     </AuthShell>

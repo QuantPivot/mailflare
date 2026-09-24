@@ -1,3 +1,4 @@
+import type { Translate } from "@/i18n/catalog";
 import { authFetch } from "@/lib/auth/client";
 import type {
 	DomainRule,
@@ -47,7 +48,6 @@ export async function fetchDomainRules(
 	return { rules: json.rules ?? [], mailboxes: json.mailboxes ?? [] };
 }
 
-
 function domainRuleUrl(id: string | null, mailboxId?: string): string {
 	const params = new URLSearchParams();
 	if (mailboxId) params.set("mailboxId", mailboxId);
@@ -80,29 +80,28 @@ export async function deleteDomainRule(id: string, mailboxId?: string) {
 	return readJson(await authFetch(domainRuleUrl(id, mailboxId), { method: "DELETE" }));
 }
 
-export function describeRule(rule: DomainRule, mailboxes: DomainRuleMailbox[], hostname: string): string {
+export function describeRule(rule: DomainRule, mailboxes: DomainRuleMailbox[], hostname: string, t: Translate = (source) => source): string {
 	const condition =
 		rule.matchValue === "*"
-			? "Any message"
-			: `${MATCH_FIELD_LABELS[rule.matchField]} ${MATCH_OPERATOR_LABELS[rule.matchOperator]} "${rule.matchValue}"`;
+			? t("Any message")
+			: t("{field} {operator} “{value}”", { field: t(MATCH_FIELD_LABELS[rule.matchField]), operator: t(MATCH_OPERATOR_LABELS[rule.matchOperator]), value: rule.matchValue });
 
-	if (rule.action === "reject") return `${condition} → reject`;
+	if (rule.action === "reject") return t("{condition} → reject", { condition });
 	if (rule.action === "forward") {
-		const copy = rule.keepCopy ? " and keep a copy" : "";
-		return `${condition} → forward to ${rule.forwardTo ?? "—"}${copy}`;
+		return rule.keepCopy ? t("{condition} → forward to {address} and keep a copy", { condition, address: rule.forwardTo ?? "—" }) : t("{condition} → forward to {address}", { condition, address: rule.forwardTo ?? "—" });
 	}
 	const mailbox = mailboxes.find((m) => m.id === rule.mailboxId);
 	const address = mailbox ? `${mailbox.localPart}@${hostname}` : "—";
-	return `${condition} → deliver to ${address}`;
+	return t("{condition} → deliver to {address}", { condition, address });
 }
 
-export function formatLastMatched(value: DomainRule["lastMatchedAt"]): string {
+export function formatLastMatched(value: DomainRule["lastMatchedAt"], locale?: string): string {
 	if (value === null || value === undefined) return "Never";
 	const numeric = typeof value === "number" ? value : Date.parse(String(value));
 	if (!Number.isFinite(numeric)) return "Never";
 	// Drizzle timestamps serialise as seconds when they bypass the mapper.
 	const ms = numeric < 1e12 ? numeric * 1000 : numeric;
-	return new Date(ms).toLocaleString();
+	return new Date(ms).toLocaleString(locale);
 }
 
 export function emptyRuleInput(domainId: string): DomainRuleInput {

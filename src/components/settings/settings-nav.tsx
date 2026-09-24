@@ -4,8 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { isActiveSettingsPath, settingsNavSections } from "./settings-nav-utils";
+import { useT } from "@/i18n/use-t";
 
 export function SettingsNav() {
+	const t = useT();
 	const pathname = usePathname();
 
 	return (
@@ -14,7 +16,7 @@ export function SettingsNav() {
 				{settingsNavSections.map((section) => (
 					<div key={section.label} className="space-y-3">
 						<h2 className="px-4 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-							{section.label}
+							{t(section.label)}
 						</h2>
 						<nav className="space-y-px">
 							{section.items.map((item) => {
@@ -30,7 +32,7 @@ export function SettingsNav() {
 												: "text-neutral-600 hover:bg-white/70 hover:text-neutral-900",
 										)}
 									>
-										{item.label}
+										{t(item.label)}
 									</Link>
 								);
 							})}

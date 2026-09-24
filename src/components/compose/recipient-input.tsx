@@ -8,6 +8,7 @@ import { getEmailAddress } from "@/lib/email/address";
 import { cn } from "@/lib/utils";
 import type { RecipientInputProps } from "./recipient-input-types";
 import { getRecipientLabel, isValidRecipient, parseRecipientEntries } from "./recipient-utils";
+import { useT } from "@/i18n/use-t";
 
 /**
  * A To/Cc/Bcc row. Addresses become chips as soon as the user types a comma,
@@ -25,6 +26,8 @@ export function RecipientInput({
 	autoFocus,
 	trailing,
 }: RecipientInputProps) {
+	const t = useT();
+
 	const [draft, setDraft] = useState("");
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -54,7 +57,7 @@ export function RecipientInput({
 			onClick={() => inputRef.current?.focus()}
 		>
 			<Label htmlFor={id} className="w-8 shrink-0 text-sm text-neutral-500">
-				{label}
+				{t(label)}
 			</Label>
 			<div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
 				{value.map((entry) => {
@@ -74,7 +77,7 @@ export function RecipientInput({
 							{!disabled && (
 								<button
 									type="button"
-									aria-label={`Remove ${getEmailAddress(entry)}`}
+									aria-label={t("Remove {value0}", { value0: String(getEmailAddress(entry)) })}
 									className="rounded-full p-0.5 text-neutral-400 hover:bg-neutral-200 hover:text-neutral-700"
 									onClick={(event) => {
 										event.stopPropagation();

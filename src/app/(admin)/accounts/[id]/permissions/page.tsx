@@ -6,8 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { ManagedAccount } from "../types";
 import { fetchManagedAccount, saveManagedAccount } from "../utils";
+import { useT } from "@/i18n/use-t";
 
 export default function AccountPermissionsPage() {
+	const t = useT();
+
 	const { id } = useParams<{ id: string }>();
 	const [account, setAccount] = useState<ManagedAccount | null>(null);
 	const [saving, setSaving] = useState(false);
@@ -36,26 +39,26 @@ export default function AccountPermissionsPage() {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-3xl font-medium text-neutral-900">Permissions</h1>
-				<p className="mt-2 text-sm text-neutral-500">Control what this account can manage.</p>
+				<h1 className="text-3xl font-medium text-neutral-900">{t("Permissions")}</h1>
+				<p className="mt-2 text-sm text-neutral-500">{t("Control what this account can manage.")}</p>
 			</div>
 			<div className="overflow-hidden rounded-3xl bg-white">
 				<table className="w-full text-left">
 					<thead className="border-b border-neutral-100 bg-neutral-50 text-xs font-semibold uppercase tracking-wide text-neutral-500">
 						<tr>
-							<th className="px-5 py-3">Permission</th>
-							<th className="w-28 px-5 py-3 text-center">Allowed</th>
+							<th className="px-5 py-3">{t("Permission")}</th>
+							<th className="w-28 px-5 py-3 text-center">{t("Allowed")}</th>
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-neutral-100">
 						<tr>
 							<td className="px-5 py-4">
-								<p className="text-sm font-semibold text-neutral-900">Administrator access</p>
-								<p className="mt-1 text-xs text-neutral-500">Access administration pages and manage Team settings.</p>
+								<p className="text-sm font-semibold text-neutral-900">{t("Administrator access")}</p>
+								<p className="mt-1 text-xs text-neutral-500">{t("Access administration pages and manage Team settings.")}</p>
 							</td>
 							<td className="px-5 py-4 text-center">
 								<Checkbox
-									aria-label="Allow administrator access"
+									aria-label={t("Allow administrator access")}
 									checked={account?.role === "admin"}
 									disabled={!account}
 									onChange={(event) => account && setAccount({ ...account, role: event.target.checked ? "admin" : "user" })}
@@ -64,12 +67,12 @@ export default function AccountPermissionsPage() {
 						</tr>
 						<tr>
 							<td className="px-5 py-4">
-								<p className="text-sm font-semibold text-neutral-900">Manage mailboxes</p>
-								<p className="mt-1 text-xs text-neutral-500">Allow this account to add and remove its own inboxes.</p>
+								<p className="text-sm font-semibold text-neutral-900">{t("Manage mailboxes")}</p>
+								<p className="mt-1 text-xs text-neutral-500">{t("Allow this account to add and remove its own inboxes.")}</p>
 							</td>
 							<td className="px-5 py-4 text-center">
 								<Checkbox
-									aria-label="Allow mailbox management"
+									aria-label={t("Allow mailbox management")}
 									checked={account?.canManageMailboxes ?? false}
 									disabled={!account}
 									onChange={(event) => account && setAccount({ ...account, canManageMailboxes: event.target.checked })}
@@ -80,9 +83,9 @@ export default function AccountPermissionsPage() {
 				</table>
 			</div>
 			<Button onClick={() => void savePermissions()} disabled={!account || saving}>
-				{saving ? "Saving..." : "Save permissions"}
+				{saving ? t("Saving...") : t("Save permissions")}
 			</Button>
-			{message && <p className="text-sm text-neutral-500">{message}</p>}
+			{message && <p className="text-sm text-neutral-500">{t(message)}</p>}
 		</div>
 	);
 }

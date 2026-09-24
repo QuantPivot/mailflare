@@ -9,8 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { confirmPasswordReset } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 export function ResetPasswordClient() {
+	const t = useT();
+
 	const token = useSearchParams().get("token") ?? "";
 	const [password, setPassword] = useState("");
 	const [confirm, setConfirm] = useState("");
@@ -42,10 +45,9 @@ export function ResetPasswordClient() {
 
 	if (!token) {
 		return (
-			<AuthShell icon={LockKeyhole} title="Reset link missing" description="Open the link from the reset email to choose a new password.">
+			<AuthShell icon={LockKeyhole} title={t("Reset link missing")} description={t("Open the link from the reset email to choose a new password.")}>
 				<Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
-					Request a new link
-				</Link>
+					{t("Request a new link")}</Link>
 			</AuthShell>
 		);
 	}
@@ -53,24 +55,23 @@ export function ResetPasswordClient() {
 	return (
 		<AuthShell
 			icon={LockKeyhole}
-			title={done ? "Password updated" : "Choose a new password"}
+			title={done ? t("Password updated") : t("Choose a new password")}
 			description={
 				done
-					? "You have been signed out everywhere. Sign in with your new password to continue."
-					: "Use at least 8 characters. Every other session for this account will be signed out."
+					? t("You have been signed out everywhere. Sign in with your new password to continue.")
+					: t("Use at least 8 characters. Every other session for this account will be signed out.")
 			}
 			footer={
 				done ? (
 					<Link href="/login" className="text-sm font-medium text-blue-600 hover:underline">
-						Go to sign in
-					</Link>
+						{t("Go to sign in")}</Link>
 				) : undefined
 			}
 		>
 			{!done && (
 				<form onSubmit={onSubmit} className="space-y-5">
 					<div className="space-y-2">
-						<Label htmlFor="password">New password</Label>
+						<Label htmlFor="password">{t("New password")}</Label>
 						<Input
 							id="password"
 							type="password"
@@ -83,7 +84,7 @@ export function ResetPasswordClient() {
 						/>
 					</div>
 					<div className="space-y-2">
-						<Label htmlFor="confirm">Confirm new password</Label>
+						<Label htmlFor="confirm">{t("Confirm new password")}</Label>
 						<Input
 							id="confirm"
 							type="password"
@@ -95,10 +96,10 @@ export function ResetPasswordClient() {
 						/>
 					</div>
 					{error && (
-						<p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{error}</p>
+						<p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{t(error)}</p>
 					)}
 					<Button type="submit" className="h-11 w-full rounded-full px-6 active:scale-[0.98]" disabled={loading}>
-						{loading ? "Saving..." : "Set new password"}
+						{loading ? t("Saving...") : t("Set new password")}
 					</Button>
 				</form>
 			)}

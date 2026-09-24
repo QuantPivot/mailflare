@@ -11,8 +11,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { LicenseStatus } from "@/lib/licenses/types";
 import type { ActivatableLicensePlan, LicenseAction } from "./types";
 import { formatLicensePlan, loadLicenseStatus, runLicenseAction } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 export function LicenseActivation() {
+	const t = useT();
+
 	const [license, setLicense] = useState<LicenseStatus | null>(null);
 	const [licenseKey, setLicenseKey] = useState("");
 	const [selectedPlan, setSelectedPlan] = useState<ActivatableLicensePlan>("pro");
@@ -42,7 +45,7 @@ export function LicenseActivation() {
 			setStatus("Enter your license key");
 			return;
 		}
-		if (nextAction === "deactivate" && !window.confirm("Deactivate this license on this installation?")) return;
+		if (nextAction === "deactivate" && !window.confirm(t("Deactivate this license on this installation?"))) return;
 
 		setAction(nextAction);
 		setStatus(null);
@@ -75,14 +78,13 @@ export function LicenseActivation() {
 						<CheckCircle2 className="h-6 w-6" />
 					</span>
 					<div className="min-w-0 flex-1">
-						<CardTitle>License activated</CardTitle>
+						<CardTitle>{t("License activated")}</CardTitle>
 						<p className="mt-2 text-sm leading-6 text-neutral-600">
-							Your {formatLicensePlan(license.plan)} license is active. Licensed features are ready to use.
-						</p>
+							{t("Your {plan} license is active. Licensed features are ready to use.", { plan: formatLicensePlan(license.plan) })}</p>
 						<Button type="button" variant="outline" className="mt-5" onClick={() => void submit("deactivate")} disabled={action !== null}>
-							{action === "deactivate" ? "Deactivating..." : "Deactivate license"}
+							{action === "deactivate" ? t("Deactivating...") : t("Deactivate license")}
 						</Button>
-						{status && <p className="mt-3 text-sm text-neutral-500">{status}</p>}
+						{status && <p className="mt-3 text-sm text-neutral-500">{t(status)}</p>}
 					</div>
 				</CardContent>
 			</Card>
@@ -94,13 +96,12 @@ export function LicenseActivation() {
 			<CardContent className="space-y-5 pb-6">
 				{hasActivation && license && (
 					<p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-800">
-						This license is currently {license.state}. Enter its key to validate or deactivate it.
-					</p>
+						{t("This license is currently {state}. Enter its key to validate or deactivate it.", { state: t(license.state) })}</p>
 				)}
 				{!hasActivation && (
 					<div className="space-y-4 pt-6">
-						<Label className="mb-4">Already has a license? Choose your tier</Label>
-						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2" role="radiogroup" aria-label="Product">
+						<Label className="mb-4">{t("Already has a license? Choose your tier")}</Label>
+						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2" role="radiogroup" aria-label={t("Product")}>
 							<button
 								type="button"
 								role="radio"
@@ -114,7 +115,7 @@ export function LicenseActivation() {
 								}`}
 							>
 								<span className="block text-xl font-semibold">Pro</span>
-								<span className="mt-1 block text-xs text-neutral-500">For individual power users</span>
+								<span className="mt-1 block text-xs text-neutral-500">{t("For individual power users")}</span>
 							</button>
 							<button
 								type="button"
@@ -129,20 +130,20 @@ export function LicenseActivation() {
 								}`}
 							>
 								<span className="block text-xl font-semibold text-neutral-900">Team</span>
-								<span className="mt-1 block text-xs text-neutral-500">For teams and shared inboxes</span>
+								<span className="mt-1 block text-xs text-neutral-500">{t("For teams and shared inboxes")}</span>
 							</button>
 						</div>
 					</div>
 				)}
 				<div className="space-y-2">
-					<Label htmlFor="licenseKey">License key</Label>
+					<Label htmlFor="licenseKey">{t("License key")}</Label>
 					<Input
 						id="licenseKey"
 						type="password"
 						autoComplete="off"
 						value={licenseKey}
 						onChange={(event) => setLicenseKey(event.target.value)}
-						placeholder="Enter your Mailflare license key"
+						placeholder={t("Enter your Mailflare license key")}
 						disabled={action !== null}
 					/>
 				</div>
@@ -150,18 +151,18 @@ export function LicenseActivation() {
 					{hasActivation ? (
 						<>
 							<Button type="button" onClick={() => void submit("validate")} disabled={action !== null}>
-								{action === "validate" ? "Validating..." : "Validate license"}
+								{action === "validate" ? t("Validating...") : t("Validate license")}
 							</Button>
 							<Button type="button" variant="outline" onClick={() => void submit("deactivate")} disabled={action !== null}>
-								{action === "deactivate" ? "Deactivating..." : "Deactivate"}
+								{action === "deactivate" ? t("Deactivating...") : t("Deactivate")}
 							</Button>
 						</>
 					) : (
 						<Button type="button" onClick={() => void submit("activate")} disabled={action !== null}>
-							{action === "activate" ? "Activating..." : "Activate"}
+							{action === "activate" ? t("Activating...") : t("Activate")}
 						</Button>
 					)}
-					{status && <p className="text-sm text-neutral-500">{status}</p>}
+					{status && <p className="text-sm text-neutral-500">{t(status)}</p>}
 				</div>
 			</CardContent>
 		</Card>

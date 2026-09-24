@@ -23,6 +23,7 @@ import {
 	openUnsubscribeUrl,
 	runSingleMessageAction,
 } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 export function MessageActions({
 	messageId,
@@ -40,6 +41,8 @@ export function MessageActions({
 	messageMeta,
 	bodyHtml,
 }: MessageActionsProps) {
+	const t = useT();
+
 	const router = useRouter();
 	const { openDraftComposer } = useCompose();
 	const { shortcutsEnabled } = useShortcuts();
@@ -222,14 +225,14 @@ export function MessageActions({
 
 	return (
 		<div className="flex items-center gap-3 text-neutral-600">
-			{error && <span className="text-xs text-red-600">{error}</span>}
+			{error && <span className="text-xs text-red-600">{t(error)}</span>}
 			<div className="flex items-center gap-2">
-				<Tooltip label={shortcutsEnabled ? "Reply (r)" : "Reply"}>
+				<Tooltip label={shortcutsEnabled ? t("Reply (r)") : t("Reply")}>
 					<Button
 						type="button"
 						variant="ghost"
 						size="sm"
-						aria-label={shortcutsEnabled ? "Reply (r)" : "Reply"}
+						aria-label={shortcutsEnabled ? t("Reply (r)") : t("Reply")}
 						disabled={disabled}
 						onClick={() => handleReply("reply")}
 					>
@@ -237,12 +240,12 @@ export function MessageActions({
 					</Button>
 				</Tooltip>
 				{canReplyAll && (
-					<Tooltip label="Reply all">
+					<Tooltip label={t("Reply all")}>
 						<Button
 							type="button"
 							variant="ghost"
 							size="sm"
-							aria-label="Reply all"
+							aria-label={t("Reply all")}
 							disabled={disabled}
 							onClick={() => handleReply("replyAll")}
 						>
@@ -251,12 +254,12 @@ export function MessageActions({
 					</Tooltip>
 				)}
 				{message && messageMeta && (
-					<Tooltip label="Forward">
+					<Tooltip label={t("Forward")}>
 						<Button
 							type="button"
 							variant="ghost"
 							size="sm"
-							aria-label="Forward"
+							aria-label={t("Forward")}
 							disabled={disabled}
 							onClick={() => void handleForward()}
 						>
@@ -264,44 +267,44 @@ export function MessageActions({
 						</Button>
 					</Tooltip>
 				)}
-				<Tooltip label={shortcutsEnabled ? "Archive (e)" : "Archive"}>
+				<Tooltip label={shortcutsEnabled ? t("Archive (e)") : t("Archive")}>
 					<Button
 						variant="ghost"
 						size="sm"
-						aria-label={shortcutsEnabled ? "Archive (e)" : "Archive"}
+						aria-label={shortcutsEnabled ? t("Archive (e)") : t("Archive")}
 						disabled={disabled || status === "archived"}
 						onClick={() => runAction("archive")}
 					>
 						<Archive className="h-5 w-5" />
 					</Button>
 				</Tooltip>
-				<Tooltip label={shortcutsEnabled ? "Report spam (!)" : "Report spam"}>
+				<Tooltip label={shortcutsEnabled ? t("Report spam (!)") : t("Report spam")}>
 					<Button
 						variant="ghost"
 						size="sm"
-						aria-label={shortcutsEnabled ? "Report spam (!)" : "Report spam"}
+						aria-label={shortcutsEnabled ? t("Report spam (!)") : t("Report spam")}
 						disabled={disabled || status === "spam" || direction !== "inbound"}
 						onClick={() => runAction("spam")}
 					>
 						<ShieldAlert className="h-5 w-5" />
 					</Button>
 				</Tooltip>
-				<Tooltip label={shortcutsEnabled ? "Delete (#)" : "Delete"}>
+				<Tooltip label={shortcutsEnabled ? t("Delete (#)") : t("Delete")}>
 					<Button
 						variant="ghost"
 						size="sm"
-						aria-label={shortcutsEnabled ? "Move to trash (#)" : "Move to trash"}
+						aria-label={shortcutsEnabled ? t("Move to trash (#)") : t("Move to trash")}
 						disabled={disabled || status === "trash"}
 						onClick={() => runAction("trash")}
 					>
 						<Trash2 className="h-5 w-5" />
 					</Button>
 				</Tooltip>
-				<Tooltip label={read ? "Mark as unread" : "Mark as read"}>
+				<Tooltip label={read ? t("Mark as unread") : t("Mark as read")}>
 					<Button
 						variant="ghost"
 						size="sm"
-						aria-label={read ? "Mark as unread" : "Mark as read"}
+						aria-label={read ? t("Mark as unread") : t("Mark as read")}
 						disabled={disabled}
 						onClick={() => runAction(markAction)}
 					>
@@ -309,12 +312,12 @@ export function MessageActions({
 					</Button>
 				</Tooltip>
 				<div className="relative">
-					<Tooltip label="More actions">
+					<Tooltip label={t("More actions")}>
 						<Button
 							type="button"
 							variant="ghost"
 							size="sm"
-							aria-label="More actions"
+							aria-label={t("More actions")}
 							aria-expanded={moreOpen}
 							disabled={disabled}
 							onClick={() => setMoreOpen((open) => !open)}
@@ -333,22 +336,19 @@ export function MessageActions({
 									onClick={() => void onUnsubscribe()}
 								>
 									<BellOff className="h-4 w-4 shrink-0" />
-									Unsubscribe
-									</button>
+									{t("Unsubscribe")}</button>
 									<button
 										type="button"
 									className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-100"
 										onClick={() => void onBlockContact()}
 									>
 										<Ban className="h-4 w-4" />
-										Block contact
-									</button>
+										{t("Block contact")}</button>
 							<hr className="my-1 border-neutral-100" />
 								</>
 							)}
 							<p className="mt-1 px-3 pb-1 pt-2 text-sm font-medium text-neutral-500">
-								Move to
-							</p>
+								{t("Move to")}</p>
 							{moveActions.map((item) => (
 								<button
 									key={item.action}
@@ -357,7 +357,7 @@ export function MessageActions({
 									onClick={() => void runAction(item.action)}
 								>
 									{createElement(item.icon, { size: 16 })}
-									{item.label}
+									{t(item.label)}
 								</button>
 							))}
 						</div>

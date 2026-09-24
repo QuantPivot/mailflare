@@ -65,9 +65,9 @@ export async function downloadBackup(backup: BackupItem): Promise<void> {
 	URL.revokeObjectURL(url);
 }
 
-export function formatBackupDate(value: string | null): string {
+export function formatBackupDate(value: string | null, locale?: string): string {
 	if (!value) return "-";
-	return new Intl.DateTimeFormat(undefined, {
+	return new Intl.DateTimeFormat(locale, {
 		dateStyle: "medium",
 		timeStyle: "short",
 	}).format(new Date(value));

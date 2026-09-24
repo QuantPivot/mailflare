@@ -8,8 +8,11 @@ import {
 	getAccountSettingsHref,
 	isActiveAccountSettingsPath,
 } from "./account-settings-nav-utils";
+import { useT } from "@/i18n/use-t";
 
 export function AccountSettingsNav() {
+	const t = useT();
+
 	const { id } = useParams<{ id: string }>();
 	const pathname = usePathname();
 
@@ -17,8 +20,7 @@ export function AccountSettingsNav() {
 		<aside className="w-full shrink-0 lg:w-48">
 			<div className="sticky top-6 space-y-3">
 				<h2 className="px-4 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-					Account settings
-				</h2>
+					{t("Account settings")}</h2>
 				<nav className="space-y-1">
 					{accountSettingsNavItems.map((item) => {
 						const href = getAccountSettingsHref(id, item.segment);
@@ -33,7 +35,7 @@ export function AccountSettingsNav() {
 										: "text-neutral-600 hover:bg-white/70 hover:text-neutral-900",
 								)}
 							>
-								{item.label}
+								{t(item.label)}
 							</Link>
 						);
 					})}

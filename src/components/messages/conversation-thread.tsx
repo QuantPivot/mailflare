@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import dayjs from "dayjs";
 import { ChevronsUpDown, Paperclip } from "lucide-react";
 import { ContactAvatar } from "@/components/contacts/contact-avatar";
 import { runSingleMessageAction } from "@/components/message-actions/utils";
@@ -18,6 +17,8 @@ import {
 	partitionThread,
 } from "./conversation-thread-utils";
 import clsx from "clsx";
+import { useLocale } from "next-intl";
+import { useT } from "@/i18n/use-t";
 
 /**
  * The other messages in a conversation, ordered oldest to newest and collapsed
@@ -35,17 +36,22 @@ export function ConversationThread({
 	expandedAll,
 	onExpandedAllChange,
 }: ConversationThreadProps) {
+	const t = useT();
+
+
 	const slice = partitionThread(messages, currentMessageId, position, latestMessagesFirst);
 	if (slice.length === 0) return null;
 	const firstMessage = slice[0];
 	const lastMessage = slice.at(-1)!;
 	const middleMessages = slice.slice(1, -1);
 	const collapsed = !expandedAll && middleMessages.length > 0;
-	const collapsedLabel = `${middleMessages.length} ${position === "before" ? "older" : "newer"} message${middleMessages.length === 1 ? "" : "s"}`;
+	const collapsedLabel = position === "before"
+  ? t("{count, plural, one {# older message} other {# older messages}}", { count: middleMessages.length })
+  : t("{count, plural, one {# newer message} other {# newer messages}}", { count: middleMessages.length });
 
 	return (
 		<section
-			aria-label={position === "before" ? "Earlier messages in this conversation" : "Later messages in this conversation"}
+			aria-label={position === "before" ? t("Earlier messages in this conversation") : t("Later messages in this conversation")}
 			className={cn(position === (latestMessagesFirst ? "before" : "after") ? "pb-6" : "")}
 		>
 			<ol className={cn(!collapsed && "divide-y divide-neutral-200/50", latestMessagesFirst ? "border-y" : "border-b", "border-neutral-200")}>
@@ -65,8 +71,8 @@ export function ConversationThread({
 							<button
 								type="button"
 								onClick={() => onExpandedAllChange(true)}
-								aria-label={`Expand ${collapsedLabel}`}
-								title={`Expand ${collapsedLabel}`}
+								aria-label={t("Expand {value0}", { value0: String(collapsedLabel) })}
+								title={t("Expand {value0}", { value0: String(collapsedLabel) })}
 								className="inline-flex h-6 w-6 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900"
 							>
 								<ChevronsUpDown className="h-4 w-4" />
@@ -110,6 +116,9 @@ export function ConversationMessageCard({
 	ownAddresses,
 	defaultExpanded = false,
 }: ConversationMessageCardProps) {
+	const t = useT();
+	const locale = useLocale();
+
 	const [locallyExpanded, setLocallyExpanded] = useState(defaultExpanded);
 	const [locallyRead, setLocallyRead] = useState(message.read);
 	const expanded = locallyExpanded;
@@ -159,16 +168,16 @@ export function ConversationMessageCard({
 								{sender}
 								{expanded && <span className="text-xs ml-1 opacity-50 font-normal">&lt;{senderEmail}&gt;</span>}
 							</span>
-							{expanded && recipients && <span className="text-xs font-normal text-neutral-500">to {recipients}</span>}
+							{expanded && recipients && <span className="text-xs font-normal text-neutral-500">{t("to")}{" "}{recipients}</span>}
 						</div>
 						{!expanded && (
-							<span className={clsx( !locallyRead ? "font-semibold" : "text-neutral-500", "block truncate text-[13px]")}>{message.snippet || "No preview"}</span>
+							<span className={clsx( !locallyRead ? "font-semibold" : "text-neutral-500", "block truncate text-[13px]")}>{message.snippet || t("No preview")}</span>
 						)}
 					</span>
 				</button>
 				<span className="flex shrink-0 items-center gap-2 text-xs mr-2 mt-2">
-					{attachments.length > 0 && <Paperclip className="h-3.5 w-3.5" aria-label={`${attachments.length} attachments`} />}
-					{dayjs(message.createdAt).format("MMM DD, YYYY, hh:mmA")}
+					{attachments.length > 0 && <Paperclip className="h-3.5 w-3.5" aria-label={t("{value0} attachments", { value0: String(attachments.length) })} />}
+					{new Date(message.createdAt).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
 				</span>
 				<ThreadMessageActions
 					message={message}

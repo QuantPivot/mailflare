@@ -18,6 +18,7 @@ import { SidebarFooter } from "./sidebar-footer";
 import { useBranding } from "./branding-provider";
 import { SidebarHeader } from "./sidebar-header";
 import { useSidebar } from "./sidebar-state";
+import { useT } from "@/i18n/use-t";
 
 const sections = [
   {
@@ -52,12 +53,14 @@ const sections = [
 ];
 
 export function AdminNav({ className }: { className?: string }) {
+	const t = useT();
+
   const branding = useBranding();
   const { minimal } = useSidebar();
 
   return (
     <nav className={cn("flex min-h-full flex-col gap-1", className)}>
-      <SidebarHeader href="/inbox" label="Admin" />
+      <SidebarHeader href="/inbox" label={t("Admin")} />
       <div className={cn("space-y-4", minimal && "space-y-2")}>
         {sections.map((section) => {
           const links = section.links.filter(
@@ -71,12 +74,12 @@ export function AdminNav({ className }: { className?: string }) {
             <section key={section.label ?? links[0].href}>
               {!minimal && section.label && (
                 <p className="mb-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
-                  {section.label}
+                  {t(section.label)}
                 </p>
               )}
               <div className="space-y-1">
                 {links.map((link) => (
-                  <NavItem link={link} key={link.href} />
+                  <NavItem link={{ ...link, label: t(link.label) }} key={link.href} />
                 ))}
               </div>
             </section>

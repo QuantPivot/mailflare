@@ -21,8 +21,11 @@ import type { DnsAuthRecord, DnsStatusSummary, Domain, DomainDnsCache, DomainDns
 import DomainItemCard from "./DomainItemCard";
 import { SectionRowSkeleton } from "@/components/page-skeletons";
 import { checkDomain } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 export default function DomainsPage() {
+	const t = useT();
+
   const qc = useQueryClient();
   const [hostname, setHostname] = useState("");
   // Self-hosted installs without Cloudflare credentials manage DNS by hand.
@@ -205,31 +208,28 @@ export default function DomainsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-medium">Domains</h1>
+          <h1 className="text-3xl font-medium">{t("Domains")}</h1>
           <p className="mt-1 text-sm text-neutral-500">
             {managesDns
-              ? "Domains must be on your Cloudflare account. Email Routing is enabled automatically, and Email Sending can be enabled when available."
-              : "Add the domains this server receives mail for. Open DNS on a domain to see the MX, SPF and DMARC records to create."}
+              ? t("Domains must be on your Cloudflare account. Email Routing is enabled automatically, and Email Sending can be enabled when available.")
+              : t("Add the domains this server receives mail for. Open DNS on a domain to see the MX, SPF and DMARC records to create.")}
           </p>
         </div>
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="h-4 w-4" />
-              New domain
-            </Button>
+              {t("New domain")}</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add domain</DialogTitle>
+              <DialogTitle>{t("Add domain")}</DialogTitle>
               <DialogDescription>
-                Connect a Cloudflare zone and choose whether Mailflare should
-                provision Email Sending.
-              </DialogDescription>
+                {t("Connect a Cloudflare zone and choose whether Mailflare should provision Email Sending.")}</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="hostname">Hostname</Label>
+                <Label htmlFor="hostname">{t("Hostname")}</Label>
                 <Input
                   id="hostname"
                   value={hostname}
@@ -241,20 +241,20 @@ export default function DomainsPage() {
                     }
                   }}
                   onBlur={() => void inspectDomain()}
-                  placeholder="example.com"
+                  placeholder={t("example.com")}
                 />
               </div>
               <div className="flex items-center justify-between gap-4 rounded-xl bg-neutral-50 px-4 py-3">
                 <div>
-                  <Label htmlFor="enable-sending">Enable sending</Label>
+                  <Label htmlFor="enable-sending">{t("Enable sending")}</Label>
                   <p className="mt-1 text-xs leading-5 text-neutral-500">
                     {domainChecking
-                      ? "Checking Cloudflare access..."
+                      ? t("Checking Cloudflare access...")
                       : domainCheck
                         ? enableSending
-                          ? "Required to send email."
-                          : "Receive-only mode."
-                        : "Enter the domain and leave the field to verify it."}
+                          ? t("Required to send email.")
+                          : t("Receive-only mode.")
+                        : t("Enter the domain and leave the field to verify it.")}
                   </p>
                 </div>
                 {domainChecking ? (
@@ -271,30 +271,25 @@ export default function DomainsPage() {
               {domainCheck && (
                 <div className="flex items-center gap-3 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">
                   <CheckCircle2 className="h-4 w-4" />
-                  Domain found in Cloudflare as {domainCheck.zone.name}
+                  {t("Domain found in Cloudflare as {domain}", { domain: domainCheck.zone.name })}
                 </div>
               )}
               {domainCheckError && (
                 <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
-                  {domainCheckError}
+                  {t(domainCheckError)}
                 </p>
               )}
               {create.isError && (
                 <div className="space-y-3 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
-                  <p>{(create.error as Error).message}</p>
+                  <p>{t((create.error as Error).message)}</p>
                   <div className="space-y-2">
                     <p className="font-medium">
-                      Check that your Cloudflare API token has these permissions:
-                    </p>
+                      {t("Check that your Cloudflare API token has these permissions:")}</p>
                     <ul className="list-disc space-y-1 pl-5">
                       <li>
-                        All accounts — DNS Settings:Edit, Email Routing
-                        Addresses:Edit; Email Sending:Edit for outbound mail
-                      </li>
+                        {t("All accounts — DNS Settings:Edit, Email Routing Addresses:Edit; Email Sending:Edit for outbound mail")}</li>
                       <li>
-                        All zones — DNS Settings:Edit, Email Routing Rules:Edit,
-                        Zone Settings:Edit, DNS:Edit
-                      </li>
+                        {t("All zones — DNS Settings:Edit, Email Routing Rules:Edit, Zone Settings:Edit, DNS:Edit")}</li>
                     </ul>
                   </div>
                 </div>
@@ -303,7 +298,7 @@ export default function DomainsPage() {
                 onClick={() => create.mutate()}
                 disabled={!hostname || domainChecking || create.isPending}
               >
-                {create.isPending ? "Adding..." : "Add domain"}
+                {create.isPending ? t("Adding...") : t("Add domain")}
               </Button>
             </div>
           </DialogContent>
@@ -318,8 +313,7 @@ export default function DomainsPage() {
         )}
         {!isLoading && (data?.domains ?? []).length === 0 && (
           <p className="rounded-2xl bg-white px-5 py-4 text-sm text-neutral-500">
-            No domains yet
-          </p>
+            {t("No domains yet")}</p>
         )}
         <List>
           {(data?.domains ?? []).map((d) => {

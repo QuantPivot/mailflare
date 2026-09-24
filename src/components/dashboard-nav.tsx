@@ -46,6 +46,7 @@ import {
 import { SidebarFooter } from "./sidebar-footer";
 import { SidebarHeader } from "./sidebar-header";
 import { useSidebar } from "./sidebar-state";
+import { useT } from "@/i18n/use-t";
 
 const links = [
   { href: "/compose", label: "Compose", icon: MailPlus, primary: true },
@@ -65,6 +66,8 @@ const links = [
 ];
 
 export function DashboardNav({ className }: { className?: string }) {
+	const t = useT();
+
   const { minimal } = useSidebar();
   const { selectedMailbox, isLoading } = useSelectedMailbox();
   const { counts } = useMessageCounts(selectedMailbox?.id, !isLoading);
@@ -74,7 +77,8 @@ export function DashboardNav({ className }: { className?: string }) {
     useState<FolderColor>(DEFAULT_FOLDER_COLOR);
   const [addingFolder, setAddingFolder] = useState(false);
   const [folderDialogOpen, setFolderDialogOpen] = useState(false);
-  const linksWithCounts: NavLink[] = links.map((link): NavLink => {
+  const linksWithCounts: NavLink[] = links.map((sourceLink): NavLink => {
+    const link = { ...sourceLink, label: t(sourceLink.label) };
     if (link.href === "/inbox") {
       return { ...link, count: getFolderNavCount("inbox", counts.folders) };
     }
@@ -178,43 +182,41 @@ export function DashboardNav({ className }: { className?: string }) {
       {!minimal && (
         <div className="mt-2 flex h-8 items-center justify-between px-3">
           <span className="text-xs font-medium uppercase tracking-wide text-neutral-400">
-            Folders
-          </span>
+            {t("Folders")}</span>
           {selectedMailbox && (
             <Dialog open={folderDialogOpen} onOpenChange={setFolderDialogOpen}>
               <DialogTrigger asChild>
                 <button
                   type="button"
                   className="flex h-7 w-7 items-center justify-center rounded-lg text-neutral-500 hover:bg-blue-50 hover:text-blue-700"
-                  aria-label="Create folder"
+                  aria-label={t("Create folder")}
                 >
                   <Plus className="h-4 w-4" />
                 </button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Create folder</DialogTitle>
+                  <DialogTitle>{t("Create folder")}</DialogTitle>
                   <DialogDescription>
-                    Add a folder to the selected mailbox.
-                  </DialogDescription>
+                    {t("Add a folder to the selected mailbox.")}</DialogDescription>
                 </DialogHeader>
                 <form onSubmit={createFolder} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="folderName">Folder name</Label>
+                    <Label htmlFor="folderName">{t("Folder name")}</Label>
                     <Input
                       id="folderName"
                       value={newFolderName}
                       onChange={(event) => setNewFolderName(event.target.value)}
-                      placeholder="Receipts"
+                      placeholder={t("Receipts")}
                       autoFocus
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Color</Label>
+                    <Label>{t("Color")}</Label>
                     <div
                       className="flex flex-wrap gap-2"
                       role="radiogroup"
-                      aria-label="Folder color"
+                      aria-label={t("Folder color")}
                     >
                       {FOLDER_COLOR_OPTIONS.map((option) => (
                         <button
@@ -222,8 +224,8 @@ export function DashboardNav({ className }: { className?: string }) {
                           type="button"
                           role="radio"
                           aria-checked={newFolderColor === option.value}
-                          aria-label={option.label}
-                          title={option.label}
+                          aria-label={t(option.label)}
+                          title={t(option.label)}
                           onClick={() => setNewFolderColor(option.value)}
                           className={`h-8 w-8 rounded-full border-2 transition-transform hover:scale-110 ${
                             newFolderColor === option.value
@@ -239,7 +241,7 @@ export function DashboardNav({ className }: { className?: string }) {
                     type="submit"
                     disabled={addingFolder || !newFolderName.trim()}
                   >
-                    {addingFolder ? "Creating..." : "Create folder"}
+                    {addingFolder ? t("Creating...") : t("Create folder")}
                   </Button>
                 </form>
               </DialogContent>
@@ -249,8 +251,7 @@ export function DashboardNav({ className }: { className?: string }) {
       )}
       {!minimal && folders.length === 0 && (
         <div className="mx-3 rounded-lg border border-dashed border-neutral-200 px-3 py-3 text-xs text-neutral-400">
-          No folders yet
-        </div>
+          {t("No folders yet")}</div>
       )}
       {folders.map((folder) => (
         <NavItem

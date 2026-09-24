@@ -13,6 +13,7 @@ import {
 	uploadContactAvatar,
 	validateContactAvatar,
 } from "./contact-avatar-form-utils";
+import { useT } from "@/i18n/use-t";
 
 export function ContactAvatarForm({
 	mailboxId,
@@ -21,6 +22,8 @@ export function ContactAvatarForm({
 	hasAvatar,
 	onAvatarChange,
 }: ContactAvatarFormProps) {
+	const t = useT();
+
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [busy, setBusy] = useState(false);
 	const [status, setStatus] = useState<string | null>(null);
@@ -71,7 +74,7 @@ export function ContactAvatarForm({
 					onClick={() => inputRef.current?.click()}
 					disabled={busy}
 					className="group relative h-14 w-14 overflow-hidden rounded-full outline-none ring-blue-500 focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-wait"
-					aria-label={hasAvatar ? `Change ${name} profile picture` : `Upload ${name} profile picture`}
+					aria-label={hasAvatar ? t("Change {value0} profile picture", { value0: String(name) }) : t("Upload {value0} profile picture", { value0: String(name) })}
 				>
 					<ContactAvatar
 						mailboxId={mailboxId}
@@ -85,16 +88,15 @@ export function ContactAvatarForm({
 					</span>
 				</button>
 				<div>
-					<p className="text-sm font-medium text-neutral-900">Profile picture</p>
-					<p className="text-xs text-neutral-500">Upload a custom contact photo.</p>
+					<p className="text-sm font-medium text-neutral-900">{t("Profile picture")}</p>
+					<p className="text-xs text-neutral-500">{t("Upload a custom contact photo.")}</p>
 					{hasAvatar && (
 						<button type="button" onClick={() => void onRemove()} disabled={busy} className="mt-1 text-xs font-medium text-blue-600 hover:underline disabled:text-neutral-400">
-							Remove photo
-						</button>
+							{t("Remove photo")}</button>
 					)}
 				</div>
 			</div>
-			{status && <p className="text-xs text-red-600">{status}</p>}
+			{status && <p className="text-xs text-red-600">{t(status)}</p>}
 		</div>
 	);
 }

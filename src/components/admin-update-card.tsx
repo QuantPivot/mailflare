@@ -11,8 +11,11 @@ import {
 	triggerApplicationUpdate,
 } from "./admin-update-card-utils";
 import type { MigrationStatusResponse, UpdateStatusResponse, UpdateWorkflowResponse } from "./admin-update-card-types";
+import { useT } from "@/i18n/use-t";
 
 export function AdminUpdateCard() {
+	const t = useT();
+
 	const [status, setStatus] = useState<UpdateStatusResponse>();
 	const [result, setResult] = useState<UpdateWorkflowResponse>();
 	const [error, setError] = useState("");
@@ -92,10 +95,9 @@ export function AdminUpdateCard() {
 					<RefreshCw className="h-5 w-5" />
 				</div>
 				<div>
-					<CardTitle className="text-base">Application update</CardTitle>
+					<CardTitle className="text-base">{t("Application update")}</CardTitle>
 					<p className="mt-1 text-sm text-neutral-500">
-						Sync the latest Mailflare release and keep its database schema up to date.
-					</p>
+						{t("Sync the latest Mailflare release and keep its database schema up to date.")}</p>
 				</div>
 			</CardHeader>
 			<CardContent className="space-y-5 pt-5">
@@ -103,7 +105,7 @@ export function AdminUpdateCard() {
 
 				{!isChecking && status?.configured === false && (
 					<div className="space-y-3">
-						<p className="text-sm text-neutral-600">Complete the required Cloudflare Worker configuration:</p>
+						<p className="text-sm text-neutral-600">{t("Complete the required Cloudflare Worker configuration:")}</p>
 						<ul className="divide-y divide-neutral-100 overflow-hidden rounded-2xl border border-neutral-100">
 							{status.configuration?.map((item) => (
 								<li key={item.name} className="flex items-center gap-3 px-4 py-3 text-sm">
@@ -114,7 +116,7 @@ export function AdminUpdateCard() {
 									)}
 									<code className="text-xs font-medium text-neutral-800">{item.name}</code>
 									<span className={`ml-auto text-xs font-medium ${item.configured ? "text-green-700" : "text-red-600"}`}>
-										{item.configured ? "Configured" : "Missing"}
+										{item.configured ? t("Configured") : t("Missing")}
 									</span>
 								</li>
 							))}
@@ -132,8 +134,8 @@ export function AdminUpdateCard() {
 							)}
 							<p className="min-w-0 text-sm text-neutral-700">
 								{status.available
-									? `Mailflare v${status.targetVersion} is available. You are using v${status.currentVersion}.`
-									: `Mailflare v${status.currentVersion} is up to date.`}
+									? t("Mailflare v{value0} is available. You are using v{value1}.", { value0: String(status.targetVersion), value1: String(status.currentVersion) })
+									: t("Mailflare v{value0} is up to date.", { value0: String(status.currentVersion) })}
 							</p>
 							{status.available && (
 								<button
@@ -142,7 +144,7 @@ export function AdminUpdateCard() {
 									disabled={isPending}
 									className="ml-auto shrink-0 text-sm font-medium text-blue-700 hover:underline disabled:pointer-events-none disabled:opacity-50"
 								>
-									{isPending ? "Starting update..." : "Update Mailflare"}
+									{isPending ? t("Starting update...") : t("Update Mailflare")}
 								</button>
 							)}
 						</div>
@@ -158,15 +160,14 @@ export function AdminUpdateCard() {
 							<div className="flex items-center gap-3 px-4 py-4">
 								<Database className={`h-4 w-4 shrink-0 text-amber-600 ${isMigrating ? "animate-pulse" : ""}`} />
 								<p className="text-sm text-neutral-700">
-									{migrationStatus.pending.length} database {migrationStatus.pending.length === 1 ? "migration is" : "migrations are"} pending.
-								</p>
+									{t("{count, plural, one {# database migration is pending.} other {# database migrations are pending.}}", { count: migrationStatus.pending.length })}</p>
 								<button
 									type="button"
 									onClick={handleMigrate}
 									disabled={isMigrating}
 									className="ml-auto shrink-0 text-sm font-medium text-blue-700 hover:underline disabled:pointer-events-none disabled:opacity-50"
 								>
-									{isMigrating ? "Updating database..." : "Update database"}
+									{isMigrating ? t("Updating database...") : t("Update database")}
 								</button>
 							</div>
 						)}
@@ -174,24 +175,22 @@ export function AdminUpdateCard() {
 						{!isCheckingMigrations && !!migrationStatus?.unknown.length && (
 							<div className="flex items-center gap-3 px-4 py-4 text-sm text-red-600">
 								<CircleX className="h-4 w-4 shrink-0" />
-								Deploy the matching Mailflare release before changing this database.
-							</div>
+								{t("Deploy the matching Mailflare release before changing this database.")}</div>
 						)}
 					</div>
 				)}
 
 				{result?.ok && (
 					<p className="text-sm text-green-700">
-						Update started for {result.repository}@{result.ref}. Refresh this page after Cloudflare deploys it. {" "}
+						{t("Update started for {repository}@{ref}. Refresh this page after Cloudflare deploys it.", { repository: result.repository ?? "", ref: result.ref ?? "" })}{" "}{" "}
 						{result.runUrl && (
 							<a className="font-medium underline" href={result.runUrl} target="_blank" rel="noreferrer">
-								View workflow
-							</a>
+								{t("View workflow")}</a>
 						)}
 					</p>
 				)}
-				{error && <p className="text-sm text-red-600">{error}</p>}
-				{migrationError && <p className="text-sm text-red-600">{migrationError}</p>}
+				{error && <p className="text-sm text-red-600">{t(error)}</p>}
+				{migrationError && <p className="text-sm text-red-600">{t(migrationError)}</p>}
 			</CardContent>
 		</Card>
 	);

@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { CommandItem } from "./types";
+import { useT } from "@/i18n/use-t";
 
 interface CommandPaletteItemProps {
   item: CommandItem;
@@ -16,6 +17,7 @@ export function CommandPaletteItem({
   onSelect,
   onHover,
 }: CommandPaletteItemProps) {
+	const t = useT();
   const Icon = item.icon;
 
   return (
@@ -40,7 +42,7 @@ export function CommandPaletteItem({
           />
         )}
         <div className="truncate">
-          <span className="text-sm font-medium">{item.title}</span>
+          <span className="text-sm font-medium">{t(item.title)}</span>
           {item.subtitle && (
             <span
               className={`ml-2 text-xs truncate ${
@@ -49,7 +51,7 @@ export function CommandPaletteItem({
                   : "text-neutral-400 dark:text-neutral-500"
               }`}
             >
-              {item.subtitle}
+              {t(item.subtitle)}
             </span>
           )}
         </div>

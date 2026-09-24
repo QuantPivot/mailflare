@@ -10,8 +10,11 @@ import { MailboxSignatureForm } from "./mailbox-signature-form";
 import { ProfileForm } from "./profile-form";
 import type { AccountSettingsResponse } from "./types";
 import { loadAccountSettings } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 export function AccountSettings() {
+	const t = useT();
+
 	const [user, setUser] = useState<AccountSettingsResponse["user"]>();
 	const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +35,7 @@ export function AccountSettings() {
 	}, []);
 
 	if (error) {
-		return <p className="py-8 text-sm text-red-600">{error}</p>;
+		return <p className="py-8 text-sm text-red-600">{t(error)}</p>;
 	}
 
 	if (!user) {
@@ -53,8 +56,8 @@ export function AccountSettings() {
 
 			<section className="space-y-4">
 				<div>
-					<h2 className="text-xl font-semibold text-neutral-900">Account details</h2>
-					<p className="mt-1 text-sm text-neutral-500">Manage your identity, recovery options, and email preferences.</p>
+					<h2 className="text-xl font-semibold text-neutral-900">{t("Account details")}</h2>
+					<p className="mt-1 text-sm text-neutral-500">{t("Manage your identity, recovery options, and email preferences.")}</p>
 				</div>
 				<div className="space-y-1 overflow-hidden rounded-3xl">
 					<ProfileForm
@@ -66,8 +69,8 @@ export function AccountSettings() {
 					{user.canForwardEmail && (
 						<div className="space-y-4 rounded-lg bg-white p-6">
 							<div>
-								<h3 className="text-lg font-semibold text-neutral-900">Forwarding email</h3>
-								<p className="mt-1 text-sm text-neutral-500">Send a copy of incoming messages to another email address.</p>
+								<h3 className="text-lg font-semibold text-neutral-900">{t("Forwarding email")}</h3>
+								<p className="mt-1 text-sm text-neutral-500">{t("Send a copy of incoming messages to another email address.")}</p>
 							</div>
 						<ForwardingEmailForm initialForwardingEmail={user.forwardingEmail ?? ""} />
 						</div>
@@ -75,8 +78,8 @@ export function AccountSettings() {
 
 					<div className="space-y-4 rounded-b-3xl rounded-t-lg bg-white p-6">
 						<div>
-							<h3 className="text-lg font-semibold text-neutral-900">Email signature</h3>
-							<p className="mt-1 text-sm text-neutral-500">Configure the signature for the inbox currently selected above.</p>
+							<h3 className="text-lg font-semibold text-neutral-900">{t("Email signature")}</h3>
+							<p className="mt-1 text-sm text-neutral-500">{t("Configure the signature for the inbox currently selected above.")}</p>
 						</div>
 					<MailboxSignatureForm />
 					</div>
@@ -85,20 +88,20 @@ export function AccountSettings() {
 
 			<section className="space-y-4">
 				<div>
-					<h2 className="text-xl font-semibold text-neutral-900">Security</h2>
-					<p className="mt-1 text-sm text-neutral-500">Manage how you sign in to your account.</p>
+					<h2 className="text-xl font-semibold text-neutral-900">{t("Security")}</h2>
+					<p className="mt-1 text-sm text-neutral-500">{t("Manage how you sign in to your account.")}</p>
 				</div>
 				<div className="space-y-4 rounded-3xl bg-white p-6">
 					<div>
-						<h3 className="text-lg font-semibold text-neutral-900">Change password</h3>
-						<p className="mt-1 text-sm text-neutral-500">Use at least 8 characters for your new password.</p>
+						<h3 className="text-lg font-semibold text-neutral-900">{t("Change password")}</h3>
+						<p className="mt-1 text-sm text-neutral-500">{t("Use at least 8 characters for your new password.")}</p>
 					</div>
 					<ChangePasswordForm />
 				</div>
 				<div className="space-y-4 rounded-3xl bg-white p-6">
 					<div>
-						<h3 className="text-lg font-semibold text-neutral-900">Two-factor authentication</h3>
-						<p className="mt-1 text-sm text-neutral-500">Require a code from an authenticator app when signing in.</p>
+						<h3 className="text-lg font-semibold text-neutral-900">{t("Two-factor authentication")}</h3>
+						<p className="mt-1 text-sm text-neutral-500">{t("Require a code from an authenticator app when signing in.")}</p>
 					</div>
 					<MfaSettings />
 				</div>
@@ -106,8 +109,8 @@ export function AccountSettings() {
 
 			<section className="space-y-4">
 				<div>
-					<h2 className="text-xl font-semibold text-neutral-900">Email apps</h2>
-					<p className="mt-1 text-sm text-neutral-500">Use your mail from a desktop or mobile app over JMAP.</p>
+					<h2 className="text-xl font-semibold text-neutral-900">{t("Email apps")}</h2>
+					<p className="mt-1 text-sm text-neutral-500">{t("Use your mail from a desktop or mobile app over JMAP.")}</p>
 				</div>
 				<div className="space-y-4 rounded-3xl bg-white p-6">
 					<EmailClientsSettings />

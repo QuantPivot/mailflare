@@ -6,8 +6,11 @@ import { Button } from "@/components/ui/button";
 import type { LicenseStatus } from "@/lib/licenses/types";
 import { loadLicenseIndicatorStatus } from "./license-indicator-utils";
 import { LICENSE_STATUS_CHANGED_EVENT } from "@/lib/licenses/constants";
+import { useT } from "@/i18n/use-t";
 
 export function LicenseIndicator() {
+	const t = useT();
+
 	const [license, setLicense] = useState<LicenseStatus | null>(null);
 
 	useEffect(() => {
@@ -34,7 +37,6 @@ export function LicenseIndicator() {
 				href="/licenses"
 				className="rounded-full bg-blue-100 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-blue-900 hover:bg-blue-200"
 			>
-				Upgrade
-			</Link>
+				{t("Upgrade")}</Link>
 	);
 }

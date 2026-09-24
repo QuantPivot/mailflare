@@ -29,7 +29,6 @@ import {
   ensureImportDestination,
   fetchImapFolders,
   filterCustomImapFolders,
-  formatImportResult,
   getFileImportSource,
   getFolderImportSource,
   getSelectedImportSources,
@@ -37,6 +36,7 @@ import {
   importSourceOptions,
   resolveImapSourceFolder,
 } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 const initialImapForm: ImapFormState = {
   host: "",
@@ -51,6 +51,8 @@ const initialImapForm: ImapFormState = {
 const defaultSections = importSourceOptions.map((option) => option.value);
 
 export default function SettingsImportPage() {
+	const t = useT();
+
   const { selectedMailbox } = useSelectedMailbox();
   const [activeTab, setActiveTab] = useState<ImportTab>("file");
   const [selectedSections, setSelectedSections] =
@@ -73,8 +75,8 @@ export default function SettingsImportPage() {
   const fileImportSource = getFileImportSource(selectedSources);
   const sourceSummary =
     selectedSources.length > 0
-      ? selectedSources.map((source) => source.label).join(", ")
-      : "Select source sections";
+      ? selectedSources.map((source) => t(source.label)).join(", ")
+      : t("Select source sections");
 
   function toggleSection(section: ImportSourceSection, checked: boolean) {
     setSelectedSections((current) => {
@@ -152,7 +154,7 @@ export default function SettingsImportPage() {
         setImapProgress({
           completed: index,
           total: expandedSources.length,
-          label: `Importing ${source.label}`,
+          label: t("Importing {folder}", { folder: source.folderName ? source.label : t(source.label) }),
         });
         const destination = await getDestination(source);
         const folder = resolveImapSourceFolder(source, discoveredFolders);
@@ -167,7 +169,7 @@ export default function SettingsImportPage() {
         setImapProgress({
           completed: index + 1,
           total: expandedSources.length,
-          label: `Imported ${source.label}`,
+          label: t("Imported {folder}", { folder: source.folderName ? source.label : t(source.label) }),
         });
       }
       setImapResult(total);
@@ -195,16 +197,14 @@ export default function SettingsImportPage() {
       <section className="space-y-4">
         <div>
           <h2 className="text-xl font-semibold text-neutral-900">
-            Import mailbox
-          </h2>
+            {t("Import mailbox")}</h2>
           <p className="mt-1 text-sm text-neutral-500">
-            Choose what to import and how Mailflare should receive it.
-          </p>
+            {t("Choose what to import and how Mailflare should receive it.")}</p>
         </div>
         <div className="space-y-1 overflow-hidden rounded-3xl">
           <CardContent className="space-y-6 rounded-b-lg rounded-t-3xl bg-white p-6">
             <div className="flex flex-col gap-2">
-              <Label htmlFor="import-source">Import source</Label>
+              <Label htmlFor="import-source">{t("Import source")}</Label>
               <Select
                 id="import-source"
                 value={activeTab}
@@ -214,12 +214,12 @@ export default function SettingsImportPage() {
                 className="text-sm w-full py-2"
                 // className="h-10 w-full rounded-md border border-neutral-200 bg-white px-3 text-sm text-neutral-900 shadow-sm shadow-neutral-200/50 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               >
-                <option value="file">Backup File</option>
-                <option value="imap">IMAP</option>
+                <option value="file">{t("Backup File")}</option>
+                <option value="imap">{t("IMAP")}</option>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Choose import sections</Label>
+              <Label>{t("Choose import sections")}</Label>
 
               <div className="relative">
                 <button
@@ -227,7 +227,7 @@ export default function SettingsImportPage() {
                   onClick={() => setSourceDropdownOpen((open) => !open)}
                   className="flex w-full items-center justify-between rounded-md border border-neutral-200 bg-white px-3 py-2 text-left text-sm shadow-sm shadow-neutral-200/50"
                 >
-                  <label className="flex-1">Selected</label>
+                  <label className="flex-1">{t("Selected")}</label>
                   <span className="truncate">{sourceSummary}</span>
                   <span className="text-neutral-400 px-2">▾</span>
                 </button>
@@ -244,7 +244,7 @@ export default function SettingsImportPage() {
                             toggleSection(option.value, event.target.checked)
                           }
                         />
-                        {option.label}
+                        {t(option.label)}
                       </label>
                     ))}
                   </div>
@@ -260,7 +260,7 @@ export default function SettingsImportPage() {
               <>
                 <form onSubmit={onFileSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Select Backup File</Label>
+                    <Label>{t("Select Backup File")}</Label>
                     <Input
                       id="import-files"
                       type="file"
@@ -272,17 +272,12 @@ export default function SettingsImportPage() {
                       className="block w-full rounded-md border border-neutral-200 bg-white px-3 py-1 text-sm shadow-sm shadow-neutral-200/50 file:mr-3 file:rounded-md file:border-0 file:bg-neutral-100 file:px-3 file:py-1.5 file:text-sm file:font-medium"
                     />
                     <p className="text-xs leading-5 text-neutral-500">
-                      Upload exported .eml or .mbox files. File exports do not
-                      reliably include source section metadata, so files are
-                      imported once into {fileImportSource.label}
+                      {t("Upload exported .eml or .mbox files. File exports do not reliably include source section metadata, so files are imported once into {folder}.", { folder: t(fileImportSource.label) })}
                     </p>
                   </div>
                   {selectedSections.includes("others") && (
                     <p className="rounded-lg border border-amber-100 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-                      Other folders can be imported automatically from IMAP.
-                      File import cannot discover which section a message
-                      belongs to.
-                    </p>
+                      {t("Other folders can be imported automatically from IMAP. File import cannot discover which section a message belongs to.")}</p>
                   )}
                   <Button
                     type="submit"
@@ -293,7 +288,7 @@ export default function SettingsImportPage() {
                       fileLoading
                     }
                   >
-                    {fileLoading ? "Importing..." : "Import selected files"}
+                    {fileLoading ? t("Importing...") : t("Import selected files")}
                   </Button>
                   {fileProgress && (
                     <div
@@ -301,7 +296,7 @@ export default function SettingsImportPage() {
                       aria-live="polite"
                     >
                       <div className="flex justify-between">
-                        <span>{fileProgress.label}</span>
+                        <span>{t(fileProgress.label)}</span>
                         <span>{fileProgress.completed}%</span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-neutral-100">
@@ -314,12 +309,12 @@ export default function SettingsImportPage() {
                   )}
                   {fileResult && (
                     <p className="rounded-lg border border-green-100 bg-green-50 px-4 py-3 text-sm text-green-700">
-                      {formatImportResult(fileResult)}
+                      {fileResult && t("{imported} imported, {skipped} skipped", { imported: fileResult.imported ?? 0, skipped: fileResult.skipped ?? 0 })}
                     </p>
                   )}
                   {fileError && (
                     <p className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
-                      {fileError}
+                      {t(fileError)}
                     </p>
                   )}
                 </form>
@@ -329,18 +324,18 @@ export default function SettingsImportPage() {
                 <form onSubmit={onImapSubmit} className="space-y-4">
                   <div className="grid gap-3 md:grid-cols-[1fr_110px]">
                     <div className="space-y-2">
-                      <Label htmlFor="imap-host">Host</Label>
+                      <Label htmlFor="imap-host">{t("Host")}</Label>
                       <Input
                         id="imap-host"
                         value={imapForm.host}
                         onChange={(event) =>
                           setImapForm({ ...imapForm, host: event.target.value })
                         }
-                        placeholder="imap.gmail.com"
+                        placeholder={t("imap.gmail.com")}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="imap-port">Port</Label>
+                      <Label htmlFor="imap-port">{t("Port")}</Label>
                       <Input
                         id="imap-port"
                         type="number"
@@ -353,7 +348,7 @@ export default function SettingsImportPage() {
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
                     <div className="space-y-2">
-                      <Label htmlFor="imap-username">Username</Label>
+                      <Label htmlFor="imap-username">{t("Username")}</Label>
                       <Input
                         id="imap-username"
                         value={imapForm.username}
@@ -368,8 +363,7 @@ export default function SettingsImportPage() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="imap-password">
-                        Password or app password
-                      </Label>
+                        {t("Password or app password")}</Label>
                       <Input
                         id="imap-password"
                         type="password"
@@ -387,8 +381,7 @@ export default function SettingsImportPage() {
                   <div className="grid gap-3 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="imap-limit">
-                        Message limit per source
-                      </Label>
+                        {t("Message limit per source")}</Label>
                       <Input
                         id="imap-limit"
                         type="number"
@@ -413,14 +406,10 @@ export default function SettingsImportPage() {
                           })
                         }
                       />
-                      Use TLS
-                    </label>
+                      {t("Use TLS")}</label>
                   </div>
                   <p className="rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 text-xs leading-5 text-neutral-500">
-                    IMAP imports selected source sections automatically. Folders
-                    are discovered from the source account and imported into
-                    matching new or existing Mailflare folders.
-                  </p>
+                    {t("IMAP imports selected source sections automatically. Folders are discovered from the source account and imported into matching new or existing Mailflare folders.")}</p>
                   <Button
                     type="submit"
                     disabled={
@@ -433,7 +422,7 @@ export default function SettingsImportPage() {
                     }
                   >
                     <Upload className="h-4 w-4" />
-                    {imapLoading ? "Importing..." : "Import selected sources"}
+                    {imapLoading ? t("Importing...") : t("Import selected sources")}
                   </Button>
                   {imapProgress && (
                     <div
@@ -441,7 +430,7 @@ export default function SettingsImportPage() {
                       aria-live="polite"
                     >
                       <div className="flex justify-between">
-                        <span>{imapProgress.label}</span>
+                        <span>{t(imapProgress.label)}</span>
                         <span>
                           {imapProgress.completed}/{imapProgress.total}
                         </span>
@@ -458,12 +447,12 @@ export default function SettingsImportPage() {
                   )}
                   {imapResult && (
                     <p className="rounded-lg border border-green-100 bg-green-50 px-4 py-3 text-sm text-green-700">
-                      {formatImportResult(imapResult)}
+                      {imapResult && t("{imported} imported, {skipped} skipped", { imported: imapResult.imported ?? 0, skipped: imapResult.skipped ?? 0 })}
                     </p>
                   )}
                   {imapError && (
                     <p className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
-                      {imapError}
+                      {t(imapError)}
                     </p>
                   )}
                 </form>

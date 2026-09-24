@@ -5,6 +5,7 @@ import { Search, CornerDownLeft } from "lucide-react";
 import type { CommandItem } from "./types";
 import { filterCommands, groupCommandsByCategory } from "./command-palette-utils";
 import { CommandPaletteItem } from "./command-palette-item";
+import { useT } from "@/i18n/use-t";
 
 interface CommandPaletteProps {
   isOpen: boolean;
@@ -19,6 +20,8 @@ function CommandPaletteDialog({
   onClose: () => void;
   commands: CommandItem[];
 }) {
+	const t = useT();
+
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,8 +31,8 @@ function CommandPaletteDialog({
   }, []);
 
   const filteredCommands = useMemo(
-    () => filterCommands(commands, query),
-    [commands, query]
+    () => filterCommands(commands.map((command) => ({ ...command, title: t(command.title), subtitle: command.subtitle ? t(command.subtitle) : undefined })), query),
+    [commands, query, t]
   );
 
   const activeIndex = Math.min(
@@ -83,7 +86,7 @@ function CommandPaletteDialog({
               setQuery(e.target.value);
               setSelectedIndex(0);
             }}
-            placeholder="Type a command or search actions..."
+            placeholder={t("Type a command or search actions...")}
             className="w-full bg-transparent text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 text-[15px] focus:outline-none"
           />
           <kbd className="px-2 py-0.5 text-xs font-semibold text-neutral-400 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-2xs">
@@ -95,13 +98,13 @@ function CommandPaletteDialog({
         <div className="max-h-80 overflow-y-auto p-2">
           {filteredCommands.length === 0 ? (
             <div className="p-8 text-center text-sm text-neutral-400">
-              No matching commands found for &ldquo;{query}&rdquo;
+              {t("No matching commands found for “{query}”", { query })}
             </div>
           ) : (
             Object.entries(grouped).map(([category, items]) => (
               <div key={category} className="mb-2 last:mb-0">
                 <div className="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
-                  {category}
+                  {t(category)}
                 </div>
                 {items.map((item) => {
                   const isCurrent = flatIndex === activeIndex;
@@ -133,14 +136,12 @@ function CommandPaletteDialog({
               <kbd className="px-1.5 py-0.5 bg-neutral-200 dark:bg-neutral-800 rounded mr-1 text-[10px]">
                 ↑↓
               </kbd>
-              to navigate
-            </span>
+              {t("to navigate")}</span>
             <span className="flex items-center">
               <CornerDownLeft className="w-3 h-3 mr-1 inline" />
-              to select
-            </span>
+              {t("to select")}</span>
           </div>
-          <span className="text-[11px]">Mailflare Actions</span>
+          <span className="text-[11px]">{t("Mailflare Actions")}</span>
         </div>
       </div>
     </div>

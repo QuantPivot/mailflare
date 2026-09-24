@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import type { MfaStatusResponse } from "./types";
 import type { MfaDialogStep } from "./mfa-settings-types";
 import { beginMfaEnrollment, confirmMfaEnrollment, disableMfa, loadMfaStatus, regenerateRecoveryCodes } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 /**
  * Settings > Account > Security card for TOTP. Enrolment is a three-step
@@ -16,6 +17,8 @@ import { beginMfaEnrollment, confirmMfaEnrollment, disableMfa, loadMfaStatus, re
  * asks for both factors again.
  */
 export function MfaSettings() {
+	const t = useT();
+
 	const [status, setStatus] = useState<MfaStatusResponse | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [enrollOpen, setEnrollOpen] = useState(false);
@@ -30,7 +33,7 @@ export function MfaSettings() {
 		setStatus(await loadMfaStatus());
 	}
 
-	if (!status) return <p className="text-sm text-neutral-500">{error ?? "Loading two-factor settings..."}</p>;
+	if (!status) return <p className="text-sm text-neutral-500">{error ?? t("Loading two-factor settings...")}</p>;
 
 	return (
 		<div className="space-y-4">
@@ -42,12 +45,12 @@ export function MfaSettings() {
 				)}
 				<div className="min-w-0 flex-1">
 					<p className="text-sm font-medium text-neutral-900">
-						{status.enabled ? "Two-factor authentication is on" : "Two-factor authentication is off"}
+						{status.enabled ? t("Two-factor authentication is on") : t("Two-factor authentication is off")}
 					</p>
 					<p className="mt-1 text-sm text-neutral-500">
 						{status.enabled
-							? `Signing in asks for a code from your authenticator app. ${status.recoveryCodesLeft} recovery code${status.recoveryCodesLeft === 1 ? "" : "s"} left.`
-							: "Add a second step at sign-in using an authenticator app such as 1Password, Google Authenticator or Authy."}
+							? t("Signing in asks for a code from your authenticator app. {count, plural, one {# recovery code left.} other {# recovery codes left.}}", { count: status.recoveryCodesLeft })
+							: t("Add a second step at sign-in using an authenticator app such as 1Password, Google Authenticator or Authy.")}
 					</p>
 				</div>
 			</div>
@@ -55,14 +58,12 @@ export function MfaSettings() {
 				{status.enabled ? (
 					<>
 						<Button variant="outline" onClick={() => setCodesOpen(true)}>
-							New recovery codes
-						</Button>
+							{t("New recovery codes")}</Button>
 						<Button variant="outline" onClick={() => setDisableOpen(true)}>
-							Turn off
-						</Button>
+							{t("Turn off")}</Button>
 					</>
 				) : (
-					<Button onClick={() => setEnrollOpen(true)}>Turn on two-factor</Button>
+					<Button onClick={() => setEnrollOpen(true)}>{t("Turn on two-factor")}</Button>
 				)}
 			</div>
 
@@ -74,6 +75,8 @@ export function MfaSettings() {
 }
 
 function RecoveryCodesList({ codes }: { codes: string[] }) {
+	const t = useT();
+
 	const [copied, setCopied] = useState(false);
 	return (
 		<div className="space-y-3">
@@ -91,16 +94,17 @@ function RecoveryCodesList({ codes }: { codes: string[] }) {
 				}}
 			>
 				<Copy className="h-4 w-4" />
-				{copied ? "Copied" : "Copy codes"}
+				{copied ? t("Copied") : t("Copy codes")}
 			</Button>
 			<p className="text-xs text-neutral-500">
-				Each code works once. Keep them somewhere safe; they are the only way in if you lose your authenticator.
-			</p>
+				{t("Each code works once. Keep them somewhere safe; they are the only way in if you lose your authenticator.")}</p>
 		</div>
 	);
 }
 
 function EnrollDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenChange: (open: boolean) => void; onDone: () => Promise<void> }) {
+	const t = useT();
+
 	const [step, setStep] = useState<MfaDialogStep>("password");
 	const [password, setPassword] = useState("");
 	const [code, setCode] = useState("");
@@ -163,44 +167,44 @@ function EnrollDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenCha
 				{step === "password" && (
 					<form onSubmit={start} className="space-y-4">
 						<DialogHeader>
-							<DialogTitle>Turn on two-factor authentication</DialogTitle>
-							<DialogDescription>Confirm your password to begin.</DialogDescription>
+							<DialogTitle>{t("Turn on two-factor authentication")}</DialogTitle>
+							<DialogDescription>{t("Confirm your password to begin.")}</DialogDescription>
 						</DialogHeader>
 						<div className="space-y-2">
-							<Label htmlFor="mfa-password">Password</Label>
+							<Label htmlFor="mfa-password">{t("Password")}</Label>
 							<Input id="mfa-password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required autoFocus />
 						</div>
-						{error && <p className="text-sm text-red-600">{error}</p>}
-						<Button type="submit" disabled={busy}>{busy ? "Please wait..." : "Continue"}</Button>
+						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						<Button type="submit" disabled={busy}>{busy ? t("Please wait...") : t("Continue")}</Button>
 					</form>
 				)}
 				{step === "scan" && (
 					<form onSubmit={confirm} className="space-y-4">
 						<DialogHeader>
-							<DialogTitle>Scan the code</DialogTitle>
-							<DialogDescription>Open your authenticator app, add an account by scanning this code, then enter the 6-digit code it shows.</DialogDescription>
+							<DialogTitle>{t("Scan the code")}</DialogTitle>
+							<DialogDescription>{t("Open your authenticator app, add an account by scanning this code, then enter the 6-digit code it shows.")}</DialogDescription>
 						</DialogHeader>
 						<div className="mx-auto w-48 rounded-xl border border-neutral-200 bg-white p-2" dangerouslySetInnerHTML={{ __html: qrSvg }} />
 						<details className="text-xs text-neutral-500">
-							<summary className="cursor-pointer">Can&apos;t scan? Enter the key manually</summary>
+							<summary className="cursor-pointer">{t("Can't scan? Enter the key manually")}</summary>
 							<code className="mt-2 block break-all rounded-md bg-neutral-50 p-2 font-mono text-neutral-800">{secret}</code>
 						</details>
 						<div className="space-y-2">
-							<Label htmlFor="mfa-code">6-digit code</Label>
+							<Label htmlFor="mfa-code">{t("6-digit code")}</Label>
 							<Input id="mfa-code" inputMode="numeric" autoComplete="one-time-code" value={code} onChange={(e) => setCode(e.target.value)} placeholder="123 456" required autoFocus />
 						</div>
-						{error && <p className="text-sm text-red-600">{error}</p>}
-						<Button type="submit" disabled={busy}>{busy ? "Checking..." : "Verify and turn on"}</Button>
+						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						<Button type="submit" disabled={busy}>{busy ? t("Checking...") : t("Verify and turn on")}</Button>
 					</form>
 				)}
 				{step === "codes" && (
 					<div className="space-y-4">
 						<DialogHeader>
-							<DialogTitle>Save your recovery codes</DialogTitle>
-							<DialogDescription>Two-factor authentication is on. Other sessions have been signed out.</DialogDescription>
+							<DialogTitle>{t("Save your recovery codes")}</DialogTitle>
+							<DialogDescription>{t("Two-factor authentication is on. Other sessions have been signed out.")}</DialogDescription>
 						</DialogHeader>
 						<RecoveryCodesList codes={recoveryCodes} />
-						<Button type="button" onClick={() => onOpenChange(false)}>Done</Button>
+						<Button type="button" onClick={() => onOpenChange(false)}>{t("Done")}</Button>
 					</div>
 				)}
 			</DialogContent>
@@ -209,6 +213,8 @@ function EnrollDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenCha
 }
 
 function DisableDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenChange: (open: boolean) => void; onDone: () => Promise<void> }) {
+	const t = useT();
+
 	const [password, setPassword] = useState("");
 	const [code, setCode] = useState("");
 	const [error, setError] = useState<string | null>(null);
@@ -236,19 +242,19 @@ function DisableDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenCh
 			<DialogContent className="max-h-[calc(100vh-4rem)] overflow-y-auto sm:max-w-[480px]">
 				<form onSubmit={submit} className="space-y-4">
 					<DialogHeader>
-						<DialogTitle>Turn off two-factor authentication</DialogTitle>
-						<DialogDescription>Confirm your password and a current code or recovery code.</DialogDescription>
+						<DialogTitle>{t("Turn off two-factor authentication")}</DialogTitle>
+						<DialogDescription>{t("Confirm your password and a current code or recovery code.")}</DialogDescription>
 					</DialogHeader>
 					<div className="space-y-2">
-						<Label htmlFor="mfa-off-password">Password</Label>
+						<Label htmlFor="mfa-off-password">{t("Password")}</Label>
 						<Input id="mfa-off-password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 					</div>
 					<div className="space-y-2">
-						<Label htmlFor="mfa-off-code">Code</Label>
+						<Label htmlFor="mfa-off-code">{t("Code")}</Label>
 						<Input id="mfa-off-code" inputMode="numeric" autoComplete="one-time-code" value={code} onChange={(e) => setCode(e.target.value)} required />
 					</div>
-					{error && <p className="text-sm text-red-600">{error}</p>}
-					<Button type="submit" variant="destructive" disabled={busy}>{busy ? "Please wait..." : "Turn off"}</Button>
+					{error && <p className="text-sm text-red-600">{t(error)}</p>}
+					<Button type="submit" variant="destructive" disabled={busy}>{busy ? t("Please wait...") : t("Turn off")}</Button>
 				</form>
 			</DialogContent>
 		</Dialog>
@@ -256,6 +262,8 @@ function DisableDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenCh
 }
 
 function RecoveryCodesDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenChange: (open: boolean) => void; onDone: () => Promise<void> }) {
+	const t = useT();
+
 	const [password, setPassword] = useState("");
 	const [codes, setCodes] = useState<string[] | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -288,24 +296,24 @@ function RecoveryCodesDialog({ open, onOpenChange, onDone }: { open: boolean; on
 				{codes ? (
 					<div className="space-y-4">
 						<DialogHeader>
-							<DialogTitle>Your new recovery codes</DialogTitle>
-							<DialogDescription>The previous codes no longer work.</DialogDescription>
+							<DialogTitle>{t("Your new recovery codes")}</DialogTitle>
+							<DialogDescription>{t("The previous codes no longer work.")}</DialogDescription>
 						</DialogHeader>
 						<RecoveryCodesList codes={codes} />
-						<Button type="button" onClick={() => onOpenChange(false)}>Done</Button>
+						<Button type="button" onClick={() => onOpenChange(false)}>{t("Done")}</Button>
 					</div>
 				) : (
 					<form onSubmit={submit} className="space-y-4">
 						<DialogHeader>
-							<DialogTitle>Generate new recovery codes</DialogTitle>
-							<DialogDescription>This replaces every existing code. Confirm your password to continue.</DialogDescription>
+							<DialogTitle>{t("Generate new recovery codes")}</DialogTitle>
+							<DialogDescription>{t("This replaces every existing code. Confirm your password to continue.")}</DialogDescription>
 						</DialogHeader>
 						<div className="space-y-2">
-							<Label htmlFor="rc-password">Password</Label>
+							<Label htmlFor="rc-password">{t("Password")}</Label>
 							<Input id="rc-password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required autoFocus />
 						</div>
-						{error && <p className="text-sm text-red-600">{error}</p>}
-						<Button type="submit" disabled={busy}>{busy ? "Please wait..." : "Generate"}</Button>
+						{error && <p className="text-sm text-red-600">{t(error)}</p>}
+						<Button type="submit" disabled={busy}>{busy ? t("Please wait...") : t("Generate")}</Button>
 					</form>
 				)}
 			</DialogContent>

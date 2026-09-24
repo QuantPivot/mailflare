@@ -13,8 +13,11 @@ import {
 	saveManagedAccount,
 	uploadManagedAccountAvatar,
 } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 export default function AccountDetailsPage() {
+	const t = useT();
+
 	const { id } = useParams<{ id: string }>();
 	const [account, setAccount] = useState<ManagedAccount | null>(null);
 	const [saving, setSaving] = useState(false);
@@ -53,13 +56,13 @@ export default function AccountDetailsPage() {
 		}
 	}
 
-	if (!account) return <p className="text-sm text-neutral-500">{message ?? "Loading account..."}</p>;
+	if (!account) return <p className="text-sm text-neutral-500">{message ?? t("Loading account...")}</p>;
 
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-3xl font-medium text-neutral-900">Details</h1>
-				<p className="mt-2 text-sm text-neutral-500">Update this account&apos;s profile and status.</p>
+				<h1 className="text-3xl font-medium text-neutral-900">{t("Details")}</h1>
+				<p className="mt-2 text-sm text-neutral-500">{t("Update this account's profile and status.")}</p>
 			</div>
 			<section className="space-y-5 rounded-3xl bg-white p-6">
 				<div className="flex items-center gap-4">
@@ -72,21 +75,20 @@ export default function AccountDetailsPage() {
 					<Label className="cursor-pointer">
 						<span className="inline-flex h-9 items-center gap-2 rounded-md border border-neutral-200 px-3 text-sm">
 							<Upload className="h-4 w-4" />
-							Change avatar
-						</span>
+							{t("Change avatar")}</span>
 						<Input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadAvatar(event.target.files?.[0])} />
 					</Label>
 				</div>
 				<div className="space-y-2">
-					<Label htmlFor="account-email">Email</Label>
+					<Label htmlFor="account-email">{t("Email")}</Label>
 					<Input id="account-email" value={account.email} readOnly className="bg-neutral-50 text-neutral-500" />
 				</div>
 				<div className="space-y-2">
-					<Label htmlFor="account-name">Name</Label>
+					<Label htmlFor="account-name">{t("Name")}</Label>
 					<Input id="account-name" value={account.name} onChange={(event) => setAccount({ ...account, name: event.target.value })} />
 				</div>
 				{account.canForwardEmail && <div className="space-y-2">
-					<Label htmlFor="forwarding-email">Forwarding email (optional)</Label>
+					<Label htmlFor="forwarding-email">{t("Forwarding email (optional)")}</Label>
 					<Input
 						id="forwarding-email"
 						type="email"
@@ -95,11 +97,10 @@ export default function AccountDetailsPage() {
 						placeholder="destination@example.com"
 					/>
 					<p className="text-xs leading-5 text-neutral-500">
-						Incoming mail will also be sent to this verified Cloudflare Email Routing destination.
-					</p>
+						{t("Incoming mail will also be sent to this verified Cloudflare Email Routing destination.")}</p>
 				</div>}
 				<div className="space-y-2">
-					<Label htmlFor="account-new-password">Reset password (optional)</Label>
+					<Label htmlFor="account-new-password">{t("Reset password (optional)")}</Label>
 					<Input
 						id="account-new-password"
 						type="password"
@@ -107,21 +108,19 @@ export default function AccountDetailsPage() {
 						minLength={8}
 						value={account.newPassword ?? ""}
 						onChange={(event) => setAccount({ ...account, newPassword: event.target.value })}
-						placeholder="Leave blank to keep the current password"
+						placeholder={t("Leave blank to keep the current password")}
 					/>
 					<p className="text-xs leading-5 text-neutral-500">
-						Setting a password signs this account out everywhere. Share it with the user through another channel.
-					</p>
+						{t("Setting a password signs this account out everywhere. Share it with the user through another channel.")}</p>
 				</div>
 				<label className="flex items-center gap-3 text-sm">
 					<Checkbox checked={!account.disabled} onChange={(event) => setAccount({ ...account, disabled: !event.target.checked })} />
-					Account enabled
-				</label>
+					{t("Account enabled")}</label>
 				<Button onClick={() => void saveDetails()} disabled={saving || !account.name.trim()}>
-					{saving ? "Saving..." : "Save details"}
+					{saving ? t("Saving...") : t("Save details")}
 				</Button>
 			</section>
-			{message && <p className="text-sm text-neutral-500">{message}</p>}
+			{message && <p className="text-sm text-neutral-500">{t(message)}</p>}
 		</div>
 	);
 }

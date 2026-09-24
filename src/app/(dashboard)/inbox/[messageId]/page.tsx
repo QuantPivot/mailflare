@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ChevronRight, Cloud, ExternalLink } from "lucide-react";
-import dayjs from "dayjs";
 import { MarkAsRead } from "@/components/mark-read";
 import { useSelectedMailbox } from "@/components/mailbox-provider";
 import { ContactDetailsTrigger } from "@/components/contacts/contact-details";
@@ -34,8 +33,13 @@ import {
 } from "./utils";
 import { extractCloudAttachments } from "./cloud-attachment-utils";
 import { sanitizeEmailHtml } from "./email-html-sanitizer";
+import { useLocale } from "next-intl";
+import { useT } from "@/i18n/use-t";
 
 export default function MessageDetailPage() {
+	const t = useT();
+  const locale = useLocale();
+
   const params = useParams<{ messageId: string }>();
   const { selectedMailbox, mailboxes } = useSelectedMailbox();
   const messageId = params.messageId;
@@ -90,7 +94,7 @@ export default function MessageDetailPage() {
   if (!data?.message) {
     return (
       <p className="px-6 py-4 text-sm text-neutral-500">
-        {data?.error ?? "Message not found"}
+        {data?.error ?? t("Message not found")}
       </p>
     );
   }
@@ -166,7 +170,7 @@ export default function MessageDetailPage() {
       </div>
       <div className="px-6 pb-2 pt-4">
         <h1 className="text-2xl text-neutral-900">
-          {message.subject ?? "(no subject)"}
+          {message.subject ?? t("(no subject)")}
         </h1>
       </div>
       <SpamScoreDetails
@@ -215,7 +219,7 @@ export default function MessageDetailPage() {
                 <span className="text-neutral-500">&lt;{fromAddress}&gt;</span>
               </p>
               <p className="text-xs text-neutral-500">
-                to{" "}
+                {t("to")}{" "}
                 {message.direction === "inbound" && toEntries.length <= 1 ? (
                   toName
                 ) : (
@@ -228,19 +232,19 @@ export default function MessageDetailPage() {
               </p>
               {ccEntries.length > 0 && (
                 <p className="text-xs text-neutral-500">
-                  cc <RecipientList entries={ccEntries} mailboxId={message.mailboxId} />
+                  {t("cc")}{" "}<RecipientList entries={ccEntries} mailboxId={message.mailboxId} />
                 </p>
               )}
               {bccEntries.length > 0 && (
                 <p className="text-xs text-neutral-500">
-                  bcc <RecipientList entries={bccEntries} mailboxId={message.mailboxId} />
+                  {t("bcc")}{" "}<RecipientList entries={bccEntries} mailboxId={message.mailboxId} />
                 </p>
               )}
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <p className="text-xs">
-              {dayjs(message.createdAt).format("MMM DD, YYYY, hh:mmA")}
+              {new Date(message.createdAt).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
             </p>
             <ThreadMessageActions
               message={currentThreadMessage}
@@ -262,7 +266,7 @@ export default function MessageDetailPage() {
             <details className="group mt-4 border-l-2 border-neutral-200 pl-4">
               <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md py-2 text-xs font-medium text-neutral-500 hover:text-neutral-800">
                 <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform group-open:rotate-90" />
-                <span>Quoted text</span>
+                <span>{t("Quoted text")}</span>
               </summary>
               <div
                 className="email-body max-w-none pb-2 text-sm text-neutral-600"
@@ -280,7 +284,7 @@ export default function MessageDetailPage() {
         {cloudAttachmentResult.attachments.length > 0 && (
           <section className="mt-8 border-t border-neutral-100 py-6">
             <h2 className="mb-3 text-sm font-semibold text-neutral-900">
-              Cloud files ({cloudAttachmentResult.attachments.length})
+              {t("Cloud files ({count})", { count: cloudAttachmentResult.attachments.length })}
             </h2>
             <div className="grid gap-2 sm:grid-cols-2">
               {cloudAttachmentResult.attachments.map((attachment) => (
@@ -297,7 +301,7 @@ export default function MessageDetailPage() {
                       {attachment.filename}
                     </span>
                     <span className="block text-xs text-neutral-500">
-                      Open from {attachment.provider}
+                      {t("Open from {provider}", { provider: attachment.provider })}
                     </span>
                   </span>
                   <ExternalLink className="h-4 w-4 shrink-0 text-neutral-400" />
@@ -309,7 +313,7 @@ export default function MessageDetailPage() {
         {attachments.length > 0 && (
           <section className="mt-8 border-t border-neutral-100 py-6">
             <h2 className="mb-3 text-sm font-semibold text-neutral-900">
-              Attachments ({attachments.length})
+              {t("Attachments ({count})", { count: attachments.length })}
             </h2>
             <div className="grid gap-2 sm:grid-cols-2">
               {attachments.map((attachment) => (

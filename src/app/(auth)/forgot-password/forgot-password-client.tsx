@@ -9,8 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { requestPasswordReset } from "./utils";
+import { useT } from "@/i18n/use-t";
 
 export function ForgotPasswordClient() {
+	const t = useT();
+
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [sent, setSent] = useState(false);
@@ -39,30 +42,29 @@ export function ForgotPasswordClient() {
 	return (
 		<AuthShell
 			icon={KeyRound}
-			title="Reset your password"
+			title={t("Reset your password")}
 			description={
 				sent
-					? "If that account has a recovery email, a reset link is on its way. It works for 30 minutes."
-					: "Enter the address you sign in with. We will send a reset link to the recovery email on the account."
+					? t("If that account has a recovery email, a reset link is on its way. It works for 30 minutes.")
+					: t("Enter the address you sign in with. We will send a reset link to the recovery email on the account.")
 			}
 			footer={
 				<Link href="/login" className="text-sm text-neutral-500 hover:text-neutral-800">
-					Back to sign in
-				</Link>
+					{t("Back to sign in")}</Link>
 			}
 		>
 			{!sent && (
 				<form onSubmit={onSubmit} className="space-y-5">
 					<div className="space-y-2">
-						<Label htmlFor="email">Email</Label>
+						<Label htmlFor="email">{t("Email")}</Label>
 						<Input id="email" name="email" type="email" autoComplete="email" required autoFocus />
 					</div>
 					{error && (
-						<p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{error}</p>
+						<p className="rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{t(error)}</p>
 					)}
 					<TurnstileField resetSignal={turnstileReset} />
 					<Button type="submit" className="h-11 w-full rounded-full px-6 active:scale-[0.98]" disabled={loading}>
-						{loading ? "Sending..." : "Send reset link"}
+						{loading ? t("Sending...") : t("Send reset link")}
 					</Button>
 				</form>
 			)}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BadgeDollarSign, Globe2, KeyRound, Mail, Palette, Settings, Users, Webhook } from "lucide-react";
 import { AdminUpdateCard } from "@/components/admin-update-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useT } from "@/i18n/use-t";
 
 const sections = [
 	{
@@ -55,13 +56,14 @@ const sections = [
 ];
 
 export default function AdminSettingsPage() {
+	const t = useT();
+
 	return (
 		<div>
 			<div className="mb-8">
-				<h1 className="text-3xl font-medium text-neutral-900">Admin settings</h1>
+				<h1 className="text-3xl font-medium text-neutral-900">{t("Admin settings")}</h1>
 				<p className="mt-2 text-sm text-neutral-500">
-					Manage workspace-level mail infrastructure and integrations.
-				</p>
+					{t("Manage workspace-level mail infrastructure and integrations.")}</p>
 			</div>
 			<div className="grid lg:grid-cols-2 gap-4">
 				{sections.map((section) => {
@@ -74,10 +76,10 @@ export default function AdminSettingsPage() {
 									<div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700">
 										<Icon className="h-5 w-5" />
 									</div>
-									<CardTitle className="text-base">{section.title}</CardTitle>
+									<CardTitle className="text-base">{t(section.title)}</CardTitle>
 								</CardHeader>
 								<CardContent className="pt-4">
-									<p className="text-sm text-neutral-500">{section.description}</p>
+									<p className="text-sm text-neutral-500">{t(section.description)}</p>
 								</CardContent>
 							</Card>
 						</Link>

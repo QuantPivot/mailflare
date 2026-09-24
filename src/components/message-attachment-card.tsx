@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/i18n/use-t";
 
 import { ArrowDownToLine, Play } from "lucide-react";
 import { formatAttachmentSize } from "@/app/(dashboard)/inbox/[messageId]/utils";
@@ -11,6 +12,7 @@ export function MessageAttachmentCard({
 	messageId,
 	onPreview,
 }: MessageAttachmentCardProps) {
+ const t = useT();
 	const visual = getAttachmentVisual(attachment);
 	const Icon = visual.icon;
 	const previewUrl = getAttachmentFileUrl(messageId, attachment.id, "preview");
@@ -53,7 +55,7 @@ export function MessageAttachmentCard({
 					{attachment.filename}
 				</span>
 				<span className="mt-0.5 block truncate text-xs text-neutral-500">
-					{visual.label} · {formatAttachmentSize(attachment.size)}
+					{t(visual.label)} · {formatAttachmentSize(attachment.size)}
 				</span>
 			</span>
 			<ArrowDownToLine className="h-4 w-4 shrink-0 text-neutral-400 transition-colors group-hover:text-blue-600" />

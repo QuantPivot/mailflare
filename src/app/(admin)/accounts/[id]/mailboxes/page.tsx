@@ -14,8 +14,11 @@ import {
   fetchManagedMailboxes,
   removeManagedMailbox,
 } from "../utils";
+import { useT } from "@/i18n/use-t";
 
 export default function AccountMailboxesPage() {
+	const t = useT();
+
   const { id } = useParams<{ id: string }>();
   const [account, setAccount] = useState<ManagedAccount | null>(null);
   const [mailboxes, setMailboxes] = useState<ManagedMailbox[]>([]);
@@ -78,9 +81,9 @@ export default function AccountMailboxesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-medium text-neutral-900">Mailboxes</h1>
+        <h1 className="text-3xl font-medium text-neutral-900">{t("Mailboxes")}</h1>
         <p className="mt-2 text-sm text-neutral-500">
-          Manage inboxes owned by {account?.name ?? "this account"}.
+          {t("Manage inboxes owned by {name}.", { name: account?.name ?? t("this account") })}
         </p>
       </div>
       <section className="space-y-4 rounded-3xl bg-white p-6">
@@ -103,21 +106,21 @@ export default function AccountMailboxesPage() {
                 variant="ghost"
                 size="icon"
                 onClick={() => void removeMailbox(mailbox.id)}
-                aria-label="Remove inbox"
+                aria-label={t("Remove inbox")}
               >
                 <Trash2 className="h-4 w-4 text-red-600" />
               </Button>
             </div>
           ))}
           {account && mailboxes.length === 0 && (
-            <p className="text-sm text-neutral-500">No mailboxes yet.</p>
+            <p className="text-sm text-neutral-500">{t("No mailboxes yet.")}</p>
           )}
         </div>
         <form onSubmit={addMailbox} className="flex gap-2">
           <Input
             value={localPart}
             onChange={(event) => setLocalPart(event.target.value)}
-            placeholder="inbox"
+            placeholder={t("inbox")}
             required
           />
           <Select
@@ -133,11 +136,11 @@ export default function AccountMailboxesPage() {
           </Select>
           <Button type="submit" disabled={!account || !domainId || saving}>
             <Plus className="h-4 w-4" />
-            {saving ? "Adding..." : "Add inbox"}
+            {saving ? t("Adding...") : t("Add inbox")}
           </Button>
         </form>
       </section>
-      {message && <p className="text-sm text-neutral-500">{message}</p>}
+      {message && <p className="text-sm text-neutral-500">{t(message)}</p>}
     </div>
   );
 }

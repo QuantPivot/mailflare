@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { cookies } from "next/headers";
+import { getLocale } from "next-intl/server";
+import { LocaleProvider } from "@/i18n/provider";
+import { getLocalePreference, isLocale, LOCALE_COOKIE } from "@/i18n/config";
+import { getT } from "@/i18n/server";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,20 +18,27 @@ const geistMono = Geist_Mono({
 	subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-	title: "Mailflare",
-	description: "Multi-tenant email on Cloudflare",
-	icons: { icon: "/api/branding/icon" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+	const t = await getT();
+	return {
+		title: "Mailflare",
+		description: t("Multi-tenant email on Cloudflare"),
+		icons: { icon: "/api/branding/icon" },
+	};
+}
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+	const [locale, cookieStore] = await Promise.all([getLocale(), cookies()]);
+	const preference = getLocalePreference(cookieStore.get(LOCALE_COOKIE)?.value);
 	return (
-		<html lang="en">
+		<html lang={locale}>
 			<head>
 				<link rel="icon" href="/api/branding/icon"></link>
 			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased light`}>
-				<Providers>{children}</Providers>
+				<LocaleProvider initialLocale={isLocale(locale) ? locale : "en"} initialPreference={preference}>
+					<Providers>{children}</Providers>
+				</LocaleProvider>
 			</body>
 		</html>
 	);

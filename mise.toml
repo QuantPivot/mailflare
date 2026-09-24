@@ -27,3 +27,16 @@ run = "wrangler d1 migrations apply DB --remote"
 
 [tasks.wrangler]
 run = "wrangler"
+
+[tasks."i18n:check"]
+run = "node scripts/check-i18n.mjs"
+
+[tasks."i18n:extract"]
+run = "node scripts/extract-i18n.mjs"
+
+[tasks."i18n:lint"]
+run = "npx --no-install eslint src/i18n src/components/language-switcher.tsx scripts/check-i18n.mjs scripts/extract-i18n.mjs"
+
+[tasks."preview:local"]
+env = { OPEN_NEXT_DEPLOY = "true" }
+run = "wrangler dev --local --ip 127.0.0.1 --port 8788"

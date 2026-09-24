@@ -39,8 +39,13 @@ import {
   saveBackupSettings,
   startBackup,
 } from "./utils";
+import { useLocale } from "next-intl";
+import { useT } from "@/i18n/use-t";
 
 export default function BackupsPage() {
+	const t = useT();
+  const locale = useLocale();
+
   const queryClient = useQueryClient();
   const restoreInput = useRef<HTMLInputElement | null>(null);
   const [settings, setSettings] = useState<BackupSettings | null>(null);
@@ -97,11 +102,9 @@ export default function BackupsPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-3xl font-medium text-neutral-900">
-            Database Backups
-          </h1>
+            {t("Database Backups")}</h1>
           <p className="mt-1 text-sm text-neutral-500">
-            Export database records through the D1 binding and store them in the configured R2 bucket.
-          </p>
+            {t("Export database records through the D1 binding and store them in the configured R2 bucket.")}</p>
         </div>
         <div className="flex items-center gap-2">
           <Input
@@ -112,24 +115,24 @@ export default function BackupsPage() {
             onChange={(event) => {
               const file = event.target.files?.[0];
               event.target.value = "";
-              if (!file || !window.confirm("Restore this backup? This replaces all current database records and may sign you out.")) return;
+              if (!file || !window.confirm(t("Restore this backup? This replaces all current database records and may sign you out."))) return;
               restore.mutate(file);
             }}
           />
           <Button type="button" variant="outline" disabled={restore.isPending} onClick={() => restoreInput.current?.click()}>
             <Upload className="h-4 w-4" />
-            {restore.isPending ? "Restoring..." : "Restore"}
+            {restore.isPending ? t("Restoring...") : t("Restore")}
           </Button>
           <Button onClick={() => runBackup.mutate()} disabled={runBackup.isPending || !backupConfigured}>
             <Play className="h-4 w-4" />
-            {runBackup.isPending ? "Starting..." : "Back up now"}
+            {runBackup.isPending ? t("Starting...") : t("Back up now")}
           </Button>
         </div>
       </div>
 
       {error && (
         <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error instanceof Error ? error.message : "Backup operation failed"}
+          {error instanceof Error ? t(error.message) : t("Backup operation failed")}
         </p>
       )}
 
@@ -140,13 +143,9 @@ export default function BackupsPage() {
               <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
               <div>
                 <CardTitle className="text-amber-950">
-                  Complete backup setup
-                </CardTitle>
+                  {t("Complete backup setup")}</CardTitle>
                 <CardDescription className="mt-1 text-amber-800">
-                  Add the missing values under the deployed Worker&apos;s
-                  Variables and Secrets settings. This check disappears after
-                  backup configuration is complete.
-                </CardDescription>
+                  {t("Add the missing values under the deployed Worker's Variables and Secrets settings. This check disappears after backup configuration is complete.")}</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -172,8 +171,7 @@ export default function BackupsPage() {
                 <RefreshCw
                   className={`h-4 w-4 ${backups.isFetching ? "animate-spin" : ""}`}
                 />
-                Check again
-              </Button>
+                {t("Check again")}</Button>
             </div>
           </CardContent>
         </Card>
@@ -181,11 +179,9 @@ export default function BackupsPage() {
 
       <Card className="rounded-3xl border-0 bg-white p-6">
         <CardHeader className="py-0">
-          <CardTitle>Automatic backup</CardTitle>
+          <CardTitle>{t("Automatic backup")}</CardTitle>
           <CardDescription>
-            The schedule runs at 02:00 UTC. Monthly schedules are limited to
-            days 1-28.
-          </CardDescription>
+            {t("The schedule runs at 02:00 UTC. Monthly schedules are limited to days 1-28.")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5 pt-5">
           {settings && (
@@ -196,16 +192,16 @@ export default function BackupsPage() {
                   onCheckedChange={(enabled) =>
                     setSettings({ ...settings, enabled })
                   }
-                  aria-label="Enable automatic backups"
+                  aria-label={t("Enable automatic backups")}
                 />
-                <span>Enable automatic backups</span>
+                <span>{t("Enable automatic backups")}</span>
               </div>
 
               {settings.enabled && (
                 <>
                   <div className="grid gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="schedule-type">Frequency</Label>
+                      <Label htmlFor="schedule-type">{t("Frequency")}</Label>
                       <Select
                         id="schedule-type"
                         value={settings.scheduleType}
@@ -225,15 +221,15 @@ export default function BackupsPage() {
                         }}
                         className="flex h-10 w-full rounded-md border border-neutral-200 bg-white px-3 text-sm"
                       >
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Selected day of week</option>
-                        <option value="monthly">Selected day of month</option>
+                        <option value="daily">{t("Daily")}</option>
+                        <option value="weekly">{t("Selected day of week")}</option>
+                        <option value="monthly">{t("Selected day of month")}</option>
                       </Select>
                     </div>
 
                     {settings.scheduleType === "weekly" && (
                       <div className="space-y-2">
-                        <Label htmlFor="weekday">Day of week</Label>
+                        <Label htmlFor="weekday">{t("Day of week")}</Label>
                         <Select
                           id="weekday"
                           value={settings.scheduleValue ?? 1}
@@ -247,7 +243,7 @@ export default function BackupsPage() {
                         >
                           {WEEKDAYS.map((day) => (
                             <option key={day.value} value={day.value}>
-                              {day.label}
+                              {t(day.label)}
                             </option>
                           ))}
                         </Select>
@@ -256,7 +252,7 @@ export default function BackupsPage() {
 
                     {settings.scheduleType === "monthly" && (
                       <div className="space-y-2">
-                        <Label htmlFor="month-day">Day of month</Label>
+                        <Label htmlFor="month-day">{t("Day of month")}</Label>
                         <Input
                           id="month-day"
                           type="number"
@@ -284,15 +280,14 @@ export default function BackupsPage() {
                             retentionEnabled,
                           })
                         }
-                        aria-label="Delete old backups automatically"
+                        aria-label={t("Delete old backups automatically")}
                       />
-                      <span>Delete old backups automatically</span>
+                      <span>{t("Delete old backups automatically")}</span>
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="retention-days">
-                        Delete backups older than
-                      </Label>
+                        {t("Delete backups older than")}</Label>
                       <div className="flex items-center gap-2">
                         <Input
                           id="retention-days"
@@ -308,7 +303,7 @@ export default function BackupsPage() {
                             })
                           }
                         />
-                        <span className="text-sm text-neutral-500">days</span>
+                        <span className="text-sm text-neutral-500">{t("days")}</span>
                       </div>
                     </div>
                   </div>
@@ -320,7 +315,7 @@ export default function BackupsPage() {
                 disabled={saveSettings.isPending}
               >
                 <Save className="h-4 w-4" />
-                {saveSettings.isPending ? "Saving..." : "Save settings"}
+                {saveSettings.isPending ? t("Saving...") : t("Save settings")}
               </Button>
             </>
           )}
@@ -330,18 +325,18 @@ export default function BackupsPage() {
       <section className="overflow-hidden rounded-3xl bg-white">
         <div className="flex items-center gap-3 border-b border-neutral-100 px-4 py-4">
           <DatabaseBackup className="h-5 w-5 text-neutral-500" />
-          <h2 className="font-semibold text-neutral-900">Backup history</h2>
+          <h2 className="font-semibold text-neutral-900">{t("Backup history")}</h2>
         </div>
         <div className="grid grid-cols-[1fr_110px_110px_170px_120px] gap-4 border-b border-neutral-100 bg-neutral-50 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">
-          <span>File</span>
-          <span>Status</span>
-          <span>Size</span>
-          <span>Created</span>
-          <span>Actions</span>
+          <span>{t("File")}</span>
+          <span>{t("Status")}</span>
+          <span>{t("Size")}</span>
+          <span>{t("Created")}</span>
+          <span>{t("Actions")}</span>
         </div>
         {backups.isLoading && <SkeletonRows count={5} />}
         {!backups.isLoading && (backups.data?.backups ?? []).length === 0 && (
-          <p className="px-4 py-6 text-sm text-neutral-500">No backups yet.</p>
+          <p className="px-4 py-6 text-sm text-neutral-500">{t("No backups yet.")}</p>
         )}
         {(backups.data?.backups ?? []).map((backup: BackupItem) => (
           <div
@@ -353,24 +348,24 @@ export default function BackupsPage() {
                 {backup.filename ?? backup.id}
               </p>
               <p className="truncate text-xs text-neutral-500">
-                {backup.trigger === "manual" ? "Manual" : "Scheduled"}
-                {backup.error ? `: ${backup.error}` : ""}
+                {backup.trigger === "manual" ? t("Manual") : t("Scheduled")}
+                {backup.error ? t(": {value0}", { value0: String(backup.error) }) : ""}
               </p>
             </div>
             <Badge variant="outline" className={getStatusClass(backup.status)}>
-              {backup.status}
+              {t(backup.status)}
             </Badge>
             <span className="text-sm text-neutral-600">
               {formatBackupSize(backup.size)}
             </span>
             <span className="text-sm text-neutral-600">
-              {formatBackupDate(backup.createdAt)}
+              {formatBackupDate(backup.createdAt, locale)}
             </span>
             <div className="flex gap-1">
               <Button
                 size="sm"
                 variant="ghost"
-                title="Download backup"
+                title={t("Download backup")}
                 disabled={backup.status !== "completed" || download.isPending}
                 onClick={() => download.mutate(backup)}
               >
@@ -379,7 +374,7 @@ export default function BackupsPage() {
               <Button
                 size="sm"
                 variant="ghost"
-                title="Delete backup"
+                title={t("Delete backup")}
                 disabled={
                   deleteBackup.isPending ||
                   backup.status === "queued" ||

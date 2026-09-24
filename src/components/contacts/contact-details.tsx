@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -18,6 +17,8 @@ import {
 	fetchContactDetails,
 	updateContactName,
 } from "./contact-details-utils";
+import { useLocale } from "next-intl";
+import { useT } from "@/i18n/use-t";
 
 export function ContactDetailsTrigger({
 	mailboxId,
@@ -25,6 +26,9 @@ export function ContactDetailsTrigger({
 	name,
 	className,
 }: ContactDetailsTriggerProps) {
+	const t = useT();
+	const locale = useLocale();
+
 	const [open, setOpen] = useState(false);
 	const [shownName, setShownName] = useState(name);
 	const [contact, setContact] = useState<ContactDetailsRecord | null>(null);
@@ -93,8 +97,8 @@ export function ContactDetailsTrigger({
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Contact details</DialogTitle>
-						<DialogDescription>Update how this contact appears in your mailbox.</DialogDescription>
+						<DialogTitle>{t("Contact details")}</DialogTitle>
+						<DialogDescription>{t("Update how this contact appears in your mailbox.")}</DialogDescription>
 					</DialogHeader>
 					<div className="space-y-5">
 						<div className="flex flex-col items-start gap-4">
@@ -107,7 +111,7 @@ export function ContactDetailsTrigger({
 							/>
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="contact-display-name">Name</Label>
+							<Label htmlFor="contact-display-name">{t("Name")}</Label>
 							<Input
 								id="contact-display-name"
 								value={displayName}
@@ -116,7 +120,7 @@ export function ContactDetailsTrigger({
 							/>
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="contact-email">Email</Label>
+							<Label htmlFor="contact-email">{t("Email")}</Label>
 							<Input
 								id="contact-email"
 								value={contact?.email ?? address}
@@ -125,26 +129,26 @@ export function ContactDetailsTrigger({
 						</div>
 						<div className="grid gap-3 rounded-lg bg-neutral-50 p-3 text-sm sm:grid-cols-2">
 							<div>
-								<p className="text-xs font-medium uppercase text-neutral-400">Source</p>
-								<p className="mt-1 capitalize text-neutral-700">{contact?.source ?? "Email"}</p>
+								<p className="text-xs font-medium uppercase text-neutral-400">{t("Source")}</p>
+								<p className="mt-1 capitalize text-neutral-700">{contact?.source === "manual" ? t("Manual") : contact?.source === "inbound" ? t("Inbound message") : contact?.source === "outbound" ? t("Outbound message") : t("Email")}</p>
 							</div>
 							<div>
-								<p className="text-xs font-medium uppercase text-neutral-400">Last seen</p>
+								<p className="text-xs font-medium uppercase text-neutral-400">{t("Last seen")}</p>
 								<p className="mt-1 text-neutral-700">
-									{contact?.lastSeenAt ? dayjs(contact.lastSeenAt).format("MMM DD, YYYY") : "Unknown"}
+									{contact?.lastSeenAt ? new Date(contact.lastSeenAt).toLocaleDateString(locale, { dateStyle: "medium" }) : t("Unknown")}
 								</p>
 							</div>
 							{contact?.blocked && (
-								<p className="text-sm font-medium text-red-600">Blocked contact</p>
+								<p className="text-sm font-medium text-red-600">{t("Blocked contact")}</p>
 							)}
 						</div>
-						{error && <p className="text-sm text-red-600">{error}</p>}
+						{error && <p className="text-sm text-red-600">{t(error)}</p>}
 						<Button
 							type="button"
 							onClick={saveContact}
 							disabled={loading || saving || !displayName.trim()}
 						>
-							{saving ? "Saving..." : "Save contact"}
+							{saving ? t("Saving...") : t("Save contact")}
 						</Button>
 					</div>
 				</DialogContent>
