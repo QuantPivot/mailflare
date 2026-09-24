@@ -24,6 +24,7 @@ import {
 	runSingleMessageAction,
 } from "./utils";
 import { useT } from "@/i18n/use-t";
+import { confirmPermanentDelete } from "@/components/messages/permanent-delete";
 
 export function MessageActions({
 	messageId,
@@ -53,20 +54,25 @@ export function MessageActions({
 	const [moreOpen, setMoreOpen] = useState(false);
 
 	const runAction = useCallback(async (action: BulkMessageAction) => {
+		if (pendingAction !== null) return;
+		if (action === "delete" && !confirmPermanentDelete(1, t)) return;
 		setMoreOpen(false);
 		setPendingAction(action);
 		setError(null);
 		try {
 			await runSingleMessageAction(messageId, action);
 			const redirect = getMessageActionRedirect(action, direction);
-			if (redirect) router.push(redirect);
+			if (redirect) {
+				if (action === "delete") router.replace(redirect);
+				else router.push(redirect);
+			}
 			router.refresh();
-		} catch {
-			setError("Could not update message");
+		} catch (nextError) {
+			setError(nextError instanceof Error ? nextError.message : "Could not update message");
 		} finally {
 			setPendingAction(null);
 		}
-	}, [messageId, direction, router]);
+	}, [messageId, direction, router, pendingAction, t]);
 
 	const replyable = useMemo(() => message ?? {
 		direction,
@@ -122,10 +128,10 @@ export function MessageActions({
 			},
 			{
 				key: "#",
-				label: "Move to Trash",
+				label: status === "trash" ? "Delete permanently" : "Move to Trash",
 				category: "Actions" as const,
 				action: () => {
-					if (status !== "trash") void runAction("trash");
+					void runAction(status === "trash" ? "delete" : "trash");
 				},
 			},
 			{
@@ -220,12 +226,14 @@ export function MessageActions({
 	}
 
 	const disabled = pendingAction !== null;
+	const permanentDelete = status === "trash";
+	const deleteLabel = permanentDelete ? t("Delete permanently") : t("Move to trash");
 	const markAction: BulkMessageAction = read ? "unread" : "read";
 	const moveActions = getMoveMessageActions(status, direction);
 
 	return (
 		<div className="flex items-center gap-3 text-neutral-600">
-			{error && <span className="text-xs text-red-600">{t(error)}</span>}
+			{error && <span role="alert" className="text-xs text-red-600">{t(error)}</span>}
 			<div className="flex items-center gap-2">
 				<Tooltip label={shortcutsEnabled ? t("Reply (r)") : t("Reply")}>
 					<Button
@@ -289,13 +297,14 @@ export function MessageActions({
 						<ShieldAlert className="h-5 w-5" />
 					</Button>
 				</Tooltip>
-				<Tooltip label={shortcutsEnabled ? t("Delete (#)") : t("Delete")}>
+				<Tooltip label={deleteLabel}>
 					<Button
 						variant="ghost"
 						size="sm"
-						aria-label={shortcutsEnabled ? t("Move to trash (#)") : t("Move to trash")}
-						disabled={disabled || status === "trash"}
-						onClick={() => runAction("trash")}
+						aria-label={deleteLabel}
+						className={permanentDelete ? "text-red-600 hover:bg-red-50 hover:text-red-700" : undefined}
+						disabled={disabled}
+						onClick={() => runAction(permanentDelete ? "delete" : "trash")}
 					>
 						<Trash2 className="h-5 w-5" />
 					</Button>

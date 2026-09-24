@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
-import type { MessageListRowActionsProps } from "./types";
+import type { MessageListRowActionsProps, RowMessageAction } from "./types";
 import { getSnoozePresets, isMessageSnoozed, snoozeMessage, unsnoozeMessage } from "./message-list-row-actions-utils";
 import { useT } from "@/i18n/use-t";
 
@@ -17,9 +17,24 @@ export function MessageListRowActions({ message, onAction }: MessageListRowActio
 	const [snoozedUntil, setSnoozedUntil] = useState(() => getSnoozePresets()[0].value);
 	const [snoozing, setSnoozing] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [pendingAction, setPendingAction] = useState(false);
+	const permanentDelete = message.status === "trash";
+	const deleteLabel = permanentDelete ? t("Delete permanently") : t("Trash");
 	const snoozePresets = getSnoozePresets();
 	const snoozed = isMessageSnoozed(message.snoozedUntil);
 	const readAction = message.read ? "unread" : "read";
+
+	async function runAction(action: RowMessageAction): Promise<void> {
+		if (pendingAction) return;
+		setPendingAction(true);
+		try {
+			await onAction(action);
+		} catch (nextError) {
+			setError(nextError instanceof Error ? nextError.message : "Unable to update selected messages");
+		} finally {
+			setPendingAction(false);
+		}
+	}
 
 	async function handleSnooze() {
 		setSnoozing(true);
@@ -38,21 +53,21 @@ export function MessageListRowActions({ message, onAction }: MessageListRowActio
 		<>
 			<div className="pointer-events-none absolute right-6 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1 pl-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 bg-[#f2f6fc]">
 				<Tooltip label={t("Archive")}>
-					<Button type="button" variant="ghost" size="sm" onClick={() => void onAction("archive")} aria-label={t("Archive")}>
+					<Button type="button" variant="ghost" size="sm" disabled={pendingAction} onClick={() => void runAction("archive")} aria-label={t("Archive")}>
 						<Archive className="h-4 w-4" />
 					</Button>
 				</Tooltip>
-				<Tooltip label={t("Trash")}>
-					<Button type="button" variant="ghost" size="sm" onClick={() => void onAction("trash")} aria-label={t("Trash")}>
+				<Tooltip label={deleteLabel}>
+					<Button type="button" variant="ghost" size="sm" disabled={pendingAction} onClick={() => void runAction(permanentDelete ? "delete" : "trash")} aria-label={deleteLabel} className={permanentDelete ? "text-red-600 hover:bg-red-50 hover:text-red-700" : undefined}>
 						<Trash2 className="h-4 w-4" />
 					</Button>
 				</Tooltip>
 				<Tooltip label={readAction === "read" ? t("Mark as read") : t("Mark as unread")}>
-					<Button type="button" variant="ghost" size="sm" onClick={() => void onAction(readAction)} aria-label={readAction === "read" ? t("Mark as read") : t("Mark as unread")}>
+					<Button type="button" variant="ghost" size="sm" disabled={pendingAction} onClick={() => void runAction(readAction)} aria-label={readAction === "read" ? t("Mark as read") : t("Mark as unread")}>
 						{readAction === "read" ? <MailOpen className="h-4 w-4" /> : <Mail className="h-4 w-4" />}
 					</Button>
 				</Tooltip>
-				<Tooltip label={snoozed ? t("Unsnooze") : t("Snooze")}>
+				{!permanentDelete && <Tooltip label={snoozed ? t("Unsnooze") : t("Snooze")}>
 					<Button type="button" variant="ghost" size="sm" onClick={() => {
 						if (snoozed) {
 							void unsnoozeMessage(message.id);
@@ -62,7 +77,7 @@ export function MessageListRowActions({ message, onAction }: MessageListRowActio
 					}} aria-label={snoozed ? t("Unsnooze") : t("Snooze")}>
 						<Clock className="h-4 w-4" />
 					</Button>
-				</Tooltip>
+				</Tooltip>}
 			</div>
 
 			<Dialog open={snoozeOpen} onOpenChange={setSnoozeOpen}>

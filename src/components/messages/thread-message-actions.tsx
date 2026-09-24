@@ -1,7 +1,8 @@
 "use client";
 
 import { createElement, useEffect, useState } from "react";
-import { Ban, Forward, Mail, MailOpen, MoreVertical, Reply, ReplyAll, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Ban, Forward, Mail, MailOpen, MoreVertical, Reply, ReplyAll, Star, Trash2 } from "lucide-react";
 import { useCompose } from "@/components/compose/compose-context";
 import { getOwnAddressForMessage } from "@/app/(dashboard)/inbox/[messageId]/utils";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import { toggleMessageStar } from "./message-list-row-actions-utils";
 import type { ThreadMessageActionsProps } from "./thread-message-actions-types";
 import type { ReplyMode } from "@/components/message-actions/types";
 import { useT } from "@/i18n/use-t";
+import { confirmPermanentDelete } from "./permanent-delete";
 
 export function ThreadMessageActions({
 	message,
@@ -28,6 +30,7 @@ export function ThreadMessageActions({
 	ownAddresses = [],
 }: ThreadMessageActionsProps) {
 	const t = useT();
+	const router = useRouter();
 
 	const { openDraftComposer } = useCompose();
 	const [starred, setStarred] = useState(message.starred);
@@ -99,11 +102,14 @@ export function ThreadMessageActions({
 	}
 
 	async function onMessageAction(action: Parameters<typeof runSingleMessageAction>[1]) {
+		if (pending) return;
+		if (action === "delete" && !confirmPermanentDelete(1, t)) return;
 		setMoreOpen(false);
 		setPending(true);
 		setError(null);
 		try {
 			await runSingleMessageAction(message.id, action);
+			if (action === "delete") router.replace("/trash");
 		} catch (nextError) {
 			setError(nextError instanceof Error ? nextError.message : "Could not update message");
 		} finally {
@@ -191,6 +197,11 @@ export function ThreadMessageActions({
 								{createElement(item.icon, { size: 16 })} {t(item.label)}
 							</button>
 						))}
+						{message.status === "trash" && (
+							<button type="button" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => void onMessageAction("delete")}>
+								<Trash2 className="h-4 w-4" /> {t("Delete permanently")}
+							</button>
+						)}
 						{message.direction === "inbound" && mailboxId && (
 							<>
 								<hr className="my-1 border-neutral-100" />

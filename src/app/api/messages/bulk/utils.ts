@@ -3,6 +3,7 @@ import type { BulkMessageAction } from "./types";
 const allowedBulkActions = new Set<BulkMessageAction>([
 	"archive",
 	"trash",
+	"delete",
 	"spam",
 	"read",
 	"unread",

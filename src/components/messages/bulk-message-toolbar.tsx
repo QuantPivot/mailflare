@@ -12,11 +12,13 @@ export function BulkMessageToolbar({
 	selectedCount,
 	hasUnreadSelection,
 	hideSelectedCount = false,
+	permanentDelete = false,
 	onAction,
 	onClearSelection,
 	pending,
 }: BulkMessageToolbarProps) {
 	const t = useT();
+	const deleteLabel = permanentDelete ? t("Delete permanently") : t("Delete");
 
 	return (
 		<div className="flex min-w-0 items-center gap-2 text-neutral-600 w-full">
@@ -34,8 +36,8 @@ export function BulkMessageToolbar({
 					<ShieldAlert className="h-4 w-4" />
 				</Button>
 			</Tooltip>
-			<Tooltip label={t("Delete")}>
-				<Button variant="ghost" size="sm" onClick={() => onAction("trash")} disabled={pending} aria-label={t("Delete")}>
+			<Tooltip label={deleteLabel}>
+				<Button variant="ghost" size="sm" onClick={() => onAction(permanentDelete ? "delete" : "trash")} disabled={pending} aria-label={deleteLabel} className={permanentDelete ? "text-red-600 hover:bg-red-50 hover:text-red-700" : undefined}>
 					<Trash2 className="h-4 w-4" />
 				</Button>
 			</Tooltip>

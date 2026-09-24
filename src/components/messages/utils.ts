@@ -1,6 +1,7 @@
 import type { Translate } from "@/i18n/catalog";
 import type { Message } from "@/hooks/types";
-import { authFetch } from "@/lib/auth/client";
+import { applyMessageAction } from "@/lib/messages/actions";
+import type { BulkMessageAction } from "@/app/api/messages/bulk/types";
 import { getEmailDisplayName, splitEmailAddressList } from "@/lib/email/address";
 import dayjs from "dayjs";
 import type { MailboxOption } from "@/components/mailbox-provider";
@@ -79,13 +80,6 @@ export function formatEmailPageTitle({ location, total, unread, emailAddress }: 
 	return `${location} (${count})${suffix}`;
 }
 
-export async function runBulkMessageAction(messageIds: string[], action: string, notify = true) {
-	const response = await authFetch("/api/messages/bulk", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ messageIds, action }),
-	});
-
-	if (!response.ok) throw new Error("Unable to update selected messages");
-	if (notify) window.dispatchEvent(new Event("mailflare:messages-changed"));
+export async function runBulkMessageAction(messageIds: string[], action: BulkMessageAction, notify = true): Promise<void> {
+	await applyMessageAction(messageIds, action, notify);
 }

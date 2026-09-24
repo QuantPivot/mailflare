@@ -7,26 +7,32 @@ import { BulkMessageToolbar } from "./bulk-message-toolbar";
 import type { BulkMessageSelectionPaneProps } from "./types";
 import { runBulkMessageAction } from "./utils";
 import { useT } from "@/i18n/use-t";
+import { confirmPermanentDelete } from "./permanent-delete";
 
 export function BulkMessageSelectionPane({
 	selectedMessages,
 	onClearSelection,
+	onDeleted,
 }: BulkMessageSelectionPaneProps) {
 	const t = useT();
 
 	const [pending, setPending] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 	const hasUnreadSelection = selectedMessages.some((message) => !message.read);
 
 	async function runAction(action: BulkMessageAction) {
-		if (selectedMessages.length === 0) return;
+		if (pending || selectedMessages.length === 0) return;
+		const messageIds = [...new Set(selectedMessages.flatMap((message) => message.threadMessageIds ?? [message.id]))];
+		if (action === "delete" && !confirmPermanentDelete(messageIds.length, t)) return;
 
 		setPending(true);
+		setError(null);
 		try {
-			await runBulkMessageAction(
-				selectedMessages.map((message) => message.id),
-				action,
-			);
+			await runBulkMessageAction(messageIds, action);
 			onClearSelection();
+			if (action === "delete") onDeleted();
+		} catch (nextError) {
+			setError(nextError instanceof Error ? nextError.message : "Unable to update selected messages");
 		} finally {
 			setPending(false);
 		}
@@ -45,6 +51,7 @@ export function BulkMessageSelectionPane({
 				<div className="mt-5 rounded-xl border border-neutral-200 bg-white p-3 shadow-sm">
 					<BulkMessageToolbar
 						selectedCount={selectedMessages.length}
+						permanentDelete={selectedMessages.every((message) => message.status === "trash")}
 						hasUnreadSelection={hasUnreadSelection}
 						onAction={runAction}
 						onClearSelection={onClearSelection}
@@ -52,6 +59,7 @@ export function BulkMessageSelectionPane({
 						hideSelectedCount
 					/>
 				</div>
+				{error && <p role="alert" className="mt-3 text-sm text-red-600">{t(error)}</p>}
 			</div>
 		</div>
 	);

@@ -7,6 +7,7 @@ import { getEnv } from "@/lib/cloudflare";
 import { getMailboxAccessLevel } from "@/lib/mailboxes/access";
 import { createAuditLog } from "@/lib/mailboxes/audit";
 import { applySpamFeedback } from "@/lib/spam/feedback";
+import { permanentlyDeleteMessages } from "@/lib/email/permanent-delete";
 import type { BulkMessagePayload } from "./types";
 import {
 	getReadValueForBulkAction,
@@ -21,10 +22,17 @@ export async function POST(request: Request) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
 
-	const payload = (await request.json()) as BulkMessagePayload;
-	const messageIds = payload.messageIds?.filter(Boolean) ?? [];
-	if (messageIds.length === 0 || !isAllowedBulkMessageAction(payload.action)) {
+	const payload = (await request.json().catch(() => null)) as BulkMessagePayload | null;
+	if (!payload || !Array.isArray(payload.messageIds) ||
+		payload.messageIds.length === 0 ||
+		payload.messageIds.some((id) => typeof id !== "string" || !id.trim()) ||
+		!isAllowedBulkMessageAction(payload.action)) {
 		return NextResponse.json({ error: "Invalid bulk message action" }, { status: 400 });
+	}
+	const messageIds = [...new Set(payload.messageIds)];
+	if (payload.action === "delete") {
+		const { status, ...result } = await permanentlyDeleteMessages(env, user, messageIds);
+		return NextResponse.json(result, { status });
 	}
 
 	const status = getStatusForBulkAction(payload.action);

@@ -40,3 +40,13 @@ run = "npx --no-install eslint src/i18n src/components/language-switcher.tsx scr
 [tasks."preview:local"]
 env = { OPEN_NEXT_DEPLOY = "true" }
 run = "wrangler dev --local --ip 127.0.0.1 --port 8788"
+
+[tasks."trash:check"]
+run = "node --import tsx scripts/permanent-delete-check.ts"
+
+[tasks."trash:dev"]
+env = { MAILFLARE_RUNTIME = "node", DATA_DIR = "work/trash-preview", HOST = "127.0.0.1", PORT = "3018", SMTP_INBOUND_PORT = "0" }
+run = "npm run dev:node"
+
+[tasks."trash:lint"]
+run = "npx --no-install eslint src/app/api/messages/bulk src/lib/email/permanent-delete.ts src/components/messages/permanent-delete.ts src/components/messages/bulk-message-toolbar.tsx src/components/messages/bulk-message-selection-pane.tsx src/components/messages/message-split-layout.tsx src/components/messages/message-list-row-actions.tsx src/components/messages/message-folder-page.tsx src/components/messages/thread-message-actions.tsx src/components/messages/utils.ts src/components/message-actions src/lib/messages/actions.ts scripts/permanent-delete-check.ts"

@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BulkMessageSelectionPane } from "./bulk-message-selection-pane";
 import { MessageFolderPage } from "./message-folder-page";
@@ -11,6 +11,7 @@ export function MessageSplitLayout({
 	config,
 }: MessageSplitLayoutProps) {
 	const pathname = usePathname();
+	const router = useRouter();
 	const [selectedMessages, setSelectedMessages] = useState<SelectedMessage[]>([]);
 	const detailPrefix = `${config.hrefPrefix}/`;
 	const selectedMessageId = pathname.startsWith(detailPrefix)
@@ -34,6 +35,7 @@ export function MessageSplitLayout({
 					<BulkMessageSelectionPane
 						selectedMessages={selectedMessages}
 						onClearSelection={() => setSelectedMessages([])}
+						onDeleted={() => router.replace(config.hrefPrefix)}
 					/>
 				) : (
 					children

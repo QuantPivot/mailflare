@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { MouseEvent } from "react";
 import { ChevronLeft, ChevronRight, ListFilter } from "lucide-react";
@@ -21,7 +22,8 @@ import { MessageListRowActions } from "./message-list-row-actions";
 import { dispatchMessageCountsDelta, toggleMessageStar } from "./message-list-row-actions-utils";
 import { MessageNavigationProgress, useMessageNavigation } from "./message-navigation";
 import { useConversationView } from "./use-conversation-view";
-import type { MessageFolderPageProps, MessageListRowProps } from "./types";
+import type { MessageFolderPageProps, MessageListRowProps, SelectedMessage } from "./types";
+import { confirmPermanentDelete } from "./permanent-delete";
 import {
 	formatMessageListTimestamp,
 	getPageRange,
@@ -216,7 +218,7 @@ function MessageListRow({
 			<Link href={href} onClick={onMessageNavigate} className="contents">
 				{content}
 			</Link>
-			{(config.folder === "inbox" || config.folder === "snoozed") && message.direction === "inbound" && (
+			{(config.folder === "trash" || ((config.folder === "inbox" || config.folder === "snoozed") && message.direction === "inbound")) && (
 				<MessageListRowActions
 					message={rowMessage}
 					onAction={async (action) => {
@@ -248,15 +250,16 @@ export function MessageFolderPage({
 	selection,
 }: MessageFolderPageProps) {
 	const t = useT();
-
+	const router = useRouter();
 
 	const { selectedMailbox, isLoading: mailboxesLoading } = useSelectedMailbox();
 	const { query } = useMailSearch();
 	const [offset, setOffset] = useState(0);
 	const [internalSelectedMessages, setInternalSelectedMessages] = useState<
-		Array<{ id: string; read: boolean }>
+		SelectedMessage[]
 	>([]);
 	const [pendingBulkAction, setPendingBulkAction] = useState(false);
+	const [actionError, setActionError] = useState<string | null>(null);
 	const [unreadOnly, setUnreadOnly] = useState(false);
 	const [conversationView] = useConversationView();
 	const grouped = conversationView && config.folder !== "drafts";
@@ -290,9 +293,11 @@ export function MessageFolderPage({
 	const allVisibleSelected = messages.length > 0 && messages.every((message) => selectedIds.includes(message.id));
 	// In conversation view a row stands for every message of its thread in this
 	// folder, so actions and drags carry all of them.
-	const rowMessageIds = (message: Message) => message.threadMessageIds ?? [message.id];
+	const rowMessageIds = (message: Pick<Message, "id" | "threadMessageIds">) => message.threadMessageIds ?? [message.id];
 	const expandSelectedIds = (ids: string[]) =>
-		ids.flatMap((id) => rowMessageIds(messages.find((message) => message.id === id) ?? { id } as Message));
+		[...new Set(ids.flatMap((id) => rowMessageIds(
+			messages.find((message) => message.id === id) ?? selectedMessages.find((message) => message.id === id) ?? { id },
+		)))];
 
 	useEffect(() => {
 		setOffset(0);
@@ -320,7 +325,7 @@ export function MessageFolderPage({
 		setSelectedMessages((current) => {
 			if (!selected) return current.filter((item) => item.id !== messageId);
 			if (current.some((item) => item.id === messageId)) return current;
-			return [...current, { id: message.id, read: message.read && !(message.threadUnread ?? 0) }];
+			return [...current, { id: message.id, read: message.read && !(message.threadUnread ?? 0), status: message.status, threadMessageIds: message.threadMessageIds }];
 		});
 	}
 
@@ -333,16 +338,19 @@ export function MessageFolderPage({
 
 			const next = new Map(current.map((message) => [message.id, message]));
 			for (const message of messages) {
-				next.set(message.id, { id: message.id, read: message.read && !(message.threadUnread ?? 0) });
+				next.set(message.id, { id: message.id, read: message.read && !(message.threadUnread ?? 0), status: message.status, threadMessageIds: message.threadMessageIds });
 			}
 			return Array.from(next.values());
 		});
 	}
 
 	async function runSelectedAction(action: BulkMessageAction) {
-		if (selectedIds.length === 0) return;
+		if (pendingBulkAction || selectedIds.length === 0) return;
+		const messageIds = expandSelectedIds(selectedIds);
+		if (action === "delete" && !confirmPermanentDelete(messageIds.length, t)) return;
 
 		setPendingBulkAction(true);
+		setActionError(null);
 		const previousMessages = messages;
 		const readValue = action === "read" ? true : action === "unread" ? false : null;
 		const changedMessages = readValue === null
@@ -359,8 +367,9 @@ export function MessageFolderPage({
 			if (inboxUnreadDelta) dispatchMessageCountsDelta({ inboxUnreadDelta });
 		}
 		try {
-			await runBulkMessageAction(expandSelectedIds(selectedIds), action);
+			await runBulkMessageAction(messageIds, action);
 			setSelectedMessages([]);
+			if (action === "delete" && selectedMessageId && messageIds.includes(selectedMessageId)) router.replace(config.hrefPrefix);
 		} catch (error) {
 			if (readValue !== null) {
 				updateMessages(previousMessages);
@@ -369,7 +378,7 @@ export function MessageFolderPage({
 					.reduce((total, message) => total + (readValue ? (message.read ? 0 : 1) : (message.read ? -1 : 0)), 0);
 				if (inboxUnreadDelta) dispatchMessageCountsDelta({ inboxUnreadDelta });
 			}
-			throw error;
+			setActionError(error instanceof Error ? error.message : "Unable to update selected messages");
 		} finally {
 			setPendingBulkAction(false);
 		}
@@ -391,6 +400,7 @@ export function MessageFolderPage({
 					{selectedIds.length > 0 && !compact ? (
 						<BulkMessageToolbar
 							selectedCount={selectedIds.length}
+							permanentDelete={config.folder === "trash"}
 							hasUnreadSelection={hasUnreadSelection}
 							onAction={runSelectedAction}
 							onClearSelection={() => setSelectedMessages([])}
@@ -456,6 +466,7 @@ export function MessageFolderPage({
 				)}
 			</div>
 
+			{actionError && <p role="alert" className="px-6 py-2 text-sm text-red-600">{t(actionError)}</p>}
 			<div className="min-h-0 flex-1 divide-y divide-neutral-100 overflow-y-auto overscroll-contain scrollbar-gutter-stable">
 				{messages.map((message) => (
 					<MessageListRow
@@ -467,9 +478,17 @@ export function MessageFolderPage({
 						compact={compact}
 						currentAccountName={currentAccountName}
 						onSelectedChange={updateSelectedMessage}
-						onMessageAction={(messageId, action) =>
-							runBulkMessageAction(expandSelectedIds([messageId]), action, action !== "read" && action !== "unread")
-						}
+						onMessageAction={async (messageId, action) => {
+							const messageIds = expandSelectedIds([messageId]);
+							if (action === "delete" && !confirmPermanentDelete(messageIds.length, t)) return;
+							setActionError(null);
+							try {
+								await runBulkMessageAction(messageIds, action, action !== "read" && action !== "unread");
+							} catch (error) {
+								setActionError(error instanceof Error ? error.message : "Unable to update selected messages");
+								throw error;
+							}
+						}}
 						dragMessageIds={expandSelectedIds(selectedIds.includes(message.id) ? selectedIds : [message.id])}
 					/>
 				))}

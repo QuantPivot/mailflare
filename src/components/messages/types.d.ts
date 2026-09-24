@@ -27,7 +27,7 @@ export type MessageListRowProps = {
 	dragMessageIds: string[];
 };
 
-export type RowMessageAction = "archive" | "trash" | "read" | "unread";
+export type RowMessageAction = "archive" | "trash" | "delete" | "read" | "unread";
 
 export type MessageListRowActionsProps = {
 	message: Message;
@@ -50,12 +50,13 @@ export type BulkMessageToolbarProps = {
 	selectedCount: number;
 	hasUnreadSelection: boolean;
 	hideSelectedCount?: boolean;
+	permanentDelete?: boolean;
 	onAction: (action: BulkMessageAction) => void;
 	onClearSelection: () => void;
 	pending: boolean;
 };
 
-export type SelectedMessage = Pick<Message, "id" | "read">;
+export type SelectedMessage = Pick<Message, "id" | "read" | "status" | "threadMessageIds">;
 
 export type MessageSelectionControl = {
 	selectedMessages: SelectedMessage[];
@@ -65,6 +66,7 @@ export type MessageSelectionControl = {
 export type BulkMessageSelectionPaneProps = {
 	selectedMessages: SelectedMessage[];
 	onClearSelection: () => void;
+	onDeleted: () => void;
 };
 
 export type PageRange = {

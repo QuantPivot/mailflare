@@ -1311,5 +1311,9 @@
   "m6eecead6": "{value0} repeatedly been marked as spam",
   "mc1a3651c": "{value0} {value1}",
   "m5d890ae7": "{value0} · {value1}",
-  "m7eda8d4": "{value0}{value1}"
+  "m7eda8d4": "{value0}{value1}",
+  "md8100383": "Delete permanently",
+  "me7952ac2": "Permanently delete {count, plural, one {# selected email} other {# selected emails}} and their attachments? This cannot be undone.",
+  "mec2cc44f": "Only messages in Trash can be permanently deleted. Refresh the list and try again.",
+  "ma3792109": "Some messages could not be permanently deleted. Please try again."
 }

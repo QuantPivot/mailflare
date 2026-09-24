@@ -1,5 +1,6 @@
 import type { BulkMessageAction } from "@/app/api/messages/bulk/types";
 import { authFetch } from "@/lib/auth/client";
+import { applyMessageAction } from "@/lib/messages/actions";
 import { getEmailAddress, normalizeEmailAddress, splitEmailAddressList } from "@/lib/email/address";
 import { getLatestEmailContent } from "@/lib/email/reply-content-utils";
 import dayjs from "dayjs";
@@ -40,17 +41,7 @@ export async function runSingleMessageAction(
   messageId: string,
   action: BulkMessageAction,
 ) {
-  const response = await authFetch("/api/messages/bulk", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messageIds: [messageId], action }),
-  });
-
-  if (!response.ok) {
-    throw new Error("Unable to update message");
-  }
-
-  window.dispatchEvent(new Event("mailflare:messages-changed"));
+  await applyMessageAction([messageId], action);
 }
 
 export function openUnsubscribeUrl(url: string) {
@@ -121,7 +112,7 @@ export function getMessageActionRedirect(
   action: BulkMessageAction,
   direction: "inbound" | "outbound",
 ) {
-  if (action === "trash") return "/trash";
+  if (action === "trash" || action === "delete") return "/trash";
   if (action === "spam") return "/spam";
   if (action === "archive") return "/archived";
   if (action === "inbox") return "/inbox";
