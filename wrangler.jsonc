@@ -1,9 +1,18 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "mailflare",
+	"account_id": "8fc12c0157e8c6840fc0dd50969d8000",
+	"workers_dev": true,
+	"preview_urls": false,
+	"routes": [
+		{ "pattern": "mail.alpha-basis.com", "custom_domain": true },
+	],
 	"main": "./worker.ts",
 	"compatibility_date": "2026-05-20",
 	"keep_vars": true,
+	"vars": {
+		"CF_EMAIL_WORKER_NAME": "mailflare",
+	},
 	"compatibility_flags": [
 		"nodejs_compat",
 		"global_fetch_strictly_public"
@@ -64,6 +73,7 @@
 		{
 			"binding": "DB",
 			"database_name": "mailflare",
+			"database_id": "3726e4e4-55f8-4f3b-bd99-f76d7d7faca8",
 			"migrations_dir": "drizzle/migrations",
 		},
 	],

@@ -1,0 +1,29 @@
+[tools]
+node = "24.16.0"
+"npm:wrangler" = "4.137.0"
+
+[env]
+CLOUDFLARE_ACCOUNT_ID = "8fc12c0157e8c6840fc0dd50969d8000"
+
+[tasks.install]
+run = "npm ci"
+
+[tasks.build]
+run = ["npm run db:bundle", "npx --no-install opennextjs-cloudflare build"]
+
+[tasks.deploy]
+env = { OPEN_NEXT_DEPLOY = "true" }
+run = "wrangler deploy"
+
+[tasks.dry-run]
+env = { OPEN_NEXT_DEPLOY = "true" }
+run = "wrangler deploy --dry-run --outdir .wrangler/artifact"
+
+[tasks.typecheck]
+run = "npx --no-install tsc --noEmit"
+
+[tasks.migrate]
+run = "wrangler d1 migrations apply DB --remote"
+
+[tasks.wrangler]
+run = "wrangler"
